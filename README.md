@@ -20,12 +20,16 @@ With this project you can test some interactions with the Cartesi Rollups projec
 
 In the project directory, run:
 
-### `yarn`
-### `yarn codegen`
+```shell
+yarn
+yarn codegen
+```
 
 to build the app.
 
-### `yarn start`
+```shell
+yarn start
+```
 
 Runs the app in the development mode.\
 Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
@@ -39,4 +43,6 @@ Edit useRollups.tsx to set you deployments address in testnets (rollupsAddress v
 To execute Vouchers, the voucher epoch must be finalized so the rollups framework generate the proofs.
 As a reminder, you can advance time in hardhat with the command:
 
-### `curl --data '{"id":1337,"jsonrpc":"2.0","method":"evm_increaseTime","params":[864010]}' http://localhost:8545`
+```shell
+curl --data '{"id":1337,"jsonrpc":"2.0","method":"evm_increaseTime","params":[864010]}' http://localhost:8545
+```
