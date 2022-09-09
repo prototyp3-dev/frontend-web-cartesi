@@ -81,17 +81,6 @@ export const Vouchers: React.FC = () => {
         }
     },[voucherResult, rollups]);
 
-    useEffect( () => {
-        console.log(voucherResult,rollups)
-        if (rollups) {
-            const filter = rollups.outputContract.filters.VoucherExecuted();
-            console.log(filter);
-            rollups.outputContract.queryFilter(filter).then( (d) => {
-                console.log(d);
-            })
-        }
-    },[voucherResult,rollups]);
-
     if (fetching) return <p>Loading...</p>;
     if (error) return <p>Oh no... {error.message}</p>;
 
