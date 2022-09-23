@@ -17,30 +17,6 @@ import { useWallets } from "@web3-onboard/react";
 import { IERC20__factory } from "./generated/rollups";
 
 
-import {
-    EtherPortalFacet__factory,
-} from "./generated/rollups";
-
-// const depositEtherToPortal2 = async (amount: number) => {
-
-//     const provider = new ethers.providers.JsonRpcProvider("http://localhost:8545");
-
-//     const address = "0xF119CC4Ed90379e5E0CC2e5Dd1c8F8750BAfC812"; 
-    
-//     const etherPortalContract = EtherPortalFacet__factory.connect(
-//         address,
-//         provider.getSigner()
-//     );
-
-//     if (etherPortalContract) {
-//         const data = ethers.utils.toUtf8Bytes(`Deposited (${amount}) ether.`);
-//         const txOverrides = {value: ethers.utils.parseEther(`${amount}`)}
-
-//         // const tx = await ...
-//         etherPortalContract.etherDeposit(data,txOverrides);
-//     }
-// };
-
 export const Input: React.FC = () => {
     const rollups = useRollups();
     const [connectedWallet] = useWallets();
@@ -51,16 +27,6 @@ export const Input: React.FC = () => {
     const addInput = async (str: string) => {
         console.log(rollups);
         if (rollups) {
-            // console.log(str, ethers,window)
-            // const provider = new ethers.providers.Web3Provider(window.ethereum);
-            // const signer = provider.getSigner();
-    
-            // const address = await signer.getAddress();
-    
-            // const gasPrice = await provider.getGasPrice();
-            // const gasLimit = 100000;
-            // const nonce = await ethers.getDefaultProvider().getTransactionCount(address, "latest");
-            // console.log("override",{ gasLimit: gasLimit, gasPrice: ethers.utils.parseUnits(gasPrice.toNumber().toString(), 'gwei') ,gasPrice3:gasPrice, nonce: nonce })
             rollups.inputContract.addInput(ethers.utils.toUtf8Bytes(str));
         }
     };

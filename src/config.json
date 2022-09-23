@@ -1,0 +1,7 @@
+{
+    "chainId": "0x7a69",
+    "graphqlAPIURL" : "https://4000-cartesi-rollupsexamples-xdu65c5bylc.ws-us67.gitpod.io",
+    "inspectAPIURL":"https://5005-cartesi-rollupsexamples-xdu65c5bylc.ws-us67.gitpod.io",
+    "rpcURL": "https://8545-cartesi-rollupsexamples-xdu65c5bylc.ws-us67.gitpod.io",
+    "rollupAddress":""
+}
