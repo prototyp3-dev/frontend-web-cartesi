@@ -14,7 +14,7 @@ import { useSetChain } from "@web3-onboard/react";
 import React, { useMemo } from "react";
 import { Client, createClient, Provider } from "urql";
 
-import * as config from "./config.json";
+import config from "./config.json";
 
 const urls: Record<string, string> = {
     "0x7a69": "http://localhost:4000/graphql",
@@ -31,7 +31,7 @@ const useGraphQL = () => {
         }
         let url = "";
 
-        if(config.graphqlAPIURL != "") {
+        if(config.graphqlAPIURL !== "") {
             url = `${config.graphqlAPIURL}/graphql`;
             console.log("Using the provided API URL:", config.graphqlAPIURL);
         } else {

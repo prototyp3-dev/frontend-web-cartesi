@@ -30,7 +30,7 @@ import {
 } from "./generated/rollups";
 import { ConnectedChain } from "@web3-onboard/core";
 
-import * as config from "./config.json";
+import config from "./config.json";
 
 const rollupsAddress: Record<string, any> = {
     "0x7a69": "0xF119CC4Ed90379e5E0CC2e5Dd1c8F8750BAfC812", // local hardhat
@@ -61,11 +61,11 @@ export const useRollups = (): RollupsContracts | undefined => {
             );
 
             let address = "0x0000000000000000000000000000000000000000"; //zero addr as placeholder
-            if(config.chainId != "" && config.chainId != chain.id) {
-                alert(`You have the wrong chainID setup or the wrong network choice on your metamask:  ${config.chainId} != ${chain.id}`);
+            if(config.chainId !== "" && config.chainId !== chain.id) {
+                alert(`You have the wrong chainID setup or the wrong network choice on your metamask:  ${config.chainId} !== ${chain.id}`);
             }
             
-            if(config.rollupAddress != "") {
+            if(config.rollupAddress !== "") {
                 address = config.rollupAddress;
             } else {
                 address = rollupsAddress[chain.id];

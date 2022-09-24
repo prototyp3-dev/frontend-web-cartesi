@@ -15,7 +15,7 @@ import { useSetChain } from "@web3-onboard/react";
 import { ethers } from "ethers";
 import { useRollups } from "./useRollups";
 
-import * as config from "./config.json";
+import config from "./config.json";
 
 const inspecAddress: Record<string, any> = {
     "0x7a69": "http://localhost:5005/inspect", // local hardhat
@@ -35,7 +35,7 @@ export const Inspect: React.FC = () => {
         
         let apiURL= ""
 
-        if(config.inspectAPIURL != "") {
+        if(config.inspectAPIURL !== "") {
             apiURL = `${config.inspectAPIURL}/inspect`;
         } else {
             apiURL = inspecAddress[connectedChain.id];
