@@ -14,6 +14,8 @@ import { useSetChain } from "@web3-onboard/react";
 import React, { useMemo } from "react";
 import { Client, createClient, Provider } from "urql";
 
+import config from "./config.json";
+
 const urls: Record<string, string> = {
     "0x7a69": "http://localhost:4000/graphql",
     "0x13881": "http://localhost:4000/graphql", // polygon
@@ -27,8 +29,15 @@ const useGraphQL = () => {
         if (!connectedChain) {
             return null;
         }
+        let url = "";
 
-        const url = urls[connectedChain.id];
+        if(config.graphqlAPIURL !== "") {
+            url = `${config.graphqlAPIURL}/graphql`;
+            console.log("Using the provided API URL:", config.graphqlAPIURL);
+        } else {
+            url = urls[connectedChain.id];
+        }
+
         if (!url) {
             return null;
         }
