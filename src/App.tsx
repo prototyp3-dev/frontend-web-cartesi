@@ -63,8 +63,9 @@ const App: FC = () => {
             <GraphQLProvider>
                 <h2>Inspect</h2>
                 <Inspect />
-                <h2>Notices</h2>
+                <h2>Input</h2>
                 <Input />
+                <h2>Notices</h2>
                 <Notices />
                 <h2>Reports</h2>
                 <Reports />
