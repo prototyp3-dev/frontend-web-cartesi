@@ -1,7 +1,12 @@
 {
-    "chainId": "0x7a69",
-    "graphqlAPIURL" : "https://4000-cartesi-rollupsexamples-xdu65c5bylc.ws-us67.gitpod.io",
-    "inspectAPIURL":"https://5005-cartesi-rollupsexamples-xdu65c5bylc.ws-us67.gitpod.io",
-    "rpcURL": "https://8545-cartesi-rollupsexamples-xdu65c5bylc.ws-us67.gitpod.io",
-    "rollupAddress":""
+    "0x7a69":{
+        "graphqlAPIURL" : "http://localhost:4000",
+        "inspectAPIURL":"http://localhost:5005",
+        "rollupAddress":"0xF119CC4Ed90379e5E0CC2e5Dd1c8F8750BAfC812"
+    },
+    "0x5":{
+        "graphqlAPIURL" : "http://localhost:4000",
+        "inspectAPIURL":"http://localhost:5005",
+        "rollupAddress":"0xbFAe82Eeb09d31bc3e636db3F379A05DE92CA882"
+    }
 }

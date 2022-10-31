@@ -15,13 +15,14 @@ import { useSetChain } from "@web3-onboard/react";
 import { ethers } from "ethers";
 import { useRollups } from "./useRollups";
 
-import config from "./config.json";
+import configFile from "./config.json";
 
-const inspecAddress: Record<string, any> = {
-    "0x7a69": "http://localhost:5005/inspect", // local hardhat
-    "0x13881": "http://localhost:5005/inspect", // polygon_mumbai,
-    "0x5": "http://localhost:5005/inspect" // goerli,
-};
+const config: any = configFile;
+// const inspecAddress: Record<string, any> = {
+//     "0x7a69": "http://localhost:5005/inspect", // local hardhat
+//     "0x13881": "http://localhost:5005/inspect", // polygon_mumbai,
+//     "0x5": "http://localhost:5005/inspect" // goerli,
+// };
 
 export const Inspect: React.FC = () => {
     const rollups = useRollups();
@@ -35,10 +36,11 @@ export const Inspect: React.FC = () => {
         
         let apiURL= ""
 
-        if(config.inspectAPIURL !== "") {
-            apiURL = `${config.inspectAPIURL}/inspect`;
+        if(config[connectedChain.id]?.inspectAPIURL) {
+            apiURL = `${config[connectedChain.id].inspectAPIURL}/inspect`;
         } else {
-            apiURL = inspecAddress[connectedChain.id];
+            console.error(`No inspect interface defined for chain ${connectedChain.id}`);
+            return;
         }
 
         fetch(`${apiURL}/${payload}`)

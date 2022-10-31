@@ -30,13 +30,15 @@ import {
 } from "./generated/rollups";
 import { ConnectedChain } from "@web3-onboard/core";
 
-import config from "./config.json";
+import configFile from "./config.json";
 
-const rollupsAddress: Record<string, any> = {
-    "0x7a69": "0xF119CC4Ed90379e5E0CC2e5Dd1c8F8750BAfC812", // local hardhat
-    "0x13881": "0xe219A4Ee9e1dFD132ED9F8e38B3519368cC9494F", // polygon_mumbai,
-    "0x5": "0xea055Bc7BC53A63E1C018Ceea5B6AddA75016064" // goerli,
-};
+const config: any = configFile;
+
+// const rollupsAddress: Record<string, any> = {
+//     "0x7a69": "0xF119CC4Ed90379e5E0CC2e5Dd1c8F8750BAfC812", // local hardhat
+//     "0x13881": "0xe219A4Ee9e1dFD132ED9F8e38B3519368cC9494F", // polygon_mumbai,
+//     "0x5": "0xea055Bc7BC53A63E1C018Ceea5B6AddA75016064" // goerli,
+// };
 
 export interface RollupsContracts {
     rollupsContract: RollupsFacet;
@@ -61,15 +63,14 @@ export const useRollups = (): RollupsContracts | undefined => {
             );
 
             let address = "0x0000000000000000000000000000000000000000"; //zero addr as placeholder
-            if(config.chainId !== "" && config.chainId !== chain.id) {
-                alert(`You have the wrong chainID setup or the wrong network choice on your metamask:  ${config.chainId} !== ${chain.id}`);
-            }
             
-            if(config.rollupAddress !== "") {
-                address = config.rollupAddress;
+            if(config[chain.id]?.rollupAddress) {
+                address = config[chain.id].rollupAddress;
             } else {
-                address = rollupsAddress[chain.id];
+                console.error(`No rollup address interface defined for chain ${chain.id}`);
+                alert(`No rollup address interface defined for chain ${chain.id}`);
             }
+
                 
             // rollups contract
             const rollupsContract = RollupsFacet__factory.connect(

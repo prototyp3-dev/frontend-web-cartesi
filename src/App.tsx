@@ -33,17 +33,11 @@ init({
             rpcUrl: "http://localhost:8545",
         },
         {
-            id: "0x13881",
-            token: "MATIC",
-            label: "Matic Testnet",
-            rpcUrl: "https://rpc-mumbai.maticvigil.com",
+            id: "0x5",
+            token: "GoerliETH",
+            label: "Goerli Test Network",
+            rpcUrl: "https://eth-goerli.g.alchemy.com/v2/demo",
         },
-        // {
-        //     id: "0x3",
-        //     token: "ETH",
-        //     label: "Ropsten Test Network",
-        //     rpcUrl: "https://ropsten.infura.io/v3/",
-        // },
     ],
     appMetadata: {
         name: "Cartesi Rollups Echo DApp",
@@ -51,7 +45,6 @@ init({
         description: "Demo app for Cartesi Rollups",
         recommendedInjectedWallets: [
             { name: "MetaMask", url: "https://metamask.io" },
-            { name: "Coinbase", url: "https://wallet.coinbase.com/" },
         ],
     },
 });

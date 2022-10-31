@@ -12,6 +12,9 @@
 
 import { FC } from "react";
 import { useConnectWallet, useSetChain } from "@web3-onboard/react";
+import configFile from "./config.json";
+
+const config: any = configFile;
 
 export const Network: FC = () => {
     const [{ wallet, connecting }, connect, disconnect] = useConnectWallet();
@@ -33,9 +36,11 @@ export const Network: FC = () => {
                     ) : (
                         <select
                             onChange={({ target: { value } }) => {
-                                console.log(value, wallet, connecting, chains, connectedChain, settingChain) ;
-                                setChain({ chainId: value })
-                                console.log(value, setChain({ chainId: value }).then(d => console.log(d)))
+                                if (config[value] !== undefined) {
+                                    setChain({ chainId: value })
+                                } else {
+                                    alert("No deploy on this chain")
+                                }
                                 }
                             }
                             value={connectedChain?.id}

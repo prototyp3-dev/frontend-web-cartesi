@@ -14,14 +14,16 @@ import { useSetChain } from "@web3-onboard/react";
 import React, { useMemo } from "react";
 import { Client, createClient, Provider } from "urql";
 
-import config from "./config.json";
+import configFile from "./config.json";
 
-const urls: Record<string, string> = {
-    "0x7a69": "http://localhost:4000/graphql",
-    "0x13881": "http://localhost:4000/graphql", // polygon
-    "0x5": "http://localhost:4000/graphql", // goerli
-    // "0x13881": "https://echo.polygon-mumbai.rollups.dev.cartesi.io/graphql",
-};
+const config: any = configFile;
+
+// const urls: Record<string, string> = {
+//     "0x7a69": "http://localhost:4000/graphql",
+//     "0x13881": "http://localhost:4000/graphql", // polygon
+//     "0x5": "http://localhost:4000/graphql", // goerli
+//     // "0x13881": "https://echo.polygon-mumbai.rollups.dev.cartesi.io/graphql",
+// };
 
 const useGraphQL = () => {
     const [{ connectedChain }] = useSetChain();
@@ -31,11 +33,11 @@ const useGraphQL = () => {
         }
         let url = "";
 
-        if(config.graphqlAPIURL !== "") {
-            url = `${config.graphqlAPIURL}/graphql`;
-            console.log("Using the provided API URL:", config.graphqlAPIURL);
+        if(config[connectedChain.id]?.graphqlAPIURL) {
+            url = `${config[connectedChain.id].graphqlAPIURL}/graphql`;
         } else {
-            url = urls[connectedChain.id];
+            console.error(`No GraphQL interface defined for chain ${connectedChain.id}`);
+            return null;
         }
 
         if (!url) {
