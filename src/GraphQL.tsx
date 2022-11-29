@@ -18,13 +18,6 @@ import configFile from "./config.json";
 
 const config: any = configFile;
 
-// const urls: Record<string, string> = {
-//     "0x7a69": "http://localhost:4000/graphql",
-//     "0x13881": "http://localhost:4000/graphql", // polygon
-//     "0x5": "http://localhost:4000/graphql", // goerli
-//     // "0x13881": "https://echo.polygon-mumbai.rollups.dev.cartesi.io/graphql",
-// };
-
 const useGraphQL = () => {
     const [{ connectedChain }] = useSetChain();
     return useMemo<Client | null>(() => {

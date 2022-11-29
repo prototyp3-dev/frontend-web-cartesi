@@ -21,26 +21,16 @@ import { Inspect } from "./Inspect";
 import { Network } from "./Network";
 import { Vouchers } from "./Vouchers";
 import { Reports } from "./Reports";
+import configFile from "./config.json";
+
+const config: any = configFile;
 
 const injected: any = injectedModule();
 init({
     wallets: [injected],
-    chains: [
-        {
-            id: "0x7a69",
-            token: "ETH",
-            label: "localhost",
-            rpcUrl: "http://localhost:8545",
-        },
-        {
-            id: "0x5",
-            token: "GoerliETH",
-            label: "Goerli Test Network",
-            rpcUrl: "https://eth-goerli.g.alchemy.com/v2/demo",
-        },
-    ],
+    chains: Object.entries(config).map(([k, v]: [string, any], i) => ({id: k, token: v.token, label: v.label, rpcUrl: v.rpcUrl})),
     appMetadata: {
-        name: "Cartesi Rollups Echo DApp",
+        name: "Cartesi Rollups Test DApp",
         icon: "<svg><svg/>",
         description: "Demo app for Cartesi Rollups",
         recommendedInjectedWallets: [

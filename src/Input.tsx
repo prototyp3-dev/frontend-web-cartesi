@@ -66,14 +66,34 @@ export const Input: React.FC = () => {
             rollups.etherPortalContract.etherDeposit(data,txOverrides);
         }
     };
+
+    const transferNftToPortal = async (contractAddress: string,nftid: number) => {
+        if (rollups) {
+            const receiverAddress = rollups.rollupsContract.address;
+
+            const nftAbi = ["function safeTransferFrom( address from, address to, uint256 tokenId) external;"];
+
+            // Get contract
+            const nftContractReadonly = new ethers.Contract(contractAddress, nftAbi, provider);
+            // Connecting with a signer allows you to use all the methods of the contract
+            
+            const nftContract = nftContractReadonly.connect(rollups.rollupsContract.signer);
+
+            // Transfer
+            nftContract.safeTransferFrom(await rollups.rollupsContract.signer.getAddress(), receiverAddress, nftid);
+        }
+    };
     const [input, setInput] = useState<string>("");
     const [erc20Amount, setErc20Amount] = useState<number>(0);
     const [erc20Token, setErc20Token] = useState<string>("0x610178dA211FEF7D417bC0e6FeD39F05609AD788");
+    const [erc721Id, setErc721Id] = useState<number>(0);
+    const [erc721, setErc721] = useState<string>("");
     const [etherAmount, setEtherAmount] = useState<number>(0);
 
     return (
         <div>
             <div>
+                Send Input <br />
                 Input: <input
                     type="text"
                     value={input}
@@ -82,8 +102,10 @@ export const Input: React.FC = () => {
                 <button onClick={() => addInput(input)} disabled={!rollups}>
                     Send
                 </button>
+                <br /><br />
             </div>
             <div>
+                Deposit Ether <br />
                 Amount: <input
                     type="number"
                     value={etherAmount}
@@ -92,9 +114,11 @@ export const Input: React.FC = () => {
                 <button onClick={() => depositEtherToPortal(etherAmount)} disabled={!rollups}>
                     Deposit Ether
                 </button>
+                <br /><br />
             </div>
             <div>
-                Token: <input
+                Deposit ERC20 <br />
+                Address: <input
                     type="text"
                     value={erc20Token}
                     onChange={(e) => setErc20Token(e.target.value)}
@@ -106,6 +130,23 @@ export const Input: React.FC = () => {
                 />
                 <button onClick={() => depositErc20ToPortal(erc20Token,erc20Amount)} disabled={!rollups}>
                     Deposit ERC20
+                </button>
+                <br /><br />
+            </div>
+            <div>
+                Transfer ERC721 <br />
+                Address: <input
+                    type="text"
+                    value={erc721}
+                    onChange={(e) => setErc721(e.target.value)}
+                />
+                id: <input
+                    type="number"
+                    value={erc721Id}
+                    onChange={(e) => setErc721Id(Number(e.target.value))}
+                />
+                <button onClick={() => transferNftToPortal(erc721,erc721Id)} disabled={!rollups}>
+                    Transfer NFT
                 </button>
             </div>
         </div>

@@ -1093,26 +1093,26 @@
   resolved "https://registry.yarnpkg.com/@bcoe/v8-coverage/-/v8-coverage-0.2.3.tgz#75a2e8b51cb758a7553d6804a5932d7aace75c39"
   integrity sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==
 
-"@cartesi/rollups@^0.5.0":
-  version "0.5.0"
-  resolved "https://registry.yarnpkg.com/@cartesi/rollups/-/rollups-0.5.0.tgz#3c7a811f949035d86421a6503de15742f78b5d64"
-  integrity sha512-xFyfG9xp7rAbvwy7q1M5/w/oghTbEQwr142f3R4S59zyeCBFgPx7MLqA2P8ZJ53eWx9kQJ1/eYixG3zfZZrLUA==
+"@cartesi/rollups@^0.7.0":
+  version "0.7.0"
+  resolved "https://registry.yarnpkg.com/@cartesi/rollups/-/rollups-0.7.0.tgz#e721f4eb5ab1b263aefc7f0819bf4c4aa8fa2d49"
+  integrity sha512-U4yZ8C2K7mJORia1qGpUAFx3XumGk7Hrmrtw2EcGgZvJ09M1BWq4dh65g0+QOodVgDSDHk6qrvZl1KU9cYqlow==
   dependencies:
-    "@cartesi/token" "^1.5.1"
-    "@cartesi/util" "^4.0.0"
+    "@cartesi/token" "^1.7.0"
+    "@cartesi/util" "^5.0.0"
     "@openzeppelin/contracts" "^4.7.1"
 
-"@cartesi/token@^1.5.1":
-  version "1.5.1"
-  resolved "https://registry.yarnpkg.com/@cartesi/token/-/token-1.5.1.tgz#0afe07e0a765812f3ae2c169453dae6bebed992d"
-  integrity sha512-R5PRZTLh5Rh1rsOZGZ5OV0sast8efvDmHlBWwgNlGFd8gxrbhslSFJsLvUSgjeu7xai4meDjQu1g21ahQT4YrQ==
+"@cartesi/token@^1.7.0":
+  version "1.7.1"
+  resolved "https://registry.yarnpkg.com/@cartesi/token/-/token-1.7.1.tgz#9ffdd8479ea2688fc7de44fa42fe913806f94a52"
+  integrity sha512-y9LQFtJLs67aGQkNF5jrvAV+gkOXzBav01rONN2wLN0DOdYRwq+3YYSL3Z0iZWqEZ8fOg0H2gTEshVTPTDS0QA==
   dependencies:
     "@openzeppelin/contracts" "^2.5.0"
 
-"@cartesi/util@^4.0.0":
-  version "4.0.0"
-  resolved "https://registry.yarnpkg.com/@cartesi/util/-/util-4.0.0.tgz#f10d09c85f0faf13b1f538e64973858e3b26c3d5"
-  integrity sha512-ovjzZyw2W3arhPtVmJC2QvNh4QKC4H+3kZJwNOUphm7himybxoiNrbOE+zRm4Jcxu+Ivd281TN6s59yUSmFpOw==
+"@cartesi/util@^5.0.0":
+  version "5.0.1"
+  resolved "https://registry.yarnpkg.com/@cartesi/util/-/util-5.0.1.tgz#953916125122595488c366df0895e5bb79897b55"
+  integrity sha512-KCUHKvjCiZMWo4FojBrZ/2/RHbSiE948IndG8nqEcpYh4CHlumHoKSZKdfoxWBArs12MhupT3v50Pt9e4c5/Hw==
   dependencies:
     "@openzeppelin/contracts" "3.2.1-solc-0.7"
 
@@ -8932,6 +8932,11 @@ loader-utils@^3.2.0:
   version "3.2.0"
   resolved "https://registry.yarnpkg.com/loader-utils/-/loader-utils-3.2.0.tgz#bcecc51a7898bee7473d4bc6b845b23af8304d4f"
   integrity sha512-HVl9ZqccQihZ7JM85dco1MvO9G+ONvxoGa9rkhzFsneGLKSUg1gJf9bWzhRhcvm2qChhWpebQhP44qxjKIUCaQ==
+
+loader-utils@^3.2.1:
+  version "3.2.1"
+  resolved "https://registry.yarnpkg.com/loader-utils/-/loader-utils-3.2.1.tgz#4fb104b599daafd82ef3e1a41fb9265f87e1f576"
+  integrity sha512-ZvFw1KWS3GVyYBYb7qkmRM/WwL2TQQBxgCK62rlvm4WpVQ23Nb4tYjApUlfjrEGvOs7KHEsmyUn75OHZrJMWPw==
 
 locate-path@^2.0.0:
   version "2.0.0"
