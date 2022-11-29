@@ -1,8 +1,4 @@
-# Getting Started with Create React App
-
-[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/lynoferraz/frontend-web-cartesi)
-
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# Cartesi frontend web
 
 ## Features
 
@@ -49,3 +45,6 @@ As a reminder, you can advance time in hardhat with the command:
 ```shell
 curl --data '{"id":1337,"jsonrpc":"2.0","method":"evm_increaseTime","params":[864010]}' http://localhost:8545
 ```
+
+[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/lynoferraz/frontend-web-cartesi)
+
