@@ -15,7 +15,7 @@
         "inspectAPIURL":"http://localhost:5005",
         "rollupAddress":"0x"
     },
-    "0x66EED":{
+    "0x66eed":{
         "token": "AGOR",
         "label": "Arbitrum Goerli Test Network",
         "rpcUrl": "https://goerli-rollup.arbitrum.io/rpc",
