@@ -15,8 +15,13 @@ With this project you can test some interactions with the Cartesi Rollups projec
 5. Listing Reports
 6. Depositing Ether
 7. Depositing ERC20
-8. Listing Vouchers
-9. Executing Vouchers
+8. Depositing ERC721
+9. Listing Vouchers
+10. Executing Vouchers
+
+## Configurtion
+
+Edit src/config.json to set the testnet parameters and deployment, inspect, graphql, rpc addresses.
 
 ## Available Scripts
 
@@ -35,10 +40,6 @@ yarn start
 
 Runs the app in the development mode.\
 Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
-
-## Configurtion
-
-Edit useRollups.tsx to set you deployments address in testnets (rollupsAddress variable) or set up the environment to connect to hardhat (uncomment)
 
 ## Voucher Notes
 

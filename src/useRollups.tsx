@@ -23,8 +23,6 @@ import {
     RollupsFacet__factory,
     ERC20PortalFacet,
     ERC20PortalFacet__factory,
-    ERC721PortalFacet,
-    ERC721PortalFacet__factory,
     EtherPortalFacet,
     EtherPortalFacet__factory,
 } from "./generated/rollups";
@@ -45,7 +43,6 @@ export interface RollupsContracts {
     inputContract: InputFacet;
     outputContract: OutputFacet;
     erc20PortalContract: ERC20PortalFacet;
-    erc721PortalContract: ERC721PortalFacet;
     etherPortalContract: EtherPortalFacet;
 }
 
@@ -99,11 +96,6 @@ export const useRollups = (): RollupsContracts | undefined => {
                 provider.getSigner()
             );
 
-            const erc721PortalContract = ERC721PortalFacet__factory.connect(
-                address,
-                provider.getSigner()
-            );
-
             const etherPortalContract = EtherPortalFacet__factory.connect(
                 address,
                 provider.getSigner()
@@ -114,7 +106,6 @@ export const useRollups = (): RollupsContracts | undefined => {
                 inputContract,
                 outputContract,
                 erc20PortalContract,
-                erc721PortalContract,
                 etherPortalContract,
             };
         };

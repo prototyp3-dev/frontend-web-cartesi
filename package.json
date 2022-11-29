@@ -3,7 +3,7 @@
     "version": "0.3.0",
     "private": true,
     "dependencies": {
-        "@cartesi/rollups": "^0.5.0",
+        "@cartesi/rollups": "^0.7.0",
         "@ethersproject/providers": "^5.6.0",
         "@testing-library/jest-dom": "^5.16.4",
         "@testing-library/react": "^13.2.0",
@@ -17,6 +17,7 @@
         "buffer": "^6.0.3",
         "ethers": "^5.6.7",
         "graphql": "^16.4.0",
+        "loader-utils": "^3.2.1",
         "react": "^18.1.0",
         "react-dom": "^18.1.0",
         "react-scripts": "5.0.1",

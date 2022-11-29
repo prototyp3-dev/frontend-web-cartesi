@@ -49,8 +49,6 @@ export const Vouchers: React.FC = () => {
     };
     const executeVoucher = async (voucher: any) => {
         if (rollups && !!voucher.proof) {
-            const signer = await (await (await rollups).outputContract.signer).getAddress();
-
             const proof: OutputValidityProofStruct = {
                 ...voucher.proof,
                 epochIndex: voucher.input.epoch.index,
@@ -90,18 +88,48 @@ export const Vouchers: React.FC = () => {
         let payload = n?.payload;
         if (payload) {
             const decoder = new ethers.utils.AbiCoder();
+            const selector = decoder.decode(["bytes4"], payload)[0]; 
             payload = ethers.utils.hexDataSlice(payload,4);
+            console.log(selector)
             try {
-                const decode = decoder.decode(["bytes"], payload)
-                const decode2 = decoder.decode(["address", "uint256"], decode[0])
-                payload = `Amount: ${ethers.utils.formatEther(decode2[1])} (Native eth) - Address: ${decode2[0]}`;
-            } catch (e) {
-                try {
-                    const decode = decoder.decode(["address","uint256"], payload);
-                    payload = `Amount: ${ethers.utils.formatEther(decode[1])} - Address: ${decode[0]}`;
-                } catch (e2) {
-                    payload = payload;
+                switch(selector) { 
+                    case '0xa9059cbb': { 
+                        // erc20 transfer; 
+                        const decode = decoder.decode(["address","uint256"], payload);
+                        payload = `Erc20 Transfer - Amount: ${ethers.utils.formatEther(decode[1])} - Address: ${decode[0]}`;
+                        break; 
+                    }
+                    case '0x42842e0e': { 
+                        //erc721 safe transfer;
+                        const decode = decoder.decode(["address","address","uint256"], payload);
+                        payload = `Erc721 Transfer - Id: ${decode[2]} - Address: ${decode[1]}`;
+                        break; 
+                    }
+                    case '0x74956b94': { 
+                        //ether transfer; 
+                        const decode = decoder.decode(["bytes"], payload)
+                        const decode2 = decoder.decode(["address", "uint256"], decode[0])
+                        payload = `Ether Transfer - Amount: ${ethers.utils.formatEther(decode2[1])} (Native eth) - Address: ${decode2[0]}`;
+                        break; 
+                    }
+                    case '0xd0def521': { 
+                        //erc721 mint;
+                        const decode = decoder.decode(["address","string"], payload);
+                        payload = `Mint Erc721 - String: ${decode[1]} - Address: ${decode[0]}`;
+                        break; 
+                    }
+                    case '0x755edd17': { 
+                        //erc721 mintTo;
+                        const decode = decoder.decode(["address"], payload);
+                        payload = `Mint Erc721 - Address: ${decode[0]}`;
+                        break; 
+                    }
+                    default: {
+                        break; 
+                    }
                 }
+            } catch (e) {
+                console.log(e);
             }
         } else {
             payload = "(empty)";

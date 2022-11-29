@@ -1,12 +1,26 @@
 {
     "0x7a69":{
+        "token": "ETH",
+        "label": "localhost",
+        "rpcUrl": "http://localhost:8545",
         "graphqlAPIURL" : "http://localhost:4000",
         "inspectAPIURL":"http://localhost:5005",
-        "rollupAddress":"0xF119CC4Ed90379e5E0CC2e5Dd1c8F8750BAfC812"
+        "rollupAddress":"0xF8C694fd58360De278d5fF2276B7130Bfdc0192A"
     },
     "0x5":{
+        "token": "GoerliETH",
+        "label": "Goerli Test Network",
+        "rpcUrl": "https://eth-goerli.g.alchemy.com/v2/demo",
         "graphqlAPIURL" : "http://localhost:4000",
         "inspectAPIURL":"http://localhost:5005",
-        "rollupAddress":"0xbFAe82Eeb09d31bc3e636db3F379A05DE92CA882"
+        "rollupAddress":"0x"
+    },
+    "0x66EED":{
+        "token": "AGOR",
+        "label": "Arbitrum Goerli Test Network",
+        "rpcUrl": "https://goerli-rollup.arbitrum.io/rpc",
+        "graphqlAPIURL" : "http://localhost:4000",
+        "inspectAPIURL":"http://localhost:5005",
+        "rollupAddress":"0x"
     }
 }
