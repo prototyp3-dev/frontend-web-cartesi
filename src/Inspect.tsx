@@ -18,17 +18,12 @@ import { useRollups } from "./useRollups";
 import configFile from "./config.json";
 
 const config: any = configFile;
-// const inspecAddress: Record<string, any> = {
-//     "0x7a69": "http://localhost:5005/inspect", // local hardhat
-//     "0x13881": "http://localhost:5005/inspect", // polygon_mumbai,
-//     "0x5": "http://localhost:5005/inspect" // goerli,
-// };
 
 export const Inspect: React.FC = () => {
     const rollups = useRollups();
     const [{ connectedChain }] = useSetChain();
     const inspectCall = async (str: string) => {
-        const payload = str; //ethers.utils.hexlify(ethers.utils.toUtf8Bytes(str));
+        const payload = str;
 
         if (!connectedChain){
             return;

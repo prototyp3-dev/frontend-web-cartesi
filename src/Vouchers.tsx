@@ -10,8 +10,8 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 
-import { ethers } from "ethers";
-import React, { useEffect } from "react";
+import { BigNumberish, ethers } from "ethers";
+import React, { useEffect, useCallback } from "react";
 import { useVouchersQuery, useVoucherQuery } from "./generated/graphql";
 import { useRollups } from "./useRollups";
 import { OutputValidityProofStruct } from "@cartesi/rollups/dist/src/types/contracts/interfaces/IOutput";
@@ -23,6 +23,7 @@ type Voucher = {
     input: any, //{index: number; epoch: {index: number; }
     payload: string;
     proof: any;
+    executed: any;
 };
 
 export const Vouchers: React.FC = () => {
@@ -32,21 +33,32 @@ export const Vouchers: React.FC = () => {
         variables: { id: voucherIdToFetch }//, pause: !!voucherIdToFetch
     });
     const [voucherToExecute, setVoucherToExecute] = React.useState<any>();
+    const [executedVouchers, setExecutedVouchers] = React.useState<any>({});
     const { data, fetching, error } = result;
     const rollups = useRollups();
 
-    const getProof = (voucher: Voucher) => {
-        console.log("eita",voucherResult,rollups)
-        if (rollups) {
-            const filter = rollups.outputContract.filters.VoucherExecuted();
-            console.log(filter);
-            rollups.outputContract.queryFilter(filter).then( (d) => {
-                console.log(d);
-            })
-        }
+    const getProof = async (voucher: Voucher) => {
         setVoucherIdToFetch(voucher.id);
         reexecuteVoucherQuery({ requestPolicy: 'network-only' });
     };
+
+    const reloadExecutedList = useCallback(() => {
+        if (rollups) {
+            const filter = rollups.outputContract.filters.VoucherExecuted();
+            rollups.outputContract.queryFilter(filter).then( (d) => {
+                const execs: any = {};
+                for (const ev of d) {
+                    execs[ev.args.voucherPosition._hex] = true;
+                }
+                setExecutedVouchers(execs);
+            })
+        }
+    }, [rollups]);;
+
+    React.useEffect(() => {
+        if (!result.fetching) reloadExecutedList();
+    }, [result, reloadExecutedList]);
+
     const executeVoucher = async (voucher: any) => {
         if (rollups && !!voucher.proof) {
             const proof: OutputValidityProofStruct = {
@@ -58,7 +70,6 @@ export const Vouchers: React.FC = () => {
 
             const newVoucherToExecute = {...voucher};
             try {
-                // console.log(`Would check: ${JSON.stringify(proof)}`);
                 const tx = await rollups.outputContract.executeVoucher( voucher.destination,voucher.payload,proof);
                 const receipt = await tx.wait();
                 newVoucherToExecute.msg = `voucher executed! (tx="${tx.hash}")`;
@@ -69,15 +80,26 @@ export const Vouchers: React.FC = () => {
                 newVoucherToExecute.msg = `COULD NOT EXECUTE VOUCHER: ${JSON.stringify(e)}`;
             }
             setVoucherToExecute(newVoucherToExecute);
+            reloadExecutedList();
         }
     }
+
     useEffect( () => {
-        if (voucherResult && voucherResult.data){
-            setVoucherToExecute(voucherResult.data.voucher);
-            // executeVoucher(voucherResult.data.voucher);
-            // setVoucherIdToFetch('');
+        const getBitMaskPositionAndSetVoucher = async (voucher: any) => {
+            if (rollups) {
+                const bitMaskPosition: BigNumberish = 
+                    await rollups.outputContract.getBitMaskPosition(voucher.input.epoch.index, voucher.input.index, voucher.index);
+                if (executedVouchers[bitMaskPosition._hex]) {
+                    voucher.executed = true;
+                }
+            }
+            setVoucherToExecute(voucher);
         }
-    },[voucherResult, rollups]);
+    
+        if (!voucherResult.fetching && voucherResult.data){
+            getBitMaskPositionAndSetVoucher(voucherResult.data.voucher);
+        }
+    },[voucherResult, rollups, executedVouchers]);
 
     if (fetching) return <p>Loading...</p>;
     if (error) return <p>Oh no... {error.message}</p>;
@@ -90,7 +112,6 @@ export const Vouchers: React.FC = () => {
             const decoder = new ethers.utils.AbiCoder();
             const selector = decoder.decode(["bytes4"], payload)[0]; 
             payload = ethers.utils.hexDataSlice(payload,4);
-            console.log(selector)
             try {
                 switch(selector) { 
                     case '0xa9059cbb': { 
@@ -141,6 +162,7 @@ export const Vouchers: React.FC = () => {
             payload: `${payload}`,
             input: n?.input || {epoch:{}},
             proof: null,
+            executed: null,
         };
     }).sort((b: any, a: any) => {
         if (a.epoch === b.epoch) {
@@ -180,7 +202,7 @@ export const Vouchers: React.FC = () => {
                     <td>{voucherToExecute.id}</td>
                     <td>{voucherToExecute.destination}</td>
                     <td>
-                        <button disabled={!voucherToExecute.proof} onClick={() => executeVoucher(voucherToExecute)}>{voucherToExecute.proof ? "Execute voucher" : "No proof yet"}</button>
+                        <button disabled={!voucherToExecute.proof || voucherToExecute.executed} onClick={() => executeVoucher(voucherToExecute)}>{voucherToExecute.proof ? (voucherToExecute.executed ? "Voucher executed" : "Execute voucher") : "No proof yet"}</button>
                     </td>
                     {/* <td>{voucherToExecute.payload}</td> */}
                     {/* <td>{voucherToExecute.proof}</td> */}
