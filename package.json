@@ -3,7 +3,7 @@
     "version": "0.3.0",
     "private": true,
     "dependencies": {
-        "@cartesi/rollups": "^0.8.0",
+        "@cartesi/rollups": "^0.8.2",
         "@ethersproject/providers": "^5.6.0",
         "@testing-library/jest-dom": "^5.16.4",
         "@testing-library/react": "^13.2.0",
