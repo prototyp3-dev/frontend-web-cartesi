@@ -3,7 +3,7 @@
     "version": "0.3.0",
     "private": true,
     "dependencies": {
-        "@openzeppelin/contracts":"^4.8.3",
+        "@openzeppelin/contracts":"4.8.3",
         "@cartesi/rollups": "0.8.2",
         "@ethersproject/providers": "^5.6.0",
         "@testing-library/jest-dom": "^5.16.4",
@@ -31,7 +31,7 @@
         "xhr2-cookies": "^1.1.0",
         "nth-check":"2.0.1",
         "minimatch":"^3.0.5",
-        "request":"^2.88.2",
+        "request":"2.88.2",
         "yarn": "^1.22.18"
     },
     "scripts": {
