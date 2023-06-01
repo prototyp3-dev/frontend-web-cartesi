@@ -1,5 +1,9 @@
 # Cartesi frontend web
 
+```
+Cartesi Rollups version: 0.8.x
+```
+
 ## Features
 
 With this project you can test some interactions with the Cartesi Rollups project:

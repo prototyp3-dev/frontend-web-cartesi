@@ -36,7 +36,7 @@ export const Reports: React.FC = () => {
             try {
                 payload = ethers.utils.toUtf8String(payload);
             } catch (e) {
-                payload = payload + " (invalid)";
+                payload = payload + " (hex)";
             }
         } else {
             payload = "(empty)";
