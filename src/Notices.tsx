@@ -30,7 +30,18 @@ export const Notices: React.FC = () => {
 
     if (!data || !data.notices) return <p>No notices</p>;
 
-    const notices: Notice[] = data.notices.nodes.map((n: any) => {
+    const notices: Notice[] = data.notices.edges.map((node: any) => {
+        const n = node.node;
+        let inputPayload = n?.input.payload;
+        if (inputPayload) {
+            try {
+                inputPayload = ethers.utils.toUtf8String(inputPayload);
+            } catch (e) {
+                inputPayload = inputPayload + " (hex)";
+            }
+        } else {
+            inputPayload = "(empty)";
+        }
         let payload = n?.payload;
         if (payload) {
             try {
@@ -45,17 +56,13 @@ export const Notices: React.FC = () => {
             id: `${n?.id}`,
             index: parseInt(n?.index),
             payload: `${payload}`,
-            input: n?.input || {epoch:{}},
+            input: n ? {index:n.index,payload: inputPayload} : {},
         };
     }).sort((b: any, a: any) => {
-        if (a.epoch === b.epoch) {
-            if (a.input === b.input) {
-                return a.notice - b.notice;
-            } else {
-                return a.input - b.input;
-            }
+        if (a.input === b.input) {
+            return a.notice - b.notice;
         } else {
-            return a.epoch - b.epoch;
+            return a.input - b.input;
         }
     });
 
@@ -68,9 +75,9 @@ export const Notices: React.FC = () => {
             <table>
                 <thead>
                     <tr>
-                        <th>Epoch</th>
                         <th>Input Index</th>
                         <th>Notice Index</th>
+                        <th>Input Payload</th>
                         <th>Payload</th>
                     </tr>
                 </thead>
@@ -81,10 +88,10 @@ export const Notices: React.FC = () => {
                         </tr>
                     )}
                     {notices.map((n: any) => (
-                        <tr key={`${n.input.epoch.index}-${n.input.index}-${n.index}`}>
-                            <td>{n.input.epoch.index}</td>
+                        <tr key={`${n.input.index}-${n.index}`}>
                             <td>{n.input.index}</td>
                             <td>{n.index}</td>
+                            <td>{n.input.payload}</td>
                             <td>{n.payload}</td>
                         </tr>
                     ))}

@@ -30,7 +30,18 @@ export const Reports: React.FC = () => {
 
     if (!data || !data.reports) return <p>No reports</p>;
 
-    const reports: Report[] = data.reports.nodes.map((n: any) => {
+    const reports: Report[] = data.reports.edges.map((node: any) => {
+        const n = node.node;
+        let inputPayload = n?.input.payload;
+        if (inputPayload) {
+            try {
+                inputPayload = ethers.utils.toUtf8String(inputPayload);
+            } catch (e) {
+                inputPayload = inputPayload + " (hex)";
+            }
+        } else {
+            inputPayload = "(empty)";
+        }
         let payload = n?.payload;
         if (payload) {
             try {
@@ -45,7 +56,7 @@ export const Reports: React.FC = () => {
             id: `${n?.id}`,
             index: parseInt(n?.index),
             payload: `${payload}`,
-            input: n?.input || {epoch:{}},
+            input: n ? {index:n.index,payload: inputPayload} : {},
         };
     }).sort((b: any, a: any) => {
         if (a.epoch === b.epoch) {
@@ -68,9 +79,9 @@ export const Reports: React.FC = () => {
             <table>
                 <thead>
                     <tr>
-                        <th>Epoch</th>
                         <th>Input Index</th>
                         <th>Notice Index</th>
+                        <th>Input Payload</th>
                         <th>Payload</th>
                     </tr>
                 </thead>
@@ -81,10 +92,10 @@ export const Reports: React.FC = () => {
                         </tr>
                     )}
                     {reports.map((n: any) => (
-                        <tr key={`${n.input.epoch.index}-${n.input.index}-${n.index}`}>
-                            <td>{n.input.epoch.index}</td>
+                        <tr key={`${n.input.index}-${n.index}`}>
                             <td>{n.input.index}</td>
                             <td>{n.index}</td>
+                            <td>{n.input.payload}</td>
                             <td>{n.payload}</td>
                         </tr>
                     ))}

@@ -15,41 +15,39 @@ import { ethers } from "ethers";
 import { useSetChain, useWallets } from "@web3-onboard/react";
 
 import {
-    InputFacet,
-    InputFacet__factory,
-    OutputFacet,
-    OutputFacet__factory,
-    RollupsFacet,
-    RollupsFacet__factory,
-    ERC20PortalFacet,
-    ERC20PortalFacet__factory,
-    EtherPortalFacet,
-    EtherPortalFacet__factory,
+    CartesiDApp,
+    CartesiDApp__factory,
+    InputBox,
+    InputBox__factory,
+    EtherPortal,
+    EtherPortal__factory,
+    ERC20Portal,
+    ERC20Portal__factory,
+    DAppAddressRelay,
+    DAppAddressRelay__factory
 } from "./generated/rollups";
 import { ConnectedChain } from "@web3-onboard/core";
 
 import configFile from "./config.json";
+import { JsonRpcSigner } from "@ethersproject/providers";
 
 const config: any = configFile;
 
-// const rollupsAddress: Record<string, any> = {
-//     "0x7a69": "0xF119CC4Ed90379e5E0CC2e5Dd1c8F8750BAfC812", // local hardhat
-//     "0x13881": "0xe219A4Ee9e1dFD132ED9F8e38B3519368cC9494F", // polygon_mumbai,
-//     "0x5": "0xea055Bc7BC53A63E1C018Ceea5B6AddA75016064" // goerli,
-// };
 
 export interface RollupsContracts {
-    rollupsContract: RollupsFacet;
-    inputContract: InputFacet;
-    outputContract: OutputFacet;
-    erc20PortalContract: ERC20PortalFacet;
-    etherPortalContract: EtherPortalFacet;
+    dappContract: CartesiDApp;
+    signer: JsonRpcSigner;
+    realyContract: DAppAddressRelay;
+    inputContract: InputBox;
+    erc20PortalContract: ERC20Portal;
+    etherPortalContract: EtherPortal;
 }
 
-export const useRollups = (): RollupsContracts | undefined => {
+export const useRollups = (dAddress: string): RollupsContracts | undefined => {
     const [contracts, setContracts] = useState<RollupsContracts | undefined>();
     const [{ connectedChain }] = useSetChain();
     const [connectedWallet] = useWallets();
+    const [dappAddress] = useState<string>(dAddress);
 
     useEffect(() => {
         const connect = async (
@@ -58,53 +56,56 @@ export const useRollups = (): RollupsContracts | undefined => {
             const provider = new ethers.providers.Web3Provider(
                 connectedWallet.provider
             );
+            const signer = provider.getSigner();
 
-            let address = "0x0000000000000000000000000000000000000000"; //zero addr as placeholder
-            
-            if(config[chain.id]?.rollupAddress) {
-                address = config[chain.id].rollupAddress;
+            let dappRelayAddress = ""; //zero addr as placeholder
+            if(config[chain.id]?.DAppRelayAddress) {
+                dappRelayAddress = config[chain.id].DAppRelayAddress;
             } else {
-                console.error(`No rollup address interface defined for chain ${chain.id}`);
-                alert(`No rollup address interface defined for chain ${chain.id}`);
+                console.error(`No dapp relay address address defined for chain ${chain.id}`);
             }
 
-                
-            // rollups contract
-            const rollupsContract = RollupsFacet__factory.connect(
-                address,
-                provider.getSigner()
-            );
+            let inputBoxAddress = ""; //zero addr as placeholder
+            if(config[chain.id]?.InputBoxAddress) {
+                inputBoxAddress = config[chain.id].InputBoxAddress;
+            } else {
+                console.error(`No input box address address defined for chain ${chain.id}`);
+            }
+
+            let etherPortalAddress = ""; //zero addr as placeholder
+            if(config[chain.id]?.EtherPortalAddress) {
+                etherPortalAddress = config[chain.id].EtherPortalAddress;
+            } else {
+                console.error(`No ether portal address address defined for chain ${chain.id}`);
+            }
+
+            let erc20PortalAddress = ""; //zero addr as placeholder
+            if(config[chain.id]?.Erc20PortalAddress) {
+                erc20PortalAddress = config[chain.id].Erc20PortalAddress;
+            } else {
+                console.error(`No erc20 portal address address defined for chain ${chain.id}`);
+                alert(`No box erc20 portal address defined for chain ${chain.id}`);
+            }
+
+            // dapp contract 
+            const dappContract = CartesiDApp__factory.connect(dappAddress, signer);
+
+            // relay contract
+            const realyContract = DAppAddressRelay__factory.connect(dappRelayAddress, signer);
 
             // input contract
-            const inputContract = InputFacet__factory.connect(
-                address,
-                provider.getSigner()
-            );
+            const inputContract = InputBox__factory.connect(inputBoxAddress, signer);
             
-            const outputContract = OutputFacet__factory.connect(
-                address,
-                provider.getSigner()
-            );
+            // portals contracts
+            const erc20PortalContract = ERC20Portal__factory.connect(erc20PortalAddress, signer);
 
-            // const Web3 = require("web3");
-            // const web3 = new Web3(new Web3.providers.WebsocketProvider("http://localhost:8545"))
-            // const web3 = new Web3(Web3.givenProvider || "http://localhost:8545");
-
-            // output contract
-            const erc20PortalContract = ERC20PortalFacet__factory.connect(
-                address,
-                provider.getSigner()
-            );
-
-            const etherPortalContract = EtherPortalFacet__factory.connect(
-                address,
-                provider.getSigner()
-            );
+            const etherPortalContract = EtherPortal__factory.connect(etherPortalAddress, signer);
 
             return {
-                rollupsContract,
+                dappContract,
+                signer,
+                realyContract,
                 inputContract,
-                outputContract,
                 erc20PortalContract,
                 etherPortalContract,
             };
@@ -114,6 +115,6 @@ export const useRollups = (): RollupsContracts | undefined => {
                 setContracts(contracts);
             });
         }
-    }, [connectedWallet, connectedChain]);
+    }, [connectedWallet, connectedChain, dappAddress]);
     return contracts;
 };

@@ -10,11 +10,10 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 
-import { BigNumberish, ethers } from "ethers";
-import React, { useEffect, useCallback } from "react";
+import { ethers } from "ethers";
+import React, { useEffect } from "react";
 import { useVouchersQuery, useVoucherQuery } from "./generated/graphql";
 import { useRollups } from "./useRollups";
-import { OutputValidityProofStruct } from "@cartesi/rollups/dist/src/types/contracts/interfaces/IOutput";
 
 type Voucher = {
     id: string;
@@ -26,88 +25,79 @@ type Voucher = {
     executed: any;
 };
 
-export const Vouchers: React.FC = () => {
+interface IVoucherPropos {
+    dappAddress: string 
+}
+
+export const Vouchers: React.FC<IVoucherPropos> = (propos) => {
     const [result,reexecuteQuery] = useVouchersQuery();
-    const [voucherIdToFetch, setVoucherIdToFetch] = React.useState(String(null));
+    const [voucherToFetch, setVoucherToFetch] = React.useState([0,0]);
     const [voucherResult,reexecuteVoucherQuery] = useVoucherQuery({
-        variables: { id: voucherIdToFetch }//, pause: !!voucherIdToFetch
+        variables: { voucherIndex: voucherToFetch[0], inputIndex: voucherToFetch[1] }//, pause: !!voucherIdToFetch
     });
     const [voucherToExecute, setVoucherToExecute] = React.useState<any>();
-    const [executedVouchers, setExecutedVouchers] = React.useState<any>({});
     const { data, fetching, error } = result;
-    const rollups = useRollups();
+    const rollups = useRollups(propos.dappAddress);
 
     const getProof = async (voucher: Voucher) => {
-        setVoucherIdToFetch(voucher.id);
+        setVoucherToFetch([voucher.index,voucher.input.index]);
         reexecuteVoucherQuery({ requestPolicy: 'network-only' });
     };
 
-    const reloadExecutedList = useCallback(() => {
-        if (rollups) {
-            const filter = rollups.outputContract.filters.VoucherExecuted();
-            rollups.outputContract.queryFilter(filter).then( (d) => {
-                const execs: any = {};
-                for (const ev of d) {
-                    execs[ev.args.voucherPosition._hex] = true;
-                }
-                setExecutedVouchers(execs);
-            })
-        }
-    }, [rollups]);;
-
-    React.useEffect(() => {
-        if (!result.fetching) reloadExecutedList();
-    }, [result, reloadExecutedList]);
-
     const executeVoucher = async (voucher: any) => {
         if (rollups && !!voucher.proof) {
-            const proof: OutputValidityProofStruct = {
-                ...voucher.proof,
-                epochIndex: voucher.input.epoch.index,
-                inputIndex: voucher.input.index,
-                outputIndex: voucher.index,
-            };
 
             const newVoucherToExecute = {...voucher};
             try {
-                const tx = await rollups.outputContract.executeVoucher( voucher.destination,voucher.payload,proof);
+                const tx = await rollups.dappContract.executeVoucher( voucher.destination,voucher.payload,voucher.proof);
                 const receipt = await tx.wait();
+                console.log(tx,receipt);
                 newVoucherToExecute.msg = `voucher executed! (tx="${tx.hash}")`;
                 if (receipt.events) {
                     newVoucherToExecute.msg = `${newVoucherToExecute.msg} - resulting events: ${JSON.stringify(receipt.events)}`;
+                    console.log(`MSG ${newVoucherToExecute.msg} - resulting events: ${JSON.stringify(receipt.events)}`);
                 }
             } catch (e) {
                 newVoucherToExecute.msg = `COULD NOT EXECUTE VOUCHER: ${JSON.stringify(e)}`;
+                console.log(`COULD NOT EXECUTE VOUCHER: ${JSON.stringify(e)}`);
             }
             setVoucherToExecute(newVoucherToExecute);
-            reloadExecutedList();
         }
     }
 
     useEffect( () => {
-        const getBitMaskPositionAndSetVoucher = async (voucher: any) => {
+        const getExecutedAndSetVoucher = async (voucher: any) => {
             if (rollups) {
-                const bitMaskPosition: BigNumberish = 
-                    await rollups.outputContract.getBitMaskPosition(voucher.input.epoch.index, voucher.input.index, voucher.index);
-                if (executedVouchers[bitMaskPosition._hex]) {
-                    voucher.executed = true;
-                }
+                console.log("voucher",voucher)
+                rollups.dappContract.wasVoucherExecuted(voucher.inputIndex,voucher.outputIndex);
+                voucher.executed = false;
             }
             setVoucherToExecute(voucher);
         }
     
         if (!voucherResult.fetching && voucherResult.data){
-            getBitMaskPositionAndSetVoucher(voucherResult.data.voucher);
+            getExecutedAndSetVoucher(voucherResult.data.voucher);
         }
-    },[voucherResult, rollups, executedVouchers]);
+    },[voucherResult, rollups]);
 
     if (fetching) return <p>Loading...</p>;
     if (error) return <p>Oh no... {error.message}</p>;
 
     if (!data || !data.vouchers) return <p>No vouchers</p>;
 
-    const vouchers: Voucher[] = data.vouchers.nodes.map((n: any) => {
+    const vouchers: Voucher[] = data.vouchers.edges.map((node: any) => {
+        const n = node.node;
         let payload = n?.payload;
+        let inputPayload = n?.input.payload;
+        if (inputPayload) {
+            try {
+                inputPayload = ethers.utils.toUtf8String(inputPayload);
+            } catch (e) {
+                inputPayload = inputPayload + " (hex)";
+            }
+        } else {
+            inputPayload = "(empty)";
+        }
         if (payload) {
             const decoder = new ethers.utils.AbiCoder();
             const selector = decoder.decode(["bytes4"], payload)[0]; 
@@ -160,19 +150,15 @@ export const Vouchers: React.FC = () => {
             index: parseInt(n?.index),
             destination: `${n?.destination ?? ""}`,
             payload: `${payload}`,
-            input: n?.input || {epoch:{}},
+            input: n ? {index:n.index,payload: inputPayload} : {},
             proof: null,
             executed: null,
         };
     }).sort((b: any, a: any) => {
-        if (a.epoch === b.epoch) {
-            if (a.input === b.input) {
-                return a.voucher - b.voucher;
-            } else {
-                return a.input - b.input;
-            }
+        if (a.input === b.input) {
+            return a.voucher - b.voucher;
         } else {
-            return a.epoch - b.epoch;
+            return a.input - b.input;
         }
     });
 
@@ -183,7 +169,6 @@ export const Vouchers: React.FC = () => {
         {voucherToExecute ? <table>
             <thead>
                 <tr>
-                    <th>Epoch</th>
                     <th>Input Index</th>
                     <th>Voucher Index</th>
                     <th>Voucher Id</th>
@@ -191,12 +176,12 @@ export const Vouchers: React.FC = () => {
                     <th>Action</th>
                     {/* <th>Payload</th> */}
                     {/* <th>Proof</th> */}
+                    <th>Input Payload</th>
                     <th>Msg</th>
                 </tr>
             </thead>
             <tbody>
-                <tr key={`${voucherToExecute.input.epoch.index}-${voucherToExecute.input.index}-${voucherToExecute.index}`}>
-                    <td>{voucherToExecute.input.epoch.index}</td>
+                <tr key={`${voucherToExecute.input.index}-${voucherToExecute.index}`}>
                     <td>{voucherToExecute.input.index}</td>
                     <td>{voucherToExecute.index}</td>
                     <td>{voucherToExecute.id}</td>
@@ -206,6 +191,7 @@ export const Vouchers: React.FC = () => {
                     </td>
                     {/* <td>{voucherToExecute.payload}</td> */}
                     {/* <td>{voucherToExecute.proof}</td> */}
+                    <td>{voucherToExecute.input.payload}</td>
                     <td>{voucherToExecute.msg}</td>
                 </tr>
             </tbody>
@@ -216,12 +202,12 @@ export const Vouchers: React.FC = () => {
             <table>
                 <thead>
                     <tr>
-                        <th>Epoch</th>
                         <th>Input Index</th>
                         <th>Voucher Index</th>
                         <th>Voucher Id</th>
                         <th>Destination</th>
                         <th>Action</th>
+                        <th>Input Payload</th>
                         <th>Payload</th>
                         {/* <th>Proof</th> */}
                     </tr>
@@ -233,8 +219,7 @@ export const Vouchers: React.FC = () => {
                         </tr>
                     )}
                     {vouchers.map((n: any) => (
-                        <tr key={`${n.input.epoch.index}-${n.input.index}-${n.index}`}>
-                            <td>{n.input.epoch.index}</td>
+                        <tr key={`${n.input.index}-${n.index}`}>
                             <td>{n.input.index}</td>
                             <td>{n.index}</td>
                             <td>{n.id}</td>
@@ -242,6 +227,7 @@ export const Vouchers: React.FC = () => {
                             <td>
                                 <button onClick={() => getProof(n)}>Get Proof</button>
                             </td>
+                            <td>{n.input.payload}</td>
                             <td>{n.payload}</td>
                             {/* <td>
                                 <button disabled={!!n.proof} onClick={() => executeVoucher(n)}>Execute voucher</button>

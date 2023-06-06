@@ -16,82 +16,100 @@ import { useRollups } from "./useRollups";
 import { useWallets } from "@web3-onboard/react";
 import { IERC20__factory } from "./generated/rollups";
 
+interface IInputPropos {
+    dappAddress: string 
+}
 
-export const Input: React.FC = () => {
-    const rollups = useRollups();
+export const Input: React.FC<IInputPropos> = (propos) => {
+    const rollups = useRollups(propos.dappAddress);
     const [connectedWallet] = useWallets();
     const provider = new ethers.providers.Web3Provider(
         connectedWallet.provider
     );
 
+    const sendAddress = async (str: string) => {
+        console.log(rollups);
+        if (rollups) {
+            rollups.realyContract.relayDAppAddress(rollups.dappContract.address);
+        }
+    };
+
     const addInput = async (str: string) => {
         console.log(rollups);
         if (rollups) {
-            rollups.inputContract.addInput(ethers.utils.toUtf8Bytes(str));
+            rollups.inputContract.addInput(rollups.dappContract.address, ethers.utils.toUtf8Bytes(str));
         }
     };
+
     const depositErc20ToPortal = async (token: string,amount: number) => {
         console.log(rollups);
-        if (rollups) {
+        if (rollups && provider) {
             const data = ethers.utils.toUtf8Bytes(`Deposited (${amount}) of ERC20 (${token}).`);
             //const data = `Deposited ${args.amount} tokens (${args.token}) for DAppERC20Portal(${portalAddress}) (signer: ${address})`;
             const signer = provider.getSigner();
             const signerAddress = await signer.getAddress()
 
-            const portalAddress = rollups.erc20PortalContract.address;
-            const tokenContract = signer ? IERC20__factory.connect(token, signer) : IERC20__factory.connect(token, provider) ;
-            const signerBalance = await tokenContract.balanceOf(signerAddress);
+            const erc20PortalAddress = rollups.erc20PortalContract.address;
+            const tokenContract = signer ? IERC20__factory.connect(token, signer) : IERC20__factory.connect(token, provider);
 
             // query current allowance
-            const currentAllowance = await tokenContract.allowance(signerAddress, portalAddress);
-            if (signerBalance > currentAllowance) {
-                // Allow bank to withdraw `amount` tokens from signer
-                const tx = await tokenContract.approve(portalAddress, ethers.utils.parseEther(`${amount}`));
+            const currentAllowance = await tokenContract.allowance(signerAddress, erc20PortalAddress);
+            if (ethers.utils.parseEther(`${amount}`) > currentAllowance) {
+                // Allow portal to withdraw `amount` tokens from signer
+                const tx = await tokenContract.approve(erc20PortalAddress, ethers.utils.parseEther(`${amount}`));
                 const receipt = await tx.wait(1);
                 const event = (await tokenContract.queryFilter(tokenContract.filters.Approval(), receipt.blockHash)).pop();
                 if (!event) {
-                    throw Error(`could not approve ${amount} tokens for DAppERC20Portal(${portalAddress})  (signer: ${signerAddress}, tx: ${tx.hash})`);
+                    throw Error(`could not approve ${amount} tokens for DAppERC20Portal(${erc20PortalAddress})  (signer: ${signerAddress}, tx: ${tx.hash})`);
                 }
             }
 
-            rollups.erc20PortalContract.erc20Deposit(token,ethers.utils.parseEther(`${amount}`),data);
+            rollups.erc20PortalContract.depositERC20Tokens(token,rollups.dappContract.address,ethers.utils.parseEther(`${amount}`),data);
         }
     };
+
     const depositEtherToPortal = async (amount: number) => {
-        if (rollups) {
+        if (rollups && provider) {
             const data = ethers.utils.toUtf8Bytes(`Deposited (${amount}) ether.`);
             const txOverrides = {value: ethers.utils.parseEther(`${amount}`)}
 
             // const tx = await ...
-            rollups.etherPortalContract.etherDeposit(data,txOverrides);
+            rollups.etherPortalContract.depositEther(rollups.dappContract.address,data,txOverrides);
         }
     };
 
     const transferNftToPortal = async (contractAddress: string,nftid: number) => {
         if (rollups) {
-            const receiverAddress = rollups.rollupsContract.address;
+            const receiverAddress = rollups.dappContract.address;
 
-            const nftAbi = ["function safeTransferFrom( address from, address to, uint256 tokenId) external;"];
+            const nftAbi = ["function safeTransferFrom(address from, address to, uint256 tokenId) external;"];
 
             // Get contract
             const nftContractReadonly = new ethers.Contract(contractAddress, nftAbi, provider);
             // Connecting with a signer allows you to use all the methods of the contract
             
-            const nftContract = nftContractReadonly.connect(rollups.rollupsContract.signer);
+            const nftContract = nftContractReadonly.connect(rollups.signer);
 
             // Transfer
-            nftContract.safeTransferFrom(await rollups.rollupsContract.signer.getAddress(), receiverAddress, nftid);
+            nftContract.safeTransferFrom(await rollups.signer.getAddress(), receiverAddress, nftid);
         }
     };
     const [input, setInput] = useState<string>("");
     const [erc20Amount, setErc20Amount] = useState<number>(0);
-    const [erc20Token, setErc20Token] = useState<string>("0x610178dA211FEF7D417bC0e6FeD39F05609AD788");
+    const [erc20Token, setErc20Token] = useState<string>("");
     const [erc721Id, setErc721Id] = useState<number>(0);
     const [erc721, setErc721] = useState<string>("");
     const [etherAmount, setEtherAmount] = useState<number>(0);
 
     return (
         <div>
+            <div>
+                Send Address (send relay dapp address) <br />
+                <button onClick={() => sendAddress(input)} disabled={!rollups}>
+                    Send
+                </button>
+                <br /><br />
+            </div>
             <div>
                 Send Input <br />
                 Input: <input

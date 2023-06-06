@@ -3,9 +3,15 @@
         "token": "ETH",
         "label": "localhost",
         "rpcUrl": "http://localhost:8545",
-        "graphqlAPIURL" : "http://localhost:4000",
-        "inspectAPIURL":"http://localhost:5005",
-        "rollupAddress":"0xF8C694fd58360De278d5fF2276B7130Bfdc0192A"
+        "graphqlAPIURL" : "http://localhost:8080",
+        "inspectAPIURL":"http://localhost:8080",
+        "DAppRelayAddress":"0x8Bbc0e6daB541DF0A9f0bDdA5D41B3B08B081d55",
+        "InputBoxAddress":"0x5a723220579C0DCb8C9253E6b4c62e572E379945",
+        "EtherPortalAddress":"0xA89A3216F46F66486C9B794C1e28d3c44D59591e",
+        "Erc20PortalAddress":"0x4340ac4FcdFC5eF8d34930C96BBac2Af1301DF40",
+        "Erc721PortalAddress":"0x4CA354590EB934E6094Be762b38dE75d1Dd605a9",
+        "Erc1155SinglePortalAddress":"",
+        "Erc1155BatchPortalAddress":""
     },
     "0x5":{
         "token": "GoerliETH",
@@ -13,7 +19,27 @@
         "rpcUrl": "https://eth-goerli.g.alchemy.com/v2/demo",
         "graphqlAPIURL" : "http://localhost:4000",
         "inspectAPIURL":"http://localhost:5005",
-        "rollupAddress":"0x"
+        "DAppRelayAddress":"0x8Bbc0e6daB541DF0A9f0bDdA5D41B3B08B081d55",
+        "InputBoxAddress":"0x5a723220579C0DCb8C9253E6b4c62e572E379945",
+        "EtherPortalAddress":"0xA89A3216F46F66486C9B794C1e28d3c44D59591e",
+        "Erc20PortalAddress":"0x4340ac4FcdFC5eF8d34930C96BBac2Af1301DF40",
+        "Erc721PortalAddress":"0x4CA354590EB934E6094Be762b38dE75d1Dd605a9",
+        "Erc1155SinglePortalAddress":"0x",
+        "Erc1155BatchPortalAddress":"0x"
+    },
+    "0xAA36A7":{
+        "token": "SepETH",
+        "label": "Sepolia Test Network",
+        "rpcUrl": "https://eth-goerli.g.alchemy.com/v2/demo",
+        "graphqlAPIURL" : "http://localhost:4000",
+        "inspectAPIURL":"http://localhost:5005",
+        "DAppRelayAddress":"0x8Bbc0e6daB541DF0A9f0bDdA5D41B3B08B081d55",
+        "InputBoxAddress":"0x5a723220579C0DCb8C9253E6b4c62e572E379945",
+        "EtherPortalAddress":"0xA89A3216F46F66486C9B794C1e28d3c44D59591e",
+        "Erc20PortalAddress":"0x4340ac4FcdFC5eF8d34930C96BBac2Af1301DF40",
+        "Erc721PortalAddress":"0x4CA354590EB934E6094Be762b38dE75d1Dd605a9",
+        "Erc1155SinglePortalAddress":"0x",
+        "Erc1155BatchPortalAddress":"0x"
     },
     "0x66eed":{
         "token": "AGOR",
@@ -21,6 +47,12 @@
         "rpcUrl": "https://goerli-rollup.arbitrum.io/rpc",
         "graphqlAPIURL" : "http://localhost:4000",
         "inspectAPIURL":"http://localhost:5005",
-        "rollupAddress":"0x"
+        "DAppRelayAddress":"0x8Bbc0e6daB541DF0A9f0bDdA5D41B3B08B081d55",
+        "InputBoxAddress":"0x5a723220579C0DCb8C9253E6b4c62e572E379945",
+        "EtherPortalAddress":"0xA89A3216F46F66486C9B794C1e28d3c44D59591e",
+        "Erc20PortalAddress":"0x4340ac4FcdFC5eF8d34930C96BBac2Af1301DF40",
+        "Erc721PortalAddress":"0x4CA354590EB934E6094Be762b38dE75d1Dd605a9",
+        "Erc1155SinglePortalAddress":"0x",
+        "Erc1155BatchPortalAddress":"0x"
     }
 }

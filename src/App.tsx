@@ -13,6 +13,7 @@
 import { FC } from "react";
 import injectedModule from "@web3-onboard/injected-wallets";
 import { init } from "@web3-onboard/react";
+import { useState } from "react";
 
 import { GraphQLProvider } from "./GraphQL";
 import { Notices } from "./Notices";
@@ -40,20 +41,30 @@ init({
 });
 
 const App: FC = () => {
+    const [dappAddress, setDappAddress] = useState<string>("0x142105FC8dA71191b3a13C738Ba0cF4BC33325e2");
+
     return (
         <div>
             <Network />
             <GraphQLProvider>
+                <div>
+                    Dapp Address: <input
+                        type="text"
+                        value={dappAddress}
+                        onChange={(e) => setDappAddress(e.target.value)}
+                    />
+                    <br /><br />
+                </div>
                 <h2>Inspect</h2>
                 <Inspect />
                 <h2>Input</h2>
-                <Input />
+                <Input dappAddress={dappAddress} />
                 <h2>Notices</h2>
                 <Notices />
                 <h2>Reports</h2>
                 <Reports />
                 <h2>Vouchers</h2>
-                <Vouchers />
+                <Vouchers dappAddress={dappAddress} />
             </GraphQLProvider>
         </div>
     );

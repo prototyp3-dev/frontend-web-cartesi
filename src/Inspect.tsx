@@ -13,14 +13,14 @@
 import React, { useState } from "react";
 import { useSetChain } from "@web3-onboard/react";
 import { ethers } from "ethers";
-import { useRollups } from "./useRollups";
+// import { useRollups } from "./useRollups";
 
 import configFile from "./config.json";
 
 const config: any = configFile;
 
 export const Inspect: React.FC = () => {
-    const rollups = useRollups();
+    // const rollups = useRollups();
     const [{ connectedChain }] = useSetChain();
     const inspectCall = async (str: string) => {
         const payload = str;
@@ -57,7 +57,7 @@ export const Inspect: React.FC = () => {
                     value={inspectData}
                     onChange={(e) => setInspectData(e.target.value)}
                 />
-                <button onClick={() => inspectCall(inspectData)} disabled={!rollups}>
+                <button onClick={() => inspectCall(inspectData)}>
                     Send
                 </button>
             </div>
