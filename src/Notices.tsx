@@ -56,13 +56,13 @@ export const Notices: React.FC = () => {
             id: `${n?.id}`,
             index: parseInt(n?.index),
             payload: `${payload}`,
-            input: n ? {index:n.index,payload: inputPayload} : {},
+            input: n ? {index:n.input.index,payload: inputPayload} : {},
         };
     }).sort((b: any, a: any) => {
-        if (a.input === b.input) {
-            return a.notice - b.notice;
+        if (a.input.index === b.input.index) {
+            return b.index - a.index;
         } else {
-            return a.input - b.input;
+            return b.input.index - a.input.index;
         }
     });
 
@@ -77,7 +77,7 @@ export const Notices: React.FC = () => {
                     <tr>
                         <th>Input Index</th>
                         <th>Notice Index</th>
-                        <th>Input Payload</th>
+                        {/* <th>Input Payload</th> */}
                         <th>Payload</th>
                     </tr>
                 </thead>
@@ -91,7 +91,7 @@ export const Notices: React.FC = () => {
                         <tr key={`${n.input.index}-${n.index}`}>
                             <td>{n.input.index}</td>
                             <td>{n.index}</td>
-                            <td>{n.input.payload}</td>
+                            {/* <td>{n.input.payload}</td> */}
                             <td>{n.payload}</td>
                         </tr>
                     ))}

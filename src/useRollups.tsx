@@ -23,6 +23,8 @@ import {
     EtherPortal__factory,
     ERC20Portal,
     ERC20Portal__factory,
+    ERC721Portal,
+    ERC721Portal__factory,
     DAppAddressRelay,
     DAppAddressRelay__factory
 } from "./generated/rollups";
@@ -39,8 +41,9 @@ export interface RollupsContracts {
     signer: JsonRpcSigner;
     realyContract: DAppAddressRelay;
     inputContract: InputBox;
-    erc20PortalContract: ERC20Portal;
     etherPortalContract: EtherPortal;
+    erc20PortalContract: ERC20Portal;
+    erc721PortalContract: ERC721Portal;
 }
 
 export const useRollups = (dAddress: string): RollupsContracts | undefined => {
@@ -58,28 +61,28 @@ export const useRollups = (dAddress: string): RollupsContracts | undefined => {
             );
             const signer = provider.getSigner();
 
-            let dappRelayAddress = ""; //zero addr as placeholder
+            let dappRelayAddress = "";
             if(config[chain.id]?.DAppRelayAddress) {
                 dappRelayAddress = config[chain.id].DAppRelayAddress;
             } else {
                 console.error(`No dapp relay address address defined for chain ${chain.id}`);
             }
 
-            let inputBoxAddress = ""; //zero addr as placeholder
+            let inputBoxAddress = "";
             if(config[chain.id]?.InputBoxAddress) {
                 inputBoxAddress = config[chain.id].InputBoxAddress;
             } else {
                 console.error(`No input box address address defined for chain ${chain.id}`);
             }
 
-            let etherPortalAddress = ""; //zero addr as placeholder
+            let etherPortalAddress = "";
             if(config[chain.id]?.EtherPortalAddress) {
                 etherPortalAddress = config[chain.id].EtherPortalAddress;
             } else {
                 console.error(`No ether portal address address defined for chain ${chain.id}`);
             }
 
-            let erc20PortalAddress = ""; //zero addr as placeholder
+            let erc20PortalAddress = "";
             if(config[chain.id]?.Erc20PortalAddress) {
                 erc20PortalAddress = config[chain.id].Erc20PortalAddress;
             } else {
@@ -87,6 +90,13 @@ export const useRollups = (dAddress: string): RollupsContracts | undefined => {
                 alert(`No box erc20 portal address defined for chain ${chain.id}`);
             }
 
+            let erc721PortalAddress = "";
+            if(config[chain.id]?.Erc721PortalAddress) {
+                erc721PortalAddress = config[chain.id].Erc721PortalAddress;
+            } else {
+                console.error(`No erc721 portal address address defined for chain ${chain.id}`);
+                alert(`No box erc721 portal address defined for chain ${chain.id}`);
+            }
             // dapp contract 
             const dappContract = CartesiDApp__factory.connect(dappAddress, signer);
 
@@ -97,17 +107,20 @@ export const useRollups = (dAddress: string): RollupsContracts | undefined => {
             const inputContract = InputBox__factory.connect(inputBoxAddress, signer);
             
             // portals contracts
+            const etherPortalContract = EtherPortal__factory.connect(etherPortalAddress, signer);
+
             const erc20PortalContract = ERC20Portal__factory.connect(erc20PortalAddress, signer);
 
-            const etherPortalContract = EtherPortal__factory.connect(etherPortalAddress, signer);
+            const erc721PortalContract = ERC721Portal__factory.connect(erc721PortalAddress, signer);
 
             return {
                 dappContract,
                 signer,
                 realyContract,
                 inputContract,
-                erc20PortalContract,
                 etherPortalContract,
+                erc20PortalContract,
+                erc721PortalContract,
             };
         };
         if (connectedWallet?.provider && connectedChain) {

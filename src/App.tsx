@@ -59,10 +59,10 @@ const App: FC = () => {
                 <Inspect />
                 <h2>Input</h2>
                 <Input dappAddress={dappAddress} />
-                <h2>Notices</h2>
-                <Notices />
                 <h2>Reports</h2>
                 <Reports />
+                <h2>Notices</h2>
+                <Notices />
                 <h2>Vouchers</h2>
                 <Vouchers dappAddress={dappAddress} />
             </GraphQLProvider>

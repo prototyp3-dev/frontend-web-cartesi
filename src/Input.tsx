@@ -14,7 +14,7 @@ import React, { useState } from "react";
 import { ethers } from "ethers";
 import { useRollups } from "./useRollups";
 import { useWallets } from "@web3-onboard/react";
-import { IERC20__factory } from "./generated/rollups";
+import { IERC20__factory, IERC721__factory } from "./generated/rollups";
 
 interface IInputPropos {
     dappAddress: string 
@@ -28,21 +28,18 @@ export const Input: React.FC<IInputPropos> = (propos) => {
     );
 
     const sendAddress = async (str: string) => {
-        console.log(rollups);
         if (rollups) {
             rollups.realyContract.relayDAppAddress(rollups.dappContract.address);
         }
     };
 
     const addInput = async (str: string) => {
-        console.log(rollups);
         if (rollups) {
             rollups.inputContract.addInput(rollups.dappContract.address, ethers.utils.toUtf8Bytes(str));
         }
     };
 
     const depositErc20ToPortal = async (token: string,amount: number) => {
-        console.log(rollups);
         if (rollups && provider) {
             const data = ethers.utils.toUtf8Bytes(`Deposited (${amount}) of ERC20 (${token}).`);
             //const data = `Deposited ${args.amount} tokens (${args.token}) for DAppERC20Portal(${portalAddress}) (signer: ${address})`;
@@ -79,19 +76,30 @@ export const Input: React.FC<IInputPropos> = (propos) => {
     };
 
     const transferNftToPortal = async (contractAddress: string,nftid: number) => {
-        if (rollups) {
-            const receiverAddress = rollups.dappContract.address;
+        if (rollups && provider) {
+            const data = ethers.utils.toUtf8Bytes(`Deposited (${nftid}) of ERC721 (${contractAddress}).`);
+            //const data = `Deposited ${args.amount} tokens (${args.token}) for DAppERC20Portal(${portalAddress}) (signer: ${address})`;
+            const signer = provider.getSigner();
+            const signerAddress = await signer.getAddress()
 
-            const nftAbi = ["function safeTransferFrom(address from, address to, uint256 tokenId) external;"];
+            const erc721PortalAddress = rollups.erc721PortalContract.address;
 
-            // Get contract
-            const nftContractReadonly = new ethers.Contract(contractAddress, nftAbi, provider);
-            // Connecting with a signer allows you to use all the methods of the contract
-            
-            const nftContract = nftContractReadonly.connect(rollups.signer);
+            const tokenContract = signer ? IERC721__factory.connect(contractAddress, signer) : IERC721__factory.connect(contractAddress, provider);
+
+            // query current approval
+            const currentApproval = await tokenContract.getApproved(nftid);
+            if (currentApproval !== erc721PortalAddress) {
+                // Allow portal to withdraw `amount` tokens from signer
+                const tx = await tokenContract.approve(erc721PortalAddress, nftid);
+                const receipt = await tx.wait(1);
+                const event = (await tokenContract.queryFilter(tokenContract.filters.Approval(), receipt.blockHash)).pop();
+                if (!event) {
+                    throw Error(`could not approve ${nftid} for DAppERC721Portal(${erc721PortalAddress})  (signer: ${signerAddress}, tx: ${tx.hash})`);
+                }
+            }
 
             // Transfer
-            nftContract.safeTransferFrom(await rollups.signer.getAddress(), receiverAddress, nftid);
+            rollups.erc721PortalContract.depositERC721Token(contractAddress,rollups.dappContract.address, nftid, "0x", data);
         }
     };
     const [input, setInput] = useState<string>("");

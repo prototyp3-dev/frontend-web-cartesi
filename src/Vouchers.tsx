@@ -10,7 +10,7 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 
-import { ethers } from "ethers";
+import { BigNumber, ethers } from "ethers";
 import React, { useEffect } from "react";
 import { useVouchersQuery, useVoucherQuery } from "./generated/graphql";
 import { useRollups } from "./useRollups";
@@ -51,11 +51,10 @@ export const Vouchers: React.FC<IVoucherPropos> = (propos) => {
             try {
                 const tx = await rollups.dappContract.executeVoucher( voucher.destination,voucher.payload,voucher.proof);
                 const receipt = await tx.wait();
-                console.log(tx,receipt);
                 newVoucherToExecute.msg = `voucher executed! (tx="${tx.hash}")`;
                 if (receipt.events) {
                     newVoucherToExecute.msg = `${newVoucherToExecute.msg} - resulting events: ${JSON.stringify(receipt.events)}`;
-                    console.log(`MSG ${newVoucherToExecute.msg} - resulting events: ${JSON.stringify(receipt.events)}`);
+                    newVoucherToExecute.executed = await rollups.dappContract.wasVoucherExecuted(BigNumber.from(voucher.input.index),BigNumber.from(voucher.index));
                 }
             } catch (e) {
                 newVoucherToExecute.msg = `COULD NOT EXECUTE VOUCHER: ${JSON.stringify(e)}`;
@@ -66,17 +65,15 @@ export const Vouchers: React.FC<IVoucherPropos> = (propos) => {
     }
 
     useEffect( () => {
-        const getExecutedAndSetVoucher = async (voucher: any) => {
+        const setVoucher = async (voucher: any) => {
             if (rollups) {
-                console.log("voucher",voucher)
-                rollups.dappContract.wasVoucherExecuted(voucher.inputIndex,voucher.outputIndex);
-                voucher.executed = false;
+                voucher.executed = await rollups.dappContract.wasVoucherExecuted(BigNumber.from(voucher.input.index),BigNumber.from(voucher.index));
             }
             setVoucherToExecute(voucher);
         }
     
         if (!voucherResult.fetching && voucherResult.data){
-            getExecutedAndSetVoucher(voucherResult.data.voucher);
+            setVoucher(voucherResult.data.voucher);
         }
     },[voucherResult, rollups]);
 
@@ -116,10 +113,9 @@ export const Vouchers: React.FC<IVoucherPropos> = (propos) => {
                         payload = `Erc721 Transfer - Id: ${decode[2]} - Address: ${decode[1]}`;
                         break; 
                     }
-                    case '0x74956b94': { 
+                    case '0x522f6815': { 
                         //ether transfer; 
-                        const decode = decoder.decode(["bytes"], payload)
-                        const decode2 = decoder.decode(["address", "uint256"], decode[0])
+                        const decode2 = decoder.decode(["address", "uint256"], payload)
                         payload = `Ether Transfer - Amount: ${ethers.utils.formatEther(decode2[1])} (Native eth) - Address: ${decode2[0]}`;
                         break; 
                     }
@@ -131,6 +127,12 @@ export const Vouchers: React.FC<IVoucherPropos> = (propos) => {
                     }
                     case '0x755edd17': { 
                         //erc721 mintTo;
+                        const decode = decoder.decode(["address"], payload);
+                        payload = `Mint Erc721 - Address: ${decode[0]}`;
+                        break; 
+                    }
+                    case '0x6a627842': { 
+                        //erc721 mint;
                         const decode = decoder.decode(["address"], payload);
                         payload = `Mint Erc721 - Address: ${decode[0]}`;
                         break; 
@@ -150,15 +152,15 @@ export const Vouchers: React.FC<IVoucherPropos> = (propos) => {
             index: parseInt(n?.index),
             destination: `${n?.destination ?? ""}`,
             payload: `${payload}`,
-            input: n ? {index:n.index,payload: inputPayload} : {},
+            input: n ? {index:n.input.index,payload: inputPayload} : {},
             proof: null,
             executed: null,
         };
     }).sort((b: any, a: any) => {
-        if (a.input === b.input) {
-            return a.voucher - b.voucher;
+        if (a.input.index === b.input.index) {
+            return b.index - a.index;
         } else {
-            return a.input - b.input;
+            return b.input.index - a.input.index;
         }
     });
 
@@ -171,7 +173,6 @@ export const Vouchers: React.FC<IVoucherPropos> = (propos) => {
                 <tr>
                     <th>Input Index</th>
                     <th>Voucher Index</th>
-                    <th>Voucher Id</th>
                     <th>Destination</th>
                     <th>Action</th>
                     {/* <th>Payload</th> */}
@@ -184,7 +185,6 @@ export const Vouchers: React.FC<IVoucherPropos> = (propos) => {
                 <tr key={`${voucherToExecute.input.index}-${voucherToExecute.index}`}>
                     <td>{voucherToExecute.input.index}</td>
                     <td>{voucherToExecute.index}</td>
-                    <td>{voucherToExecute.id}</td>
                     <td>{voucherToExecute.destination}</td>
                     <td>
                         <button disabled={!voucherToExecute.proof || voucherToExecute.executed} onClick={() => executeVoucher(voucherToExecute)}>{voucherToExecute.proof ? (voucherToExecute.executed ? "Voucher executed" : "Execute voucher") : "No proof yet"}</button>
@@ -204,10 +204,9 @@ export const Vouchers: React.FC<IVoucherPropos> = (propos) => {
                     <tr>
                         <th>Input Index</th>
                         <th>Voucher Index</th>
-                        <th>Voucher Id</th>
                         <th>Destination</th>
                         <th>Action</th>
-                        <th>Input Payload</th>
+                        {/* <th>Input Payload</th> */}
                         <th>Payload</th>
                         {/* <th>Proof</th> */}
                     </tr>
@@ -222,12 +221,11 @@ export const Vouchers: React.FC<IVoucherPropos> = (propos) => {
                         <tr key={`${n.input.index}-${n.index}`}>
                             <td>{n.input.index}</td>
                             <td>{n.index}</td>
-                            <td>{n.id}</td>
                             <td>{n.destination}</td>
                             <td>
                                 <button onClick={() => getProof(n)}>Get Proof</button>
                             </td>
-                            <td>{n.input.payload}</td>
+                            {/* <td>{n.input.payload}</td> */}
                             <td>{n.payload}</td>
                             {/* <td>
                                 <button disabled={!!n.proof} onClick={() => executeVoucher(n)}>Execute voucher</button>
