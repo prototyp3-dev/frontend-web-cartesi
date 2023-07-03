@@ -1,7 +1,7 @@
 # Cartesi frontend web
 
 ```
-Cartesi Rollups version: 0.8.x
+Cartesi Rollups version: 0.9.x
 ```
 
 ## Features
@@ -10,14 +10,15 @@ With this project you can test some interactions with the Cartesi Rollups projec
 
 1. Metamask integration
 2. Send Inspect state Requests and Listing Reports response
-3. Sending inputs
-4. Listing Notices
-5. Listing Reports
-6. Depositing Ether
-7. Depositing ERC20
-8. Depositing ERC721
-9. Listing Vouchers
-10. Executing Vouchers
+3. Sending Dapp Address with the DApp Relay
+4. Sending inputs
+5. Depositing Ether
+6. Depositing ERC20
+7. Depositing ERC721
+8. Listing Notices
+9. Listing Reports
+10. Listing Vouchers
+11. Executing Vouchers
 
 ## Configurtion
 

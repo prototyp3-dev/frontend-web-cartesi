@@ -19,6 +19,7 @@ const config: any = configFile;
 export const Network: FC = () => {
     const [{ wallet, connecting }, connect, disconnect] = useConnectWallet();
     const [{ chains, connectedChain, settingChain }, setChain] = useSetChain();
+
     return (
         <div>
             <button
