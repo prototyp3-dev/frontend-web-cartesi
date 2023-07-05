@@ -1,3 +1,7 @@
+# Important
+
+This project has will no longer be updated. Instead go to the [prototyp3 repo](https://github.com/prototyp3-dev/frontend-web-cartesi) for updated versions.
+
 # Cartesi frontend web
 
 ```
