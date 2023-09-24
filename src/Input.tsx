@@ -85,7 +85,7 @@ export const Input: React.FC = () => {
     };
     const [input, setInput] = useState<string>("");
     const [erc20Amount, setErc20Amount] = useState<number>(0);
-    const [erc20Token, setErc20Token] = useState<string>("0x610178dA211FEF7D417bC0e6FeD39F05609AD788");
+    const [erc20Token, setErc20Token] = useState<string>("0x2797a6a6D9D94633BA700b52Ad99337DdaFA3f52");
     const [erc721Id, setErc721Id] = useState<number>(0);
     const [erc721, setErc721] = useState<string>("");
     const [etherAmount, setEtherAmount] = useState<number>(0);

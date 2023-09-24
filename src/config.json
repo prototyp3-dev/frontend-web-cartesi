@@ -4,7 +4,7 @@
         "label": "localhost",
         "rpcUrl": "http://localhost:8545",
         "graphqlAPIURL" : "http://localhost:4000",
-        "inspectAPIURL":"http://localhost:5005",
+        "inspectAPIURL":"http://localhost:5005/inspect",
         "rollupAddress":"0xF8C694fd58360De278d5fF2276B7130Bfdc0192A"
     },
     "0x5":{

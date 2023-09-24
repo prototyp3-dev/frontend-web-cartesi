@@ -17,20 +17,20 @@ import { useRollups } from "./useRollups";
 import { OutputValidityProofStruct } from "@cartesi/rollups/dist/src/types/contracts/interfaces/IOutput";
 
 type Voucher = {
-    id: string;
     index: number;
     destination: string;
     input: any, //{index: number; epoch: {index: number; }
-    payload: string;
-    proof: any;
-    executed: any;
+    payload: any,
+    proof: any,
+    context:any,
 };
 
 export const Vouchers: React.FC = () => {
     const [result,reexecuteQuery] = useVouchersQuery();
-    const [voucherIdToFetch, setVoucherIdToFetch] = React.useState(String(null));
+    const [voucherIdToFetch, setVoucherIdToFetch] = React.useState(Number(null));
+    const [inputIndexToFetch,setInputIndexToFetch]=React.useState(Number(null))
     const [voucherResult,reexecuteVoucherQuery] = useVoucherQuery({
-        variables: { id: voucherIdToFetch }//, pause: !!voucherIdToFetch
+        variables: { voucherIndex: voucherIdToFetch,inputIndex:inputIndexToFetch }//, pause: !!voucherIdToFetch
     });
     const [voucherToExecute, setVoucherToExecute] = React.useState<any>();
     const [executedVouchers, setExecutedVouchers] = React.useState<any>({});
@@ -38,7 +38,8 @@ export const Vouchers: React.FC = () => {
     const rollups = useRollups();
 
     const getProof = async (voucher: Voucher) => {
-        setVoucherIdToFetch(voucher.id);
+        setVoucherIdToFetch(voucher.index);
+        setInputIndexToFetch(voucher.input)
         reexecuteVoucherQuery({ requestPolicy: 'network-only' });
     };
 
@@ -100,13 +101,15 @@ export const Vouchers: React.FC = () => {
             getBitMaskPositionAndSetVoucher(voucherResult.data.voucher);
         }
     },[voucherResult, rollups, executedVouchers]);
+    
 
     if (fetching) return <p>Loading...</p>;
     if (error) return <p>Oh no... {error.message}</p>;
 
     if (!data || !data.vouchers) return <p>No vouchers</p>;
 
-    const vouchers: Voucher[] = data.vouchers.nodes.map((n: any) => {
+    const vouchers: Voucher[] = data.vouchers.edges.map((n: any) => {
+
         let payload = n?.payload;
         if (payload) {
             const decoder = new ethers.utils.AbiCoder();
@@ -156,13 +159,12 @@ export const Vouchers: React.FC = () => {
             payload = "(empty)";
         }
         return {
-            id: `${n?.id}`,
-            index: parseInt(n?.index),
-            destination: `${n?.destination ?? ""}`,
+            index: parseInt(n?.node.index),
+            destination: `${n?.node.destination ?? ""}`,
             payload: `${payload}`,
-            input: n?.input || {epoch:{}},
+            input: n?.node.input || {epoch:{}},
             proof: null,
-            executed: null,
+            context: null,
         };
     }).sort((b: any, a: any) => {
         if (a.epoch === b.epoch) {
@@ -183,7 +185,6 @@ export const Vouchers: React.FC = () => {
         {voucherToExecute ? <table>
             <thead>
                 <tr>
-                    <th>Epoch</th>
                     <th>Input Index</th>
                     <th>Voucher Index</th>
                     <th>Voucher Id</th>
@@ -195,11 +196,9 @@ export const Vouchers: React.FC = () => {
                 </tr>
             </thead>
             <tbody>
-                <tr key={`${voucherToExecute.input.epoch.index}-${voucherToExecute.input.index}-${voucherToExecute.index}`}>
-                    <td>{voucherToExecute.input.epoch.index}</td>
+                <tr key={`${voucherToExecute.input.index}-${voucherToExecute.index}`}>
                     <td>{voucherToExecute.input.index}</td>
                     <td>{voucherToExecute.index}</td>
-                    <td>{voucherToExecute.id}</td>
                     <td>{voucherToExecute.destination}</td>
                     <td>
                         <button disabled={!voucherToExecute.proof || voucherToExecute.executed} onClick={() => executeVoucher(voucherToExecute)}>{voucherToExecute.proof ? (voucherToExecute.executed ? "Voucher executed" : "Execute voucher") : "No proof yet"}</button>
@@ -216,10 +215,8 @@ export const Vouchers: React.FC = () => {
             <table>
                 <thead>
                     <tr>
-                        <th>Epoch</th>
                         <th>Input Index</th>
                         <th>Voucher Index</th>
-                        <th>Voucher Id</th>
                         <th>Destination</th>
                         <th>Action</th>
                         <th>Payload</th>
@@ -233,11 +230,9 @@ export const Vouchers: React.FC = () => {
                         </tr>
                     )}
                     {vouchers.map((n: any) => (
-                        <tr key={`${n.input.epoch.index}-${n.input.index}-${n.index}`}>
-                            <td>{n.input.epoch.index}</td>
+                        <tr key={`${n.input.index}-${n.index}`}>
                             <td>{n.input.index}</td>
                             <td>{n.index}</td>
-                            <td>{n.id}</td>
                             <td>{n.destination}</td>
                             <td>
                                 <button onClick={() => getProof(n)}>Get Proof</button>

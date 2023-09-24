@@ -15,7 +15,6 @@ import React from "react";
 import { useReportsQuery } from "./generated/graphql";
 
 type Report = {
-    id: string;
     index: number;
     input: any, //{index: number; epoch: {index: number; }
     payload: string;
@@ -30,7 +29,7 @@ export const Reports: React.FC = () => {
 
     if (!data || !data.reports) return <p>No reports</p>;
 
-    const reports: Report[] = data.reports.nodes.map((n: any) => {
+    const reports: Report[] = data.reports.edges.map((n: any) => {
         let payload = n?.payload;
         if (payload) {
             try {
@@ -42,10 +41,9 @@ export const Reports: React.FC = () => {
             payload = "(empty)";
         }
         return {
-            id: `${n?.id}`,
-            index: parseInt(n?.index),
+            index: parseInt(n?.node.index),
             payload: `${payload}`,
-            input: n?.input || {epoch:{}},
+            input: n?.node.input || {epoch:{}},
         };
     }).sort((b: any, a: any) => {
         if (a.epoch === b.epoch) {
@@ -68,7 +66,6 @@ export const Reports: React.FC = () => {
             <table>
                 <thead>
                     <tr>
-                        <th>Epoch</th>
                         <th>Input Index</th>
                         <th>Notice Index</th>
                         <th>Payload</th>
@@ -82,7 +79,6 @@ export const Reports: React.FC = () => {
                     )}
                     {reports.map((n: any) => (
                         <tr key={`${n.input.epoch.index}-${n.input.index}-${n.index}`}>
-                            <td>{n.input.epoch.index}</td>
                             <td>{n.input.index}</td>
                             <td>{n.index}</td>
                             <td>{n.payload}</td>

@@ -15,10 +15,9 @@ import React from "react";
 import { useNoticesQuery } from "./generated/graphql";
 
 type Notice = {
-    id: string;
     index: number;
     input: any, //{index: number; epoch: {index: number; }
-    payload: string;
+    payload: string,
 };
 
 export const Notices: React.FC = () => {
@@ -29,8 +28,7 @@ export const Notices: React.FC = () => {
     if (error) return <p>Oh no... {error.message}</p>;
 
     if (!data || !data.notices) return <p>No notices</p>;
-
-    const notices: Notice[] = data.notices.nodes.map((n: any) => {
+    const notices: Notice[] = data.notices.edges.map((n: any) => {
         let payload = n?.payload;
         if (payload) {
             try {
@@ -42,10 +40,9 @@ export const Notices: React.FC = () => {
             payload = "(empty)";
         }
         return {
-            id: `${n?.id}`,
-            index: parseInt(n?.index),
+            index: parseInt(n?.node.index),
             payload: `${payload}`,
-            input: n?.input || {epoch:{}},
+            input: n?.node.input || {epoch:{}},
         };
     }).sort((b: any, a: any) => {
         if (a.epoch === b.epoch) {
@@ -65,26 +62,26 @@ export const Notices: React.FC = () => {
             <button onClick={() => reexecuteQuery({ requestPolicy: 'network-only' })}>
                 Reload
             </button>
+
             <table>
                 <thead>
                     <tr>
-                        <th>Epoch</th>
                         <th>Input Index</th>
                         <th>Notice Index</th>
                         <th>Payload</th>
                     </tr>
                 </thead>
                 <tbody>
+                    
                     {notices.length === 0 && (
                         <tr>
                             <td colSpan={4}>no notices</td>
                         </tr>
                     )}
                     {notices.map((n: any) => (
-                        <tr key={`${n.input.epoch.index}-${n.input.index}-${n.index}`}>
-                            <td>{n.input.epoch.index}</td>
+                        <tr key={`${n.input.index}-${n.input.index}-${n.index}`}>
                             <td>{n.input.index}</td>
-                            <td>{n.index}</td>
+                            <td>{n.input.index}</td>
                             <td>{n.payload}</td>
                         </tr>
                     ))}
