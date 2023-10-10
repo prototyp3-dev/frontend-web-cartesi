@@ -1,7 +1,7 @@
 # Cartesi frontend web
 
 ```
-Cartesi Rollups version: 0.9.x
+Cartesi Rollups version: 1.0.x
 ```
 
 ## Features
@@ -15,10 +15,12 @@ With this project you can test some interactions with the Cartesi Rollups projec
 5. Depositing Ether
 6. Depositing ERC20
 7. Depositing ERC721
-8. Listing Notices
-9. Listing Reports
-10. Listing Vouchers
-11. Executing Vouchers
+8. Depositing ERC1155 Single
+9. Depositing ERC1155 Batch
+10. Listing Notices
+11. Listing Reports
+12. Listing Vouchers
+13. Executing Vouchers
 
 ## Configurtion
 

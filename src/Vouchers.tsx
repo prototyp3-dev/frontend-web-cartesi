@@ -119,6 +119,18 @@ export const Vouchers: React.FC<IVoucherPropos> = (propos) => {
                         payload = `Ether Transfer - Amount: ${ethers.utils.formatEther(decode2[1])} (Native eth) - Address: ${decode2[0]}`;
                         break; 
                     }
+                    case '0xf242432a': { 
+                        //erc155 single safe transfer;
+                        const decode = decoder.decode(["address","address","uint256","uint256"], payload);
+                        payload = `Erc1155 Single Transfer - Id: ${decode[2]} Amount: ${decode[3]} - Address: ${decode[1]}`;
+                        break; 
+                    }
+                    case '0x2eb2c2d6': { 
+                        //erc155 Batch safe transfer;
+                        const decode = decoder.decode(["address","address","uint256[]","uint256[]"], payload);
+                        payload = `Erc1155 Batch Transfer - Ids: ${decode[2]} Amounts: ${decode[3]} - Address: ${decode[1]}`;
+                        break; 
+                    }
                     case '0xd0def521': { 
                         //erc721 mint;
                         const decode = decoder.decode(["address","string"], payload);
