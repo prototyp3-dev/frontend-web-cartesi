@@ -41,7 +41,7 @@ init({
 });
 
 const App: FC = () => {
-    const [dappAddress, setDappAddress] = useState<string>("0x142105FC8dA71191b3a13C738Ba0cF4BC33325e2");
+    const [dappAddress, setDappAddress] = useState<string>("0x70ac08179605AF2D9e75782b8DEcDD3c22aA4D0C");
 
     return (
         <div>

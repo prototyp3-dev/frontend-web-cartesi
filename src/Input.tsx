@@ -14,7 +14,7 @@ import React, { useState } from "react";
 import { ethers } from "ethers";
 import { useRollups } from "./useRollups";
 import { useWallets } from "@web3-onboard/react";
-import { IERC20__factory, IERC721__factory } from "./generated/rollups";
+import { IERC1155__factory, IERC20__factory, IERC721__factory } from "./generated/rollups";
 
 interface IInputPropos {
     dappAddress: string 
@@ -29,13 +29,21 @@ export const Input: React.FC<IInputPropos> = (propos) => {
 
     const sendAddress = async (str: string) => {
         if (rollups) {
-            rollups.realyContract.relayDAppAddress(rollups.dappContract.address);
+            try {
+            rollups.relayContract.relayDAppAddress(rollups.dappContract.address);
+            } catch (e) {
+                console.log(`${e}`);
+            }
         }
     };
 
     const addInput = async (str: string) => {
         if (rollups) {
-            rollups.inputContract.addInput(rollups.dappContract.address, ethers.utils.toUtf8Bytes(str));
+            try {
+                rollups.inputContract.addInput(rollups.dappContract.address, ethers.utils.toUtf8Bytes(str));
+            } catch (e) {
+                console.log(`${e}`);
+            }
         }
     };
 
@@ -102,12 +110,94 @@ export const Input: React.FC<IInputPropos> = (propos) => {
             rollups.erc721PortalContract.depositERC721Token(contractAddress,rollups.dappContract.address, nftid, "0x", data);
         }
     };
+
+    const transferErc1155SingleToPortal = async (contractAddress: string, id: number, amount: number) => {
+        if (rollups && provider) {
+            const data = ethers.utils.toUtf8Bytes(`Deposited (${amount}) tokens from id (${id}) of ERC1155 (${contractAddress}).`);
+            //const data = `Deposited ${args.amount} tokens (${args.token}) for DAppERC20Portal(${portalAddress}) (signer: ${address})`;
+            const signer = provider.getSigner();
+            const signerAddress = await signer.getAddress()
+
+            const erc1155SinglePortalAddress = rollups.erc1155SinglePortalContract.address;
+
+            const tokenContract = signer ? IERC1155__factory.connect(contractAddress, signer) : IERC1155__factory.connect(contractAddress, provider);
+
+            // query current approval
+            const currentApproval = await tokenContract.isApprovedForAll(signerAddress,erc1155SinglePortalAddress);
+            if (!currentApproval) {
+                // Allow portal to withdraw `amount` tokens from signer
+                const tx = await tokenContract.setApprovalForAll(erc1155SinglePortalAddress,true);
+                const receipt = await tx.wait(1);
+                const event = (await tokenContract.queryFilter(tokenContract.filters.ApprovalForAll(), receipt.blockHash)).pop();
+                if (!event) {
+                    throw Error(`could set approval for DAppERC1155Portal(${erc1155SinglePortalAddress})  (signer: ${signerAddress}, tx: ${tx.hash})`);
+                }
+            }
+
+            // Transfer
+            rollups.erc1155SinglePortalContract.depositSingleERC1155Token(contractAddress,rollups.dappContract.address, id, amount, "0x", data);
+        }
+    };
+
+    const transferErc1155BatchToPortal = async (contractAddress: string, ids: number[], amounts: number[]) => {
+        if (rollups && provider) {
+            const data = ethers.utils.toUtf8Bytes(`Deposited (${amounts}) tokens from ids (${ids}) of ERC1155 (${contractAddress}).`);
+            //const data = `Deposited ${args.amount} tokens (${args.token}) for DAppERC20Portal(${portalAddress}) (signer: ${address})`;
+            const signer = provider.getSigner();
+            const signerAddress = await signer.getAddress()
+
+            const erc1155BatchPortalAddress = rollups.erc1155BatchPortalContract.address;
+
+            const tokenContract = signer ? IERC1155__factory.connect(contractAddress, signer) : IERC1155__factory.connect(contractAddress, provider);
+
+            // query current approval
+            const currentApproval = await tokenContract.isApprovedForAll(signerAddress,erc1155BatchPortalAddress);
+            if (!currentApproval) {
+                // Allow portal to withdraw `amount` tokens from signer
+                const tx = await tokenContract.setApprovalForAll(erc1155BatchPortalAddress,true);
+                const receipt = await tx.wait(1);
+                const event = (await tokenContract.queryFilter(tokenContract.filters.ApprovalForAll(), receipt.blockHash)).pop();
+                if (!event) {
+                    throw Error(`could set approval for DAppERC1155Portal(${erc1155BatchPortalAddress})  (signer: ${signerAddress}, tx: ${tx.hash})`);
+                }
+            }
+
+            // Transfer
+            rollups.erc1155BatchPortalContract.depositBatchERC1155Token(contractAddress,rollups.dappContract.address, ids, amounts, "0x", data);
+        }
+    };
+
+    const AddTo1155Batch = () => {
+        const newIds = erc1155Ids;
+        newIds.push(erc1155Id);
+        setErc1155Ids(newIds);
+        const newAmounts = erc1155Amounts;
+        newAmounts.push(erc1155Amount);
+        setErc1155Amounts(newAmounts);
+        setErc1155IdsStr("["+erc1155Ids.join(',')+"]");
+        setErc1155AmountsStr("["+erc1155Amounts.join(',')+"]");
+    };
+
+    const Clear1155Batch = () => {
+        setErc1155IdsStr("[]");
+        setErc1155AmountsStr("[]");
+        setErc1155Ids([]);
+        setErc1155Amounts([]);
+    };
+    
     const [input, setInput] = useState<string>("");
     const [erc20Amount, setErc20Amount] = useState<number>(0);
     const [erc20Token, setErc20Token] = useState<string>("");
     const [erc721Id, setErc721Id] = useState<number>(0);
     const [erc721, setErc721] = useState<string>("");
     const [etherAmount, setEtherAmount] = useState<number>(0);
+    const [erc1155, setErc1155] = useState<string>("");
+    const [erc1155Id, setErc1155Id] = useState<number>(0);
+    const [erc1155Amount, setErc1155Amount] = useState<number>(0);
+    const [erc1155Ids, setErc1155Ids] = useState<number[]>([]);
+    const [erc1155Amounts, setErc1155Amounts] = useState<number[]>([]);
+    const [erc1155IdsStr, setErc1155IdsStr] = useState<string>("[]");
+    const [erc1155AmountsStr, setErc1155AmountsStr] = useState<string>("[]");
 
     return (
         <div>
@@ -173,6 +263,40 @@ export const Input: React.FC<IInputPropos> = (propos) => {
                 />
                 <button onClick={() => transferNftToPortal(erc721,erc721Id)} disabled={!rollups}>
                     Transfer NFT
+                </button>
+                <br /><br />
+            </div>
+            <div>
+                Transfer Single ERC1155 <br />
+                Address: <input
+                    type="text"
+                    value={erc1155}
+                    onChange={(e) => setErc1155(e.target.value)}
+                />
+                id: <input
+                    type="number"
+                    value={erc1155Id}
+                    onChange={(e) => setErc1155Id(Number(e.target.value))}
+                />
+                Amount: <input
+                    type="number"
+                    value={erc1155Amount}
+                    onChange={(e) => setErc1155Amount(Number(e.target.value))}
+                />
+                <button onClick={() => AddTo1155Batch()} disabled={!rollups}>
+                    Add to Batch
+                </button>
+                <button onClick={() => transferErc1155SingleToPortal(erc1155,erc1155Id,erc1155Amount)} disabled={!rollups}>
+                    Transfer Single 1155
+                </button>
+                <br />
+                Transfer ERC1155 Batch <br />
+                <span>Ids: {erc1155IdsStr} - Amounts: {erc1155AmountsStr}  </span>
+                <button onClick={() => Clear1155Batch()} disabled={!rollups}>
+                    Clear Batch
+                </button>
+                <button onClick={() => transferErc1155BatchToPortal(erc1155,erc1155Ids,erc1155Amounts)} disabled={!rollups}>
+                    Transfer Batch 1155
                 </button>
             </div>
         </div>

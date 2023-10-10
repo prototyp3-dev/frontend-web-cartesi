@@ -22,13 +22,13 @@ export const Network: FC = () => {
 
     return (
         <div>
-            <button
+            {!wallet && <button
                 onClick={() =>
                     connect()
                 }
             >
                 {connecting ? "connecting" : "connect"}
-            </button>
+            </button>}
             {wallet && (
                 <div>
                     <label>Switch Chain</label>
