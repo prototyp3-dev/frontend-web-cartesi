@@ -3,7 +3,7 @@
         "token": "DummyETH",
         "label": "localhost",
         "rpcUrl": "http://localhost:8545",
-        "graphqlAPIURL" : "http://localhost:400",
+        "graphqlAPIURL" : "http://localhost:8080",
         "inspectAPIURL":"http://localhost:8080",
         "DAppRelayAddress":"0xF5DE34d6BbC0446E2a45719E718efEbaaE179daE",
         "InputBoxAddress":"0x59b22D57D4f067708AB0c00552767405926dc768",
