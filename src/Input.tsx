@@ -40,7 +40,11 @@ export const Input: React.FC<IInputPropos> = (propos) => {
     const addInput = async (str: string) => {
         if (rollups) {
             try {
-                rollups.inputContract.addInput(rollups.dappContract.address, ethers.utils.toUtf8Bytes(str));
+                let payload = ethers.utils.toUtf8Bytes(str);
+                if (hexInput) {
+                    payload = ethers.utils.arrayify(str);
+                }
+                rollups.inputContract.addInput(rollups.dappContract.address, payload);
             } catch (e) {
                 console.log(`${e}`);
             }
@@ -186,6 +190,7 @@ export const Input: React.FC<IInputPropos> = (propos) => {
     };
     
     const [input, setInput] = useState<string>("");
+    const [hexInput, setHexInput] = useState<boolean>(false);
     const [erc20Amount, setErc20Amount] = useState<number>(0);
     const [erc20Token, setErc20Token] = useState<string>("");
     const [erc721Id, setErc721Id] = useState<number>(0);
@@ -215,6 +220,7 @@ export const Input: React.FC<IInputPropos> = (propos) => {
                     value={input}
                     onChange={(e) => setInput(e.target.value)}
                 />
+                <input type="checkbox" checked={hexInput} onChange={(e) => setHexInput(!hexInput)}/><span>Raw Hex </span>
                 <button onClick={() => addInput(input)} disabled={!rollups}>
                     Send
                 </button>
