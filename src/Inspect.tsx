@@ -16,6 +16,7 @@ import { ethers } from "ethers";
 // import { useRollups } from "./useRollups";
 
 import configFile from "./config.json";
+import { _fetchData } from "ethers/lib/utils";
 
 const config: any = configFile;
 
@@ -23,8 +24,11 @@ export const Inspect: React.FC = () => {
     // const rollups = useRollups();
     const [{ connectedChain }] = useSetChain();
     const inspectCall = async (str: string) => {
-        const payload = str;
-
+        let payload = str;
+        if (hexData) {
+            const uint8array = ethers.utils.arrayify(str);
+            payload = new TextDecoder().decode(uint8array);
+        }
         if (!connectedChain){
             return;
         }
@@ -37,8 +41,15 @@ export const Inspect: React.FC = () => {
             console.error(`No inspect interface defined for chain ${connectedChain.id}`);
             return;
         }
-
-        fetch(`${apiURL}/${payload}`)
+        
+        let fetchData: Promise<Response>;
+        if (postData) {
+            const payloadBlob = new TextEncoder().encode(payload);
+            fetchData = fetch(`${apiURL}`, { method: 'POST', body: payloadBlob });
+        } else {
+            fetchData = fetch(`${apiURL}/${payload}`);
+        }
+        fetchData
             .then(response => response.json())
             .then(data => {
                 setReports(data.reports);
@@ -48,6 +59,8 @@ export const Inspect: React.FC = () => {
     const [inspectData, setInspectData] = useState<string>("");
     const [reports, setReports] = useState<string[]>([]);
     const [metadata, setMetadata] = useState<any>({});
+    const [hexData, setHexData] = useState<boolean>(false);
+    const [postData, setPostData] = useState<boolean>(false);
 
     return (
         <div>
@@ -57,6 +70,8 @@ export const Inspect: React.FC = () => {
                     value={inspectData}
                     onChange={(e) => setInspectData(e.target.value)}
                 />
+                <input type="checkbox" checked={hexData} onChange={(e) => setHexData(!hexData)}/><span>Raw Hex </span>
+                <input type="checkbox" checked={postData} onChange={(e) => setPostData(!postData)}/><span>POST </span>
                 <button onClick={() => inspectCall(inspectData)}>
                     Send
                 </button>

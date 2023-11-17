@@ -30,7 +30,7 @@ export const Input: React.FC<IInputPropos> = (propos) => {
     const sendAddress = async (str: string) => {
         if (rollups) {
             try {
-            rollups.relayContract.relayDAppAddress(rollups.dappContract.address);
+                await rollups.relayContract.relayDAppAddress(propos.dappAddress);
             } catch (e) {
                 console.log(`${e}`);
             }
@@ -44,7 +44,7 @@ export const Input: React.FC<IInputPropos> = (propos) => {
                 if (hexInput) {
                     payload = ethers.utils.arrayify(str);
                 }
-                rollups.inputContract.addInput(rollups.dappContract.address, payload);
+                await rollups.inputContract.addInput(propos.dappAddress, payload);
             } catch (e) {
                 console.log(`${e}`);
             }
@@ -52,122 +52,142 @@ export const Input: React.FC<IInputPropos> = (propos) => {
     };
 
     const depositErc20ToPortal = async (token: string,amount: number) => {
-        if (rollups && provider) {
-            const data = ethers.utils.toUtf8Bytes(`Deposited (${amount}) of ERC20 (${token}).`);
-            //const data = `Deposited ${args.amount} tokens (${args.token}) for DAppERC20Portal(${portalAddress}) (signer: ${address})`;
-            const signer = provider.getSigner();
-            const signerAddress = await signer.getAddress()
+        try {
+            if (rollups && provider) {
+                const data = ethers.utils.toUtf8Bytes(`Deposited (${amount}) of ERC20 (${token}).`);
+                //const data = `Deposited ${args.amount} tokens (${args.token}) for DAppERC20Portal(${portalAddress}) (signer: ${address})`;
+                const signer = provider.getSigner();
+                const signerAddress = await signer.getAddress()
 
-            const erc20PortalAddress = rollups.erc20PortalContract.address;
-            const tokenContract = signer ? IERC20__factory.connect(token, signer) : IERC20__factory.connect(token, provider);
+                const erc20PortalAddress = rollups.erc20PortalContract.address;
+                const tokenContract = signer ? IERC20__factory.connect(token, signer) : IERC20__factory.connect(token, provider);
 
-            // query current allowance
-            const currentAllowance = await tokenContract.allowance(signerAddress, erc20PortalAddress);
-            if (ethers.utils.parseEther(`${amount}`) > currentAllowance) {
-                // Allow portal to withdraw `amount` tokens from signer
-                const tx = await tokenContract.approve(erc20PortalAddress, ethers.utils.parseEther(`${amount}`));
-                const receipt = await tx.wait(1);
-                const event = (await tokenContract.queryFilter(tokenContract.filters.Approval(), receipt.blockHash)).pop();
-                if (!event) {
-                    throw Error(`could not approve ${amount} tokens for DAppERC20Portal(${erc20PortalAddress})  (signer: ${signerAddress}, tx: ${tx.hash})`);
+                // query current allowance
+                const currentAllowance = await tokenContract.allowance(signerAddress, erc20PortalAddress);
+                if (ethers.utils.parseEther(`${amount}`) > currentAllowance) {
+                    // Allow portal to withdraw `amount` tokens from signer
+                    const tx = await tokenContract.approve(erc20PortalAddress, ethers.utils.parseEther(`${amount}`));
+                    const receipt = await tx.wait(1);
+                    const event = (await tokenContract.queryFilter(tokenContract.filters.Approval(), receipt.blockHash)).pop();
+                    if (!event) {
+                        throw Error(`could not approve ${amount} tokens for DAppERC20Portal(${erc20PortalAddress})  (signer: ${signerAddress}, tx: ${tx.hash})`);
+                    }
                 }
-            }
 
-            rollups.erc20PortalContract.depositERC20Tokens(token,rollups.dappContract.address,ethers.utils.parseEther(`${amount}`),data);
+                await rollups.erc20PortalContract.depositERC20Tokens(token,propos.dappAddress,ethers.utils.parseEther(`${amount}`),data);
+            }
+        } catch (e) {
+            console.log(`${e}`);
         }
     };
 
     const depositEtherToPortal = async (amount: number) => {
-        if (rollups && provider) {
-            const data = ethers.utils.toUtf8Bytes(`Deposited (${amount}) ether.`);
-            const txOverrides = {value: ethers.utils.parseEther(`${amount}`)}
+        try {
+            if (rollups && provider) {
+                const data = ethers.utils.toUtf8Bytes(`Deposited (${amount}) ether.`);
+                const txOverrides = {value: ethers.utils.parseEther(`${amount}`)}
 
-            // const tx = await ...
-            rollups.etherPortalContract.depositEther(rollups.dappContract.address,data,txOverrides);
+                // const tx = await ...
+                rollups.etherPortalContract.depositEther(propos.dappAddress,data,txOverrides);
+            }
+        } catch (e) {
+            console.log(`${e}`);
         }
     };
 
     const transferNftToPortal = async (contractAddress: string,nftid: number) => {
-        if (rollups && provider) {
-            const data = ethers.utils.toUtf8Bytes(`Deposited (${nftid}) of ERC721 (${contractAddress}).`);
-            //const data = `Deposited ${args.amount} tokens (${args.token}) for DAppERC20Portal(${portalAddress}) (signer: ${address})`;
-            const signer = provider.getSigner();
-            const signerAddress = await signer.getAddress()
+        try {
+            if (rollups && provider) {
+                const data = ethers.utils.toUtf8Bytes(`Deposited (${nftid}) of ERC721 (${contractAddress}).`);
+                //const data = `Deposited ${args.amount} tokens (${args.token}) for DAppERC20Portal(${portalAddress}) (signer: ${address})`;
+                const signer = provider.getSigner();
+                const signerAddress = await signer.getAddress()
 
-            const erc721PortalAddress = rollups.erc721PortalContract.address;
+                const erc721PortalAddress = rollups.erc721PortalContract.address;
 
-            const tokenContract = signer ? IERC721__factory.connect(contractAddress, signer) : IERC721__factory.connect(contractAddress, provider);
+                const tokenContract = signer ? IERC721__factory.connect(contractAddress, signer) : IERC721__factory.connect(contractAddress, provider);
 
-            // query current approval
-            const currentApproval = await tokenContract.getApproved(nftid);
-            if (currentApproval !== erc721PortalAddress) {
-                // Allow portal to withdraw `amount` tokens from signer
-                const tx = await tokenContract.approve(erc721PortalAddress, nftid);
-                const receipt = await tx.wait(1);
-                const event = (await tokenContract.queryFilter(tokenContract.filters.Approval(), receipt.blockHash)).pop();
-                if (!event) {
-                    throw Error(`could not approve ${nftid} for DAppERC721Portal(${erc721PortalAddress})  (signer: ${signerAddress}, tx: ${tx.hash})`);
+                // query current approval
+                const currentApproval = await tokenContract.getApproved(nftid);
+                if (currentApproval !== erc721PortalAddress) {
+                    // Allow portal to withdraw `amount` tokens from signer
+                    const tx = await tokenContract.approve(erc721PortalAddress, nftid);
+                    const receipt = await tx.wait(1);
+                    const event = (await tokenContract.queryFilter(tokenContract.filters.Approval(), receipt.blockHash)).pop();
+                    if (!event) {
+                        throw Error(`could not approve ${nftid} for DAppERC721Portal(${erc721PortalAddress})  (signer: ${signerAddress}, tx: ${tx.hash})`);
+                    }
                 }
-            }
 
-            // Transfer
-            rollups.erc721PortalContract.depositERC721Token(contractAddress,rollups.dappContract.address, nftid, "0x", data);
+                // Transfer
+                rollups.erc721PortalContract.depositERC721Token(contractAddress,propos.dappAddress, nftid, "0x", data);
+            }
+        } catch (e) {
+            console.log(`${e}`);
         }
     };
 
     const transferErc1155SingleToPortal = async (contractAddress: string, id: number, amount: number) => {
-        if (rollups && provider) {
-            const data = ethers.utils.toUtf8Bytes(`Deposited (${amount}) tokens from id (${id}) of ERC1155 (${contractAddress}).`);
-            //const data = `Deposited ${args.amount} tokens (${args.token}) for DAppERC20Portal(${portalAddress}) (signer: ${address})`;
-            const signer = provider.getSigner();
-            const signerAddress = await signer.getAddress()
+        try {
+            if (rollups && provider) {
+                const data = ethers.utils.toUtf8Bytes(`Deposited (${amount}) tokens from id (${id}) of ERC1155 (${contractAddress}).`);
+                //const data = `Deposited ${args.amount} tokens (${args.token}) for DAppERC20Portal(${portalAddress}) (signer: ${address})`;
+                const signer = provider.getSigner();
+                const signerAddress = await signer.getAddress()
 
-            const erc1155SinglePortalAddress = rollups.erc1155SinglePortalContract.address;
+                const erc1155SinglePortalAddress = rollups.erc1155SinglePortalContract.address;
 
-            const tokenContract = signer ? IERC1155__factory.connect(contractAddress, signer) : IERC1155__factory.connect(contractAddress, provider);
+                const tokenContract = signer ? IERC1155__factory.connect(contractAddress, signer) : IERC1155__factory.connect(contractAddress, provider);
 
-            // query current approval
-            const currentApproval = await tokenContract.isApprovedForAll(signerAddress,erc1155SinglePortalAddress);
-            if (!currentApproval) {
-                // Allow portal to withdraw `amount` tokens from signer
-                const tx = await tokenContract.setApprovalForAll(erc1155SinglePortalAddress,true);
-                const receipt = await tx.wait(1);
-                const event = (await tokenContract.queryFilter(tokenContract.filters.ApprovalForAll(), receipt.blockHash)).pop();
-                if (!event) {
-                    throw Error(`could set approval for DAppERC1155Portal(${erc1155SinglePortalAddress})  (signer: ${signerAddress}, tx: ${tx.hash})`);
+                // query current approval
+                const currentApproval = await tokenContract.isApprovedForAll(signerAddress,erc1155SinglePortalAddress);
+                if (!currentApproval) {
+                    // Allow portal to withdraw `amount` tokens from signer
+                    const tx = await tokenContract.setApprovalForAll(erc1155SinglePortalAddress,true);
+                    const receipt = await tx.wait(1);
+                    const event = (await tokenContract.queryFilter(tokenContract.filters.ApprovalForAll(), receipt.blockHash)).pop();
+                    if (!event) {
+                        throw Error(`could set approval for DAppERC1155Portal(${erc1155SinglePortalAddress})  (signer: ${signerAddress}, tx: ${tx.hash})`);
+                    }
                 }
-            }
 
-            // Transfer
-            rollups.erc1155SinglePortalContract.depositSingleERC1155Token(contractAddress,rollups.dappContract.address, id, amount, "0x", data);
+                // Transfer
+                rollups.erc1155SinglePortalContract.depositSingleERC1155Token(contractAddress,propos.dappAddress, id, amount, "0x", data);
+            }
+        } catch (e) {
+            console.log(`${e}`);
         }
     };
 
     const transferErc1155BatchToPortal = async (contractAddress: string, ids: number[], amounts: number[]) => {
-        if (rollups && provider) {
-            const data = ethers.utils.toUtf8Bytes(`Deposited (${amounts}) tokens from ids (${ids}) of ERC1155 (${contractAddress}).`);
-            //const data = `Deposited ${args.amount} tokens (${args.token}) for DAppERC20Portal(${portalAddress}) (signer: ${address})`;
-            const signer = provider.getSigner();
-            const signerAddress = await signer.getAddress()
+        try {
+            if (rollups && provider) {
+                const data = ethers.utils.toUtf8Bytes(`Deposited (${amounts}) tokens from ids (${ids}) of ERC1155 (${contractAddress}).`);
+                //const data = `Deposited ${args.amount} tokens (${args.token}) for DAppERC20Portal(${portalAddress}) (signer: ${address})`;
+                const signer = provider.getSigner();
+                const signerAddress = await signer.getAddress()
 
-            const erc1155BatchPortalAddress = rollups.erc1155BatchPortalContract.address;
+                const erc1155BatchPortalAddress = rollups.erc1155BatchPortalContract.address;
 
-            const tokenContract = signer ? IERC1155__factory.connect(contractAddress, signer) : IERC1155__factory.connect(contractAddress, provider);
+                const tokenContract = signer ? IERC1155__factory.connect(contractAddress, signer) : IERC1155__factory.connect(contractAddress, provider);
 
-            // query current approval
-            const currentApproval = await tokenContract.isApprovedForAll(signerAddress,erc1155BatchPortalAddress);
-            if (!currentApproval) {
-                // Allow portal to withdraw `amount` tokens from signer
-                const tx = await tokenContract.setApprovalForAll(erc1155BatchPortalAddress,true);
-                const receipt = await tx.wait(1);
-                const event = (await tokenContract.queryFilter(tokenContract.filters.ApprovalForAll(), receipt.blockHash)).pop();
-                if (!event) {
-                    throw Error(`could set approval for DAppERC1155Portal(${erc1155BatchPortalAddress})  (signer: ${signerAddress}, tx: ${tx.hash})`);
+                // query current approval
+                const currentApproval = await tokenContract.isApprovedForAll(signerAddress,erc1155BatchPortalAddress);
+                if (!currentApproval) {
+                    // Allow portal to withdraw `amount` tokens from signer
+                    const tx = await tokenContract.setApprovalForAll(erc1155BatchPortalAddress,true);
+                    const receipt = await tx.wait(1);
+                    const event = (await tokenContract.queryFilter(tokenContract.filters.ApprovalForAll(), receipt.blockHash)).pop();
+                    if (!event) {
+                        throw Error(`could set approval for DAppERC1155Portal(${erc1155BatchPortalAddress})  (signer: ${signerAddress}, tx: ${tx.hash})`);
+                    }
                 }
-            }
 
-            // Transfer
-            rollups.erc1155BatchPortalContract.depositBatchERC1155Token(contractAddress,rollups.dappContract.address, ids, amounts, "0x", data);
+                // Transfer
+                rollups.erc1155BatchPortalContract.depositBatchERC1155Token(contractAddress,propos.dappAddress, ids, amounts, "0x", data);
+            }
+        } catch (e) {
+            console.log(`${e}`);
         }
     };
 
