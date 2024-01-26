@@ -1,85 +1,85 @@
 {
-    "name": "echo-frontend",
-    "version": "0.3.0",
-    "private": true,
-    "dependencies": {
-        "@cartesi/rollups": "1.0.0",
-        "@ethersproject/providers": "^5.6.0",
-        "@openzeppelin/contracts": "4.8.3",
-        "@testing-library/jest-dom": "^5.16.4",
-        "@testing-library/react": "^13.2.0",
-        "@testing-library/user-event": "^14.1.1",
-        "@types/jest": "^27.5.0",
-        "@types/react": "^18.0.8",
-        "@types/react-dom": "^18.0.3",
-        "@web3-onboard/core": "^2.2.6",
-        "@web3-onboard/injected-wallets": "^2.0.5",
-        "@web3-onboard/react": "^2.1.5",
-        "buffer": "^6.0.3",
-        "cacheable-request": "^10.2.7",
-        "ethers": "5.7.2",
-        "graphql": "^16.4.0",
-        "loader-utils": "3.2.1",
-        "minimatch": "^3.0.5",
-        "nth-check": "2.0.1",
-        "react": "^18.1.0",
-        "react-dom": "^18.1.0",
-        "react-scripts": "5.0.1",
-        "request": "2.88.2",
-        "ts-node": "^10.9.1",
-        "typescript": "^4.6.4",
-        "urql": "^2.2.0",
-        "web-vitals": "^2.1.0",
-        "web3": "^1.7.3",
-        "webpack": "^5.76.0",
-        "xhr2-cookies": "^1.1.0",
-        "yarn": "^1.22.18"
-    },
-    "scripts": {
-        "build": "react-scripts build",
-        "codegen": "run-p codegen:typechain codegen:graphql",
-        "codegen:graphql": "graphql-codegen",
-        "codegen:typechain": "typechain --target ethers-v5 --out-dir src/generated/rollups './node_modules/@cartesi/rollups/export/artifacts/**/*.json'",
-        "eject": "react-app-rewired eject",
-        "start": "react-app-rewired start",
-        "test": "react-app-rewired test"
-    },
-    "eslintConfig": {
-        "extends": [
-            "react-app",
-            "react-app/jest"
-        ]
-    },
-    "browserslist": {
-        "production": [
-            ">0.2%",
-            "not dead",
-            "not op_mini all"
-        ],
-        "development": [
-            "last 1 chrome version",
-            "last 1 firefox version",
-            "last 1 safari version"
-        ]
-    },
-    "devDependencies": {
-        "@graphql-codegen/cli": "2.12.0",
-        "@graphql-codegen/typed-document-node": "^2.3.3",
-        "@graphql-codegen/typescript": "2.7.3",
-        "@graphql-codegen/typescript-operations": "^2.5.3",
-        "@graphql-codegen/typescript-urql": "^3.5.7",
-        "@graphql-typed-document-node/core": "^3.1.1",
-        "@typechain/ethers-v5": "^10.0.0",
-        "assert": "^2.0.0",
-        "crypto-browserify": "^3.12.0",
-        "https-browserify": "^1.0.0",
-        "npm-run-all": "^4.1.5",
-        "os-browserify": "^0.3.0",
-        "prettier": "^2.6.2",
-        "react-app-rewired": "^2.2.1",
-        "stream-browserify": "^3.0.0",
-        "stream-http": "^3.2.0",
-        "typechain": "^8.0.0",
-        "url": "^0.11.0"
-    }
+  "name": "echo-frontend",
+  "version": "0.3.0",
+  "private": true,
+  "dependencies": {
+    "@cartesi/rollups": "1.0.0",
+    "@ethersproject/providers": "^5.6.0",
+    "@openzeppelin/contracts": "4.8.3",
+    "@testing-library/jest-dom": "^5.16.4",
+    "@testing-library/react": "^13.2.0",
+    "@testing-library/user-event": "^14.1.1",
+    "@types/jest": "^27.5.0",
+    "@types/react": "^18.0.8",
+    "@types/react-dom": "^18.0.3",
+    "@web3-onboard/core": "^2.2.6",
+    "@web3-onboard/injected-wallets": "^2.0.5",
+    "@web3-onboard/react": "^2.1.5",
+    "buffer": "^6.0.3",
+    "cacheable-request": "^10.2.7",
+    "ethers": "5.7.2",
+    "graphql": "^16.4.0",
+    "loader-utils": "3.2.1",
+    "minimatch": "^3.0.5",
+    "nth-check": "2.0.1",
+    "react": "^18.1.0",
+    "react-dom": "^18.1.0",
+    "react-scripts": "5.0.1",
+    "request": "2.88.2",
+    "ts-node": "^10.9.1",
+    "typescript": "^4.6.4",
+    "urql": "^2.2.0",
+    "web-vitals": "^2.1.0",
+    "web3": "^1.7.3",
+    "webpack": "^5.76.0",
+    "xhr2-cookies": "^1.1.0",
+    "yarn": "^1.22.18"
+  },
+  "scripts": {
+    "build": "react-scripts build",
+    "codegen": "run-p codegen:typechain codegen:graphql",
+    "codegen:graphql": "graphql-codegen",
+    "codegen:typechain": "typechain --target ethers-v5 --out-dir src/generated/rollups './node_modules/@cartesi/rollups/export/artifacts/**/*.json'",
+    "eject": "react-app-rewired eject",
+    "start": "react-app-rewired start",
+    "test": "react-app-rewired test"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "devDependencies": {
+    "@graphql-codegen/cli": "2.12.0",
+    "@graphql-codegen/typed-document-node": "^2.3.3",
+    "@graphql-codegen/typescript": "2.7.3",
+    "@graphql-codegen/typescript-operations": "^2.5.3",
+    "@graphql-codegen/typescript-urql": "^3.5.7",
+    "@graphql-typed-document-node/core": "^3.1.1",
+    "@typechain/ethers-v5": "^10.0.0",
+    "assert": "^2.0.0",
+    "crypto-browserify": "^3.12.0",
+    "https-browserify": "^1.0.0",
+    "npm-run-all": "^4.1.5",
+    "os-browserify": "^0.3.0",
+    "prettier": "^2.6.2",
+    "react-app-rewired": "^2.2.1",
+    "stream-browserify": "^3.0.0",
+    "stream-http": "^3.2.0",
+    "typechain": "^8.0.0",
+    "url": "^0.11.0"
+  }
 }
