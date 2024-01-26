@@ -10,13 +10,13 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 
-import { FC } from "react";
+import { FC, useState } from "react";
 import injectedModule from "@web3-onboard/injected-wallets";
 import { init } from "@web3-onboard/react";
-import { useState } from "react";
 
 import { GraphQLProvider } from "./GraphQL";
 import { Notices } from "./Notices";
+import { SendInstruction } from "./SendInstruction";
 import { Input } from "./Input";
 import { Inspect } from "./Inspect";
 import { Network } from "./Network";
@@ -27,47 +27,53 @@ import configFile from "./config.json";
 const config: any = configFile;
 
 const injected: any = injectedModule();
+
 init({
-    wallets: [injected],
-    chains: Object.entries(config).map(([k, v]: [string, any], i) => ({id: k, token: v.token, label: v.label, rpcUrl: v.rpcUrl})),
-    appMetadata: {
-        name: "Cartesi Rollups Test DApp",
-        icon: "<svg><svg/>",
-        description: "Demo app for Cartesi Rollups",
-        recommendedInjectedWallets: [
-            { name: "MetaMask", url: "https://metamask.io" },
-        ],
-    },
+  wallets: [injected],
+  chains: Object.entries(config).map(([k, v]: [string, any], i) => ({ id: k, token: v.token, label: v.label, rpcUrl: v.rpcUrl })),
+  appMetadata: {
+    name: "Cartesi Rollups Test DApp",
+    icon: "<svg><svg/>",
+    description: "Demo app for Cartesi Rollups",
+    recommendedInjectedWallets: [
+      { name: "MetaMask", url: "https://metamask.io" },
+    ],
+  },
 });
 
 const App: FC = () => {
-    const [dappAddress, setDappAddress] = useState<string>("0x70ac08179605AF2D9e75782b8DEcDD3c22aA4D0C");
+  const [dappAddress, setDappAddress] = useState<string>("0x70ac08179605AF2D9e75782b8DEcDD3c22aA4D0C");
+  // const rpcUrl = config.ethereum.rpcUrl; // Assuming Ethereum configuration exists in your config file
 
-    return (
+
+  return (
+    <div>
+      <Network />
+      <GraphQLProvider>
         <div>
-            <Network />
-            <GraphQLProvider>
-                <div>
-                    Dapp Address: <input
-                        type="text"
-                        value={dappAddress}
-                        onChange={(e) => setDappAddress(e.target.value)}
-                    />
-                    <br /><br />
-                </div>
-                <h2>Inspect</h2>
-                <Inspect />
-                <h2>Input</h2>
-                <Input dappAddress={dappAddress} />
-                <h2>Reports</h2>
-                <Reports />
-                <h2>Notices</h2>
-                <Notices />
-                <h2>Vouchers</h2>
-                <Vouchers dappAddress={dappAddress} />
-            </GraphQLProvider>
+          Dapp Address: <input
+            type="text"
+            value={dappAddress}
+            onChange={(e) => setDappAddress(e.target.value)}
+          />
+          <br /><br />
         </div>
-    );
+        <h2>Inspect</h2>
+        <Inspect />
+        <h2>SendInstruction</h2>
+        <SendInstruction dappAddress={dappAddress} />
+        <h2>Input</h2>
+        <Input dappAddress={dappAddress} />
+        <h2>Reports</h2>
+        <Reports />
+        <h2>Notices</h2>
+        <Notices />
+        <h2>Vouchers</h2>
+        <Vouchers dappAddress={dappAddress} />
+      </GraphQLProvider>
+    </div>
+  );
 };
 
 export default App;
+
