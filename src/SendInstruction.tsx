@@ -20,7 +20,7 @@ export const SendInstruction: React.FC<SendInstructionProps> = ({ dappAddress })
       if (provider) {
 
         console.log("Contract ABI:", TrustAndTeachABI);
-        console.log("Contract Address:", dappAddress);
+        // console.log("Contract Address:", dappAddress);
 
 
         const signer = provider.getSigner();
