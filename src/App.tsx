@@ -70,7 +70,10 @@ const App: FC = () => {
         <h2>Inspect</h2>
         <Inspect />
         <h2>Interact</h2>
-        <Interact contractAddress={contractAddress} />
+        <Interact
+          dappAddress={dappAddress}
+          contractAddress={contractAddress}
+        />
         <h2>Input</h2>
         <Input dappAddress={dappAddress} />
         <h2>Reports</h2>

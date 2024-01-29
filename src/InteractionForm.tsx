@@ -5,15 +5,17 @@ import TrustAndTeachABI from "./contract_abi/TrustAndTeach.json";
 
 interface InteractionForm {
   contractAddress: string;
+  description: string;
+  defaultInputString: string;
   contractFunction: (signer: ethers.Signer, ...args: any[]) => Promise<ethers.providers.TransactionResponse>;
 }
 
-export const InteractionForm: React.FC<InteractionForm> = ({ contractAddress, contractFunction }) => {
+export const InteractionForm: React.FC<InteractionForm> = ({ contractAddress, description, defaultInputString, contractFunction }) => {
   const [transactionHash, setTransactionHash] = useState<string>('');
   const [connectedWallet] = useWallets();
   const provider = new ethers.providers.Web3Provider(connectedWallet.provider);
 
-  const [inputString, setInputString] = useState<string>('');
+  const [inputString, setInputString] = useState<string>(defaultInputString);
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
@@ -39,7 +41,7 @@ export const InteractionForm: React.FC<InteractionForm> = ({ contractAddress, co
           onChange={(e) => setInputString(e.target.value)}
           placeholder="Enter your input"
         />
-        <button type="submit" disabled={!provider}>Send Instruction</button>
+        <button type="submit" disabled={!provider}>{description}</button>
       </form>
 
       {transactionHash && (

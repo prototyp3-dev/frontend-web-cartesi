@@ -8,10 +8,11 @@ import SendCurlRequestButton from './SendCurlRequestButton';
 
 
 interface Interact {
+  dappAddress: string;
   contractAddress: string;
 }
 
-export const Interact: React.FC<Interact> = ({ contractAddress }) => {
+export const Interact: React.FC<Interact> = ({ dappAddress, contractAddress }) => {
   const [transactionHash, setTransactionHash] = useState<string>('');
   const [connectedWallet] = useWallets();
   const provider = new ethers.providers.Web3Provider(connectedWallet.provider);
@@ -38,6 +39,17 @@ export const Interact: React.FC<Interact> = ({ contractAddress }) => {
       through interaction form:
       <InteractionForm
         contractAddress={contractAddress}
+        description="set dapp address"
+        defaultInputString={dappAddress}
+        contractFunction={(signer, inputString) => {
+          const contract = new ethers.Contract(contractAddress, TrustAndTeachABI, signer);
+          return contract.set_dapp_address(inputString);
+        }}
+      />
+      <InteractionForm
+        contractAddress={contractAddress}
+        description="Send Instruction"
+        defaultInputString="When "
         contractFunction={(signer, inputString) => {
           const contract = new ethers.Contract(contractAddress, TrustAndTeachABI, signer);
           return contract.sendInstructionPrompt(inputString);
@@ -47,20 +59,6 @@ export const Interact: React.FC<Interact> = ({ contractAddress }) => {
         url="http://localhost:8545"
         data='{"id":1337,"jsonrpc":"2.0","method":"evm_increaseTime","params":[864010]}'
       />
-      Old method:
-      <form onSubmit={handleSubmit}>
-        <input
-          type="text"
-          value={inputString}
-          onChange={(e) => setInputString(e.target.value)}
-          placeholder="Enter your instruction"
-        />
-        <button type="submit" disabled={!provider}>Send Instruction</button>
-      </form>
-
-      {transactionHash && (
-        <p>Transaction sent! Hash: {transactionHash}</p>
-      )}
     </div>
   );
 };
