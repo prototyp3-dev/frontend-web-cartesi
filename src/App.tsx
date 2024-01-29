@@ -43,7 +43,7 @@ init({
 
 const App: FC = () => {
   const [dappAddress, setDappAddress] = useState<string>("0x70ac08179605AF2D9e75782b8DEcDD3c22aA4D0C");
-  const contractAddress = '0x959922bE3CAee4b8Cd9a407cc3ac1C251C2007B1';
+  const [contractAddress, setContractAddress] = useState<string>("0x959922bE3CAee4b8Cd9a407cc3ac1C251C2007B1");
   // const rpcUrl = config.ethereum.rpcUrl; // Assuming Ethereum configuration exists in your config file
 
 
@@ -56,6 +56,14 @@ const App: FC = () => {
             type="text"
             value={dappAddress}
             onChange={(e) => setDappAddress(e.target.value)}
+          />
+          <br /><br />
+        </div>
+        <div>
+          Contract Address: <input
+            type="text"
+            value={contractAddress}
+            onChange={(e) => setContractAddress(e.target.value)}
           />
           <br /><br />
         </div>
