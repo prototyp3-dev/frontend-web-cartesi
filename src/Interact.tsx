@@ -1,7 +1,10 @@
 import React, { useState } from 'react';
 import { ethers } from 'ethers';
 import { useWallets } from "@web3-onboard/react";
+import { InteractionForm } from "./InteractionForm";
 import TrustAndTeachABI from "./contract_abi/TrustAndTeach.json";
+import SendCurlRequestButton from './SendCurlRequestButton';
+
 
 
 interface Interact {
@@ -32,19 +35,17 @@ export const Interact: React.FC<Interact> = ({ contractAddress }) => {
 
   return (
     <div>
-      <form onSubmit={handleSubmit}>
-        <input
-          type="text"
-          value={inputString}
-          onChange={(e) => setInputString(e.target.value)}
-          placeholder="Enter your instruction"
-        />
-        <button type="submit" disabled={!provider}>Send Instruction</button>
-      </form>
-
-      {transactionHash && (
-        <p>Transaction sent! Hash: {transactionHash}</p>
-      )}
+      <InteractionForm
+        contractAddress={contractAddress}
+        contractFunction={(signer, inputString) => {
+          const contract = new ethers.Contract(contractAddress, TrustAndTeachABI, signer);
+          return contract.sendInstructionPrompt(inputString);
+        }}
+      />
+      <SendCurlRequestButton
+        url="http://localhost:8545"
+        data='{"id":1337,"jsonrpc":"2.0","method":"evm_increaseTime","params":[864010]}'
+      />
     </div>
   );
 };
