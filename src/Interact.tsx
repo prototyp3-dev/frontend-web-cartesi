@@ -13,6 +13,7 @@ export const Interact: React.FC<Interact> = ({ dappAddress }) => {
   const [transactionHash, setTransactionHash] = useState<string>('');
   const [connectedWallet] = useWallets();
   const provider = new ethers.providers.Web3Provider(connectedWallet.provider);
+  const contractAddress = '0x959922bE3CAee4b8Cd9a407cc3ac1C251C2007B1';
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
@@ -25,7 +26,7 @@ export const Interact: React.FC<Interact> = ({ dappAddress }) => {
 
         const signer = provider.getSigner();
         // const contract = new ethers.Contract(dappAddress, TrustAndTeachABI, signer); // Use the imported ABI
-        const contract = new ethers.Contract('0x959922bE3CAee4b8Cd9a407cc3ac1C251C2007B1', TrustAndTeachABI, signer); // Use the imported ABI
+        const contract = new ethers.Contract(contractAddress, TrustAndTeachABI, signer); // Use the imported ABI
 
         const tx = await contract.sendInstructionPrompt(inputString);
         const receipt = await tx.wait();
