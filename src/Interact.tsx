@@ -9,28 +9,20 @@ interface Interact {
 }
 
 export const Interact: React.FC<Interact> = ({ dappAddress }) => {
-  const [inputString, setInputString] = useState<string>('');
   const [transactionHash, setTransactionHash] = useState<string>('');
   const [connectedWallet] = useWallets();
   const provider = new ethers.providers.Web3Provider(connectedWallet.provider);
   const contractAddress = '0x959922bE3CAee4b8Cd9a407cc3ac1C251C2007B1';
+
+  const [inputString, setInputString] = useState<string>('');
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
     try {
       if (provider) {
-
-        console.log("Contract ABI:", TrustAndTeachABI);
-        // console.log("Contract Address:", dappAddress);
-
-
         const signer = provider.getSigner();
-        // const contract = new ethers.Contract(dappAddress, TrustAndTeachABI, signer); // Use the imported ABI
         const contract = new ethers.Contract(contractAddress, TrustAndTeachABI, signer); // Use the imported ABI
-
         const tx = await contract.sendInstructionPrompt(inputString);
         const receipt = await tx.wait();
-
         setTransactionHash(receipt.transactionHash);
         console.log('Transaction successful with hash:', receipt.transactionHash);
       }
