@@ -5,14 +5,13 @@ import TrustAndTeachABI from "./contract_abi/TrustAndTeach.json";
 
 
 interface Interact {
-  dappAddress: string;
+  contractAddress: string;
 }
 
-export const Interact: React.FC<Interact> = ({ dappAddress }) => {
+export const Interact: React.FC<Interact> = ({ contractAddress }) => {
   const [transactionHash, setTransactionHash] = useState<string>('');
   const [connectedWallet] = useWallets();
   const provider = new ethers.providers.Web3Provider(connectedWallet.provider);
-  const contractAddress = '0x959922bE3CAee4b8Cd9a407cc3ac1C251C2007B1';
 
   const [inputString, setInputString] = useState<string>('');
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {

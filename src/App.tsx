@@ -16,7 +16,7 @@ import { init } from "@web3-onboard/react";
 
 import { GraphQLProvider } from "./GraphQL";
 import { Notices } from "./Notices";
-import { SendInstruction } from "./SendInstruction";
+import { Interact } from "./Interact";
 import { Input } from "./Input";
 import { Inspect } from "./Inspect";
 import { Network } from "./Network";
@@ -43,6 +43,7 @@ init({
 
 const App: FC = () => {
   const [dappAddress, setDappAddress] = useState<string>("0x70ac08179605AF2D9e75782b8DEcDD3c22aA4D0C");
+  const contractAddress = '0x959922bE3CAee4b8Cd9a407cc3ac1C251C2007B1';
   // const rpcUrl = config.ethereum.rpcUrl; // Assuming Ethereum configuration exists in your config file
 
 
@@ -60,8 +61,8 @@ const App: FC = () => {
         </div>
         <h2>Inspect</h2>
         <Inspect />
-        <h2>SendInstruction</h2>
-        <SendInstruction dappAddress={dappAddress} />
+        <h2>Interact</h2>
+        <Interact contractAddress={contractAddress} />
         <h2>Input</h2>
         <Input dappAddress={dappAddress} />
         <h2>Reports</h2>
