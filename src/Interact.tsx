@@ -35,6 +35,7 @@ export const Interact: React.FC<Interact> = ({ contractAddress }) => {
 
   return (
     <div>
+      through interaction form:
       <InteractionForm
         contractAddress={contractAddress}
         contractFunction={(signer, inputString) => {
@@ -46,6 +47,20 @@ export const Interact: React.FC<Interact> = ({ contractAddress }) => {
         url="http://localhost:8545"
         data='{"id":1337,"jsonrpc":"2.0","method":"evm_increaseTime","params":[864010]}'
       />
+      Old method:
+      <form onSubmit={handleSubmit}>
+        <input
+          type="text"
+          value={inputString}
+          onChange={(e) => setInputString(e.target.value)}
+          placeholder="Enter your instruction"
+        />
+        <button type="submit" disabled={!provider}>Send Instruction</button>
+      </form>
+
+      {transactionHash && (
+        <p>Transaction sent! Hash: {transactionHash}</p>
+      )}
     </div>
   );
 };
