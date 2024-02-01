@@ -53,7 +53,8 @@ export const Interact: React.FC<Interact> = ({ dappAddress, contractAddress }) =
         defaultInputUint256="3"
         contractFunction={(signer, inputString, inputUint256) => {
           const contract = new ethers.Contract(contractAddress, TrustAndTeachABI, signer);
-          return contract.sendInstructionPrompt(inputString, inputUint256);
+          const uint256Value = ethers.BigNumber.from(inputUint256);
+          return contract.sendInstructionPrompt(inputString, uint256Value);
         }}
       />
       <SendCurlRequestButton
