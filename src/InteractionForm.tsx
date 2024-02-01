@@ -25,7 +25,7 @@ export const InteractionForm: React.FC<InteractionForm> = ({ contractAddress, de
         const signer = provider.getSigner();
         const contract = new ethers.Contract(contractAddress, TrustAndTeachABI, signer); // Assuming TrustAndTeachABI is imported
         // const tx = await contractFunction(signer, inputString, ...(defaultInputUint256 ? [ethers.utils.parseUnits(inputUint256, 0)] : [])); // Call the provided contract function with an optional third argument
-        if defaultInputUint256 {
+        if (defaultInputUint256) {
           const tx = await contractFunction(signer, inputString, ethers.utils.parseUnits(inputUint256, 0));
           const receipt = await tx.wait();
           setTransactionHash(receipt.transactionHash);
