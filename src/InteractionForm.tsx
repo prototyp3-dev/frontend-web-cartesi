@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
 import { ethers } from 'ethers';
 import { useWallets } from "@web3-onboard/react";
-import TrustAndTeachABI from "./contract_abi/TrustAndTeach.json";
 
-interface InteractionForm {
+interface IInteractionForm {
   contractAddress: string;
   description: string;
   defaultInputString: string;
@@ -11,7 +10,7 @@ interface InteractionForm {
   contractFunction: (signer: ethers.Signer, ...args: any[]) => Promise<ethers.providers.TransactionResponse>;
 }
 
-export const InteractionForm: React.FC<InteractionForm> = ({ contractAddress, description, defaultInputString, defaultInputUint256, contractFunction }) => {
+export const InteractionForm: React.FC<IInteractionForm> = ({ contractAddress, description, defaultInputString, defaultInputUint256, contractFunction }) => {
   const [transactionHash, setTransactionHash] = useState<string>('');
   const [connectedWallet] = useWallets();
   const provider = new ethers.providers.Web3Provider(connectedWallet.provider);
@@ -23,8 +22,6 @@ export const InteractionForm: React.FC<InteractionForm> = ({ contractAddress, de
     try {
       if (provider) {
         const signer = provider.getSigner();
-        const contract = new ethers.Contract(contractAddress, TrustAndTeachABI, signer); // Assuming TrustAndTeachABI is imported
-        // const tx = await contractFunction(signer, inputString, ...(defaultInputUint256 ? [ethers.utils.parseUnits(inputUint256, 0)] : [])); // Call the provided contract function with an optional third argument
         if (defaultInputUint256) {
           const tx = await contractFunction(signer, inputString, inputUint256);
           const receipt = await tx.wait();
