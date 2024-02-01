@@ -46,7 +46,7 @@ export const InteractionForm: React.FC<InteractionForm> = ({ contractAddress, de
         {defaultInputUint256 && (
           <input
             type="number"
-            value={defaultInputUint256}
+            value={inputUint256}
             onChange={(e) => setInputUint256(e.target.value)}
             placeholder="Enter your uint256 input"
           />
