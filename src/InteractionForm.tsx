@@ -56,10 +56,6 @@ export const InteractionForm: React.FC<InteractionForm> = ({ contractAddress, de
       {transactionHash && (
         <p>Transaction sent! Hash: {transactionHash}</p>
       )}
-
-      {transactionHash && (
-        <p>Transaction sent! Hash: {transactionHash}</p>
-      )}
     </div>
   );
 };
