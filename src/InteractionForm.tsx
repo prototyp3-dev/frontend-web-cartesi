@@ -5,24 +5,24 @@ import { useWallets } from "@web3-onboard/react";
 interface IInteractionForm {
   contractAddress: string;
   description: string;
-  defaultInputString: string;
-  defaultInputUint256?: string;
+  defaultInput01: string;
+  defaultInput02?: string;
   contractFunction: (signer: ethers.Signer, ...args: any[]) => Promise<ethers.providers.TransactionResponse>;
 }
 
-export const InteractionForm: React.FC<IInteractionForm> = ({ contractAddress, description, defaultInputString, defaultInputUint256, contractFunction }) => {
+export const InteractionForm: React.FC<IInteractionForm> = ({ contractAddress, description, defaultInput01, defaultInput02, contractFunction }) => {
   const [transactionHash, setTransactionHash] = useState<string>('');
   const [connectedWallet] = useWallets();
   const provider = new ethers.providers.Web3Provider(connectedWallet.provider);
 
-  const [inputString, setInputString] = useState<string>(defaultInputString);
-  const [inputUint256, setInputUint256] = useState<string>(defaultInputUint256 || '');
+  const [inputString, setInputString] = useState<string>(defaultInput01);
+  const [inputUint256, setInputUint256] = useState<string>(defaultInput02 || '');
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
       if (provider) {
         const signer = provider.getSigner();
-        if (defaultInputUint256) {
+        if (defaultInput02) {
           const tx = await contractFunction(signer, inputString, inputUint256);
           const receipt = await tx.wait();
           setTransactionHash(receipt.transactionHash);
@@ -48,7 +48,7 @@ export const InteractionForm: React.FC<IInteractionForm> = ({ contractAddress, d
           onChange={(e) => setInputString(e.target.value)}
           placeholder="Enter your input"
         />
-        {defaultInputUint256 && (
+        {defaultInput02 && (
           <input
             type="number"
             value={inputUint256}
