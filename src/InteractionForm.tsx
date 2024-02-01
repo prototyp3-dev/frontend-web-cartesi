@@ -29,12 +29,13 @@ export const InteractionForm: React.FC<InteractionForm> = ({ contractAddress, de
           const tx = await contractFunction(signer, inputString, ethers.utils.parseUnits(inputUint256, 0));
           const receipt = await tx.wait();
           setTransactionHash(receipt.transactionHash);
+          console.log('Transaction successful with hash:', receipt.transactionHash);
         } else {
           const tx = await contractFunction(signer, inputString);
           const receipt = await tx.wait();
           setTransactionHash(receipt.transactionHash);
+          console.log('Transaction successful with hash:', receipt.transactionHash);
         }
-        console.log('Transaction successful with hash:', receipt.transactionHash);
       }
     } catch (error) {
       console.error('Transaction failed:', error);
