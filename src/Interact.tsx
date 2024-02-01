@@ -50,9 +50,10 @@ export const Interact: React.FC<Interact> = ({ dappAddress, contractAddress }) =
         contractAddress={contractAddress}
         description="Send Instruction"
         defaultInputString="When "
-        contractFunction={(signer, inputString) => {
+        defaultInputUint256="3"
+        contractFunction={(signer, inputString, inputUint256) => {
           const contract = new ethers.Contract(contractAddress, TrustAndTeachABI, signer);
-          return contract.sendInstructionPrompt(inputString);
+          return contract.sendInstructionPrompt(inputString, inputUint256);
         }}
       />
       <SendCurlRequestButton

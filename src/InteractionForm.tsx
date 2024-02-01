@@ -7,10 +7,11 @@ interface InteractionForm {
   contractAddress: string;
   description: string;
   defaultInputString: string;
+  defaultInputUint256?: string;
   contractFunction: (signer: ethers.Signer, ...args: any[]) => Promise<ethers.providers.TransactionResponse>;
 }
 
-export const InteractionForm: React.FC<InteractionForm> = ({ contractAddress, description, defaultInputString, contractFunction }) => {
+export const InteractionForm: React.FC<InteractionForm> = ({ contractAddress, description, defaultInputString, defaultInputUint256, contractFunction }) => {
   const [transactionHash, setTransactionHash] = useState<string>('');
   const [connectedWallet] = useWallets();
   const provider = new ethers.providers.Web3Provider(connectedWallet.provider);
@@ -41,8 +42,19 @@ export const InteractionForm: React.FC<InteractionForm> = ({ contractAddress, de
           onChange={(e) => setInputString(e.target.value)}
           placeholder="Enter your input"
         />
+        {defaultInputUint256 && (
+          <input
+            type="number"
+            value={defaultInputUint256}
+            onChange={(e) => setInputUint256(e.target.value)}
+            placeholder="Enter your uint256 input"
+          />
+        )}
         <button type="submit" disabled={!provider}>{description}</button>
       </form>
+      {transactionHash && (
+        <p>Transaction sent! Hash: {transactionHash}</p>
+      )}
 
       {transactionHash && (
         <p>Transaction sent! Hash: {transactionHash}</p>
