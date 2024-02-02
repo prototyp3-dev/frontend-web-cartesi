@@ -14,7 +14,6 @@ interface IInteractionForm {
   defaultInputs: InputField[];
   contractFunction: (signer: ethers.Signer, ...args: any[]) => Promise<any>;
   isReadCall?: boolean;
-  isReadCall?: boolean;
 }
 
 export const InteractionForm: React.FC<IInteractionForm> = ({ contractAddress, description, defaultInputs, contractFunction, isReadCall }) => {
