@@ -29,7 +29,7 @@ export const Interact: React.FC<IInteract> = ({ dappAddress, contractAddress }) 
         description="Send Instruction"
         defaultInputs={[
           { name: 'prompt', value: "In old times when ", description: 'Prompt' },
-          { name: 'llmSteps', value: "3", description: 'LLM Steps' }
+          { name: 'llmSteps', value: "10", description: 'LLM Steps' }
         ]}
         contractFunction={(signer, inputObject1, inputObject2) => {
           const contract = new ethers.Contract(contractAddress, TrustAndTeachABI, signer);
