@@ -25,7 +25,7 @@ export const Interact: React.FC<IInteract> = ({ dappAddress, contractAddress }) 
         contractAddress={contractAddress}
         description="set dapp address"
         defaultInputs={[{ name: 'dappAddress', value: dappAddress, description: 'DApp Address' }]}
-        contractFunction={(signer, inputObject) => {
+        contractFunction={(signer: ethers.Signer, inputObject: IInputField) => {
           const contract = new ethers.Contract(contractAddress, TrustAndTeachABI, signer);
           return contract.set_dapp_address(inputObject.value);
         }}
@@ -37,7 +37,7 @@ export const Interact: React.FC<IInteract> = ({ dappAddress, contractAddress }) 
           { name: 'prompt', value: "In old times when ", description: 'Prompt' },
           { name: 'llmSteps', value: "10", description: 'LLM Steps' }
         ]}
-        contractFunction={(signer, inputObject1, inputObject2) => {
+        contractFunction={(signer: ethers.Signer, inputObject1: IInputField, inputObject2: IInputField) => {
           const contract = new ethers.Contract(contractAddress, TrustAndTeachABI, signer);
           const uint256Value = ethers.BigNumber.from(inputObject2.value);
           return contract.sendInstructionPrompt(inputObject1.value, uint256Value);
@@ -52,7 +52,7 @@ export const Interact: React.FC<IInteract> = ({ dappAddress, contractAddress }) 
           { name: 'iSplitResponse', value: "0", description: 'Split Response Index' },
           { name: 'splitResponse', value: "", description: 'Split Response' }
         ]}
-        contractFunction={(signer, inputObject1, inputObject2, inputObject3, inputObject4) => {
+        contractFunction={(signer: ethers.Signer, inputObject1: IInputField, inputObject2: IInputField, inputObject3: IInputField, inputObject4: IInputField) => {
           const contract = new ethers.Contract(contractAddress, TrustAndTeachABI, signer);
           const conversationId = ethers.BigNumber.from(inputObject1.value);
           const iResponse = ethers.BigNumber.from(inputObject2.value);
@@ -64,7 +64,7 @@ export const Interact: React.FC<IInteract> = ({ dappAddress, contractAddress }) 
         contractAddress={contractAddress}
         description="Get Conversation by ID"
         defaultInputs={[{ name: 'conversationId', value: "0", description: 'Conversation ID' }]}
-        contractFunction={async (signer, inputObject) => {
+        contractFunction={async (signer: ethers.Signer, inputObject: IInputField) => {
           const contract = new ethers.Contract(contractAddress, TrustAndTeachABI, signer);
           const result = await contract.getConversationById(ethers.BigNumber.from(inputObject.value));
           return {
@@ -83,7 +83,7 @@ export const Interact: React.FC<IInteract> = ({ dappAddress, contractAddress }) 
         contractAddress={contractAddress}
         description="Get Conversation Response Count"
         defaultInputs={[{ name: 'conversationId', value: "0", description: 'Conversation ID' }]}
-        contractFunction={async (signer, inputObject) => {
+        contractFunction={async (signer: ethers.Signer, inputObject: IInputField) => {
           const contract = new ethers.Contract(contractAddress, TrustAndTeachABI, signer);
           return contract.getConversationResponseCount(ethers.BigNumber.from(inputObject.value)).then((result: ethers.BigNumber) => parseInt(result.toString()));
         }}
@@ -103,7 +103,7 @@ export const Interact: React.FC<IInteract> = ({ dappAddress, contractAddress }) 
         contractAddress={contractAddress}
         description="Get Prompt by Conversation ID"
         defaultInputs={[{ name: 'conversationId', value: "0", description: 'Conversation ID' }]}
-        contractFunction={async (signer, inputObject) => {
+        contractFunction={async (signer: ethers.Signer, inputObject: IInputField) => {
           const contract = new ethers.Contract(contractAddress, TrustAndTeachABI, signer);
           return contract.getPromptByConversationId(ethers.BigNumber.from(inputObject.value));
         }}
@@ -116,7 +116,7 @@ export const Interact: React.FC<IInteract> = ({ dappAddress, contractAddress }) 
           { name: 'conversationId', value: "0", description: 'Conversation ID' },
           { name: 'ranks', value: "", description: 'Ranks (comma-separated)' }
         ]}
-        contractFunction={(signer, inputObject1, inputObject2) => {
+        contractFunction={(signer: ethers.Signer, inputObject1: IInputField, inputObject2: IInputField) => {
           const contract = new ethers.Contract(contractAddress, TrustAndTeachABI, signer);
           const conversationId = ethers.BigNumber.from(inputObject1.value);
           const ranksArray = inputObject2.value.split(',').map((rank: string) => ethers.BigNumber.from(rank.trim()));
@@ -131,7 +131,7 @@ export const Interact: React.FC<IInteract> = ({ dappAddress, contractAddress }) 
           { name: 'iResponse', value: "0", description: 'Response Index' },
           { name: 'iSplitResponse', value: "0", description: 'Split Response Index' }
         ]}
-        contractFunction={async (signer, inputObject1, inputObject2, inputObject3) => {
+        contractFunction={async (signer: ethers.Signer, inputObject1: IInputField, inputObject2: IInputField, inputObject3: IInputField) => {
           const contract = new ethers.Contract(contractAddress, TrustAndTeachABI, signer);
           const conversationId = ethers.BigNumber.from(inputObject1.value);
           const iResponse = ethers.BigNumber.from(inputObject2.value);
