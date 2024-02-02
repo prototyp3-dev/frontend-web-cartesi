@@ -97,7 +97,7 @@ export const Interact: React.FC<IInteract> = ({ dappAddress, contractAddress }) 
         contractAddress={contractAddress}
         description="Submit Rank"
         defaultInputs={[
-          { name: 'conversationId', value: "", description: 'Conversation ID' },
+          { name: 'conversationId', value: "0", description: 'Conversation ID' },
           { name: 'ranks', value: "", description: 'Ranks (comma-separated)' }
         ]}
         contractFunction={(signer, inputObject1, inputObject2) => {
