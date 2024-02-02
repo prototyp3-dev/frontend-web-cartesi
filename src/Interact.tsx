@@ -18,8 +18,12 @@ interface IInteract {
 }
 
 export const Interact: React.FC<IInteract> = ({ dappAddress, contractAddress }) => {
+  const [connectedWallet] = useWallets();
+  const userAddress = connectedWallet?.accounts[0]?.address || '';
+
   return (
     <div>
+      {/* ... other components ... */}
       through interaction form:
       <InteractionForm
         contractAddress={contractAddress}
@@ -160,7 +164,7 @@ export const Interact: React.FC<IInteract> = ({ dappAddress, contractAddress }) 
         description="Get Ranks By User"
         defaultInputs={[
           { name: 'conversationId', value: "0", description: 'Conversation ID' },
-          { name: 'userAddress', value: "", description: 'User Address' }
+          { name: 'userAddress', value: userAddress, description: 'User Address' }
         ]}
         contractFunction={async (signer: ethers.Signer, inputObject1: IInputField, inputObject2: IInputField) => {
           const contract = new ethers.Contract(contractAddress, TrustAndTeachABI, signer);
