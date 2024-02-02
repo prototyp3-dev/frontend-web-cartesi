@@ -95,6 +95,20 @@ export const Interact: React.FC<IInteract> = ({ dappAddress, contractAddress }) 
       />
       <InteractionForm
         contractAddress={contractAddress}
+        description="Submit Rank"
+        defaultInputs={[
+          { name: 'conversationId', value: "", description: 'Conversation ID' },
+          { name: 'ranks', value: "", description: 'Ranks (comma-separated)' }
+        ]}
+        contractFunction={(signer, inputObject1, inputObject2) => {
+          const contract = new ethers.Contract(contractAddress, TrustAndTeachABI, signer);
+          const conversationId = ethers.BigNumber.from(inputObject1.value);
+          const ranksArray = inputObject2.value.split(',').map((rank: string) => ethers.BigNumber.from(rank.trim()));
+          return contract.submitRank(conversationId, ranksArray);
+        }}
+      />
+      <InteractionForm
+        contractAddress={contractAddress}
         description="Get Conversation Response by Index"
         defaultInputs={[
           { name: 'conversationId', value: "0", description: 'Conversation ID' },
