@@ -42,8 +42,8 @@ export const Interact: React.FC<IInteract> = ({ dappAddress, contractAddress }) 
         description="Announce Prompt Response"
         defaultInputs={[
           { name: 'conversationId', value: "0", description: 'Conversation ID' },
-          { name: 'iResponse', value: "", description: 'Response Index' },
-          { name: 'iSplitResponse', value: "", description: 'Split Response Index' },
+          { name: 'iResponse', value: "0", description: 'Response Index' },
+          { name: 'iSplitResponse', value: "0", description: 'Split Response Index' },
           { name: 'splitResponse', value: "", description: 'Split Response' }
         ]}
         contractFunction={(signer, inputObject1, inputObject2, inputObject3, inputObject4) => {
@@ -57,7 +57,7 @@ export const Interact: React.FC<IInteract> = ({ dappAddress, contractAddress }) 
       <InteractionForm
         contractAddress={contractAddress}
         description="Get Conversation by ID"
-        defaultInputs={[{ name: 'conversationId', value: "", description: 'Conversation ID' }]}
+        defaultInputs={[{ name: 'conversationId', value: "0", description: 'Conversation ID' }]}
         contractFunction={async (signer, inputObject) => {
           const contract = new ethers.Contract(contractAddress, TrustAndTeachABI, signer);
           const result = await contract.getConversationById(ethers.BigNumber.from(inputObject.value));
@@ -76,7 +76,7 @@ export const Interact: React.FC<IInteract> = ({ dappAddress, contractAddress }) 
       <InteractionForm
         contractAddress={contractAddress}
         description="Get Conversation Response Count"
-        defaultInputs={[{ name: 'conversationId', value: "", description: 'Conversation ID' }]}
+        defaultInputs={[{ name: 'conversationId', value: "0", description: 'Conversation ID' }]}
         contractFunction={async (signer, inputObject) => {
           const contract = new ethers.Contract(contractAddress, TrustAndTeachABI, signer);
           return contract.getConversationResponseCount(ethers.BigNumber.from(inputObject.value)).then((result: ethers.BigNumber) => parseInt(result.toString()));
@@ -86,7 +86,7 @@ export const Interact: React.FC<IInteract> = ({ dappAddress, contractAddress }) 
       <InteractionForm
         contractAddress={contractAddress}
         description="Get Prompt by Conversation ID"
-        defaultInputs={[{ name: 'conversationId', value: "", description: 'Conversation ID' }]}
+        defaultInputs={[{ name: 'conversationId', value: "0", description: 'Conversation ID' }]}
         contractFunction={async (signer, inputObject) => {
           const contract = new ethers.Contract(contractAddress, TrustAndTeachABI, signer);
           return contract.getPromptByConversationId(ethers.BigNumber.from(inputObject.value));
