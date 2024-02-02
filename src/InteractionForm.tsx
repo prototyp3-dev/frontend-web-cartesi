@@ -14,9 +14,10 @@ interface IInteractionForm {
   defaultInputs: InputField[];
   contractFunction: (signer: ethers.Signer, ...args: any[]) => Promise<any>;
   isReadCall?: boolean;
+  isReadCall?: boolean;
 }
 
-export const InteractionForm: React.FC<IInteractionForm> = ({ contractAddress, description, defaultInputs, contractFunction }) => {
+export const InteractionForm: React.FC<IInteractionForm> = ({ contractAddress, description, defaultInputs, contractFunction, isReadCall }) => {
   const [transactionHash, setTransactionHash] = useState<string>('');
   const [connectedWallet] = useWallets();
   const provider = new ethers.providers.Web3Provider(connectedWallet.provider);
