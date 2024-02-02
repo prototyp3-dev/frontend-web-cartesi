@@ -55,7 +55,7 @@ export const InteractionForm: React.FC<IInteractionForm> = ({ contractAddress, d
             />
           </div>
         ))}
-        <button type="submit" disabled={!provider}>{description}</button>
+        <button type="submit" disabled={!provider} style={{ marginTop: 'auto' }}>{description}</button>
       </form>
       {transactionHash && (
         <p>Transaction sent! Hash: {transactionHash}</p>
