@@ -18,6 +18,7 @@ interface IInteractionForm {
 
 export const InteractionForm: React.FC<IInteractionForm> = ({ contractAddress, description, defaultInputs, contractFunction, isReadCall }) => {
   const [transactionHash, setTransactionHash] = useState<string>('');
+  const [readResult, setReadResult] = useState<string>('');
   const [connectedWallet] = useWallets();
   const provider = new ethers.providers.Web3Provider(connectedWallet.provider);
 
@@ -29,7 +30,7 @@ export const InteractionForm: React.FC<IInteractionForm> = ({ contractAddress, d
         const signer = provider.getSigner();
         if (isReadCall) {
           const result = await contractFunction(signer, ...inputs);
-          console.log('Read call result:', result);
+          setReadResult(JSON.stringify(result));
         } else {
           const tx = await contractFunction(signer, ...inputs);
           const receipt = await tx.wait();
@@ -63,8 +64,14 @@ export const InteractionForm: React.FC<IInteractionForm> = ({ contractAddress, d
         ))}
         <button type="submit" disabled={!provider} style={{ marginTop: 'auto' }}>{description}</button>
       </form>
-      {transactionHash && !isReadCall && (
-        <p>Transaction sent! Hash: {transactionHash}</p>
+      {!isReadCall ? (
+        transactionHash && (
+          <p>Transaction sent! Hash: {transactionHash}</p>
+        )
+      ) : (
+        readResult && (
+          <p>Read call result: {readResult}</p>
+        )
       )}
     </div>
   );
