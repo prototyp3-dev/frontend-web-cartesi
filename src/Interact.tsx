@@ -70,7 +70,7 @@ export const Interact: React.FC<IInteract> = ({ dappAddress, contractAddress }) 
         defaultInputs={[{ name: 'conversationId', value: "", description: 'Conversation ID' }]}
         contractFunction={async (signer, inputObject) => {
           const contract = new ethers.Contract(contractAddress, TrustAndTeachABI, signer);
-          return contract.getConversationResponseCount(ethers.BigNumber.from(inputObject.value));
+          return contract.getConversationResponseCount(ethers.BigNumber.from(inputObject.value)).then(result => parseInt(result.toString()));
         }}
         isReadCall={true}
       />
