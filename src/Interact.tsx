@@ -41,7 +41,7 @@ export const Interact: React.FC<IInteract> = ({ dappAddress, contractAddress }) 
         contractAddress={contractAddress}
         description="Announce Prompt Response"
         defaultInputs={[
-          { name: 'conversationId', value: "", description: 'Conversation ID' },
+          { name: 'conversationId', value: "0", description: 'Conversation ID' },
           { name: 'iResponse', value: "", description: 'Response Index' },
           { name: 'iSplitResponse', value: "", description: 'Split Response Index' },
           { name: 'splitResponse', value: "", description: 'Split Response' }
@@ -97,9 +97,9 @@ export const Interact: React.FC<IInteract> = ({ dappAddress, contractAddress }) 
         contractAddress={contractAddress}
         description="Get Conversation Response by Index"
         defaultInputs={[
-          { name: 'conversationId', value: "", description: 'Conversation ID' },
-          { name: 'iResponse', value: "", description: 'Response Index' },
-          { name: 'iSplitResponse', value: "", description: 'Split Response Index' }
+          { name: 'conversationId', value: "0", description: 'Conversation ID' },
+          { name: 'iResponse', value: "0", description: 'Response Index' },
+          { name: 'iSplitResponse', value: "0", description: 'Split Response Index' }
         ]}
         contractFunction={async (signer, inputObject1, inputObject2, inputObject3) => {
           const contract = new ethers.Contract(contractAddress, TrustAndTeachABI, signer);
