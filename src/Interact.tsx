@@ -58,11 +58,11 @@ export const Interact: React.FC<IInteract> = ({ dappAddress, contractAddress }) 
         contractAddress={contractAddress}
         description="Get Prompt by Conversation ID"
         defaultInputs={[
-          { name: 'conversationId', value: "", description: 'Conversation ID' }
+          { name: 'conversationId', value: "0", description: 'Conversation ID' }
         ]}
         contractFunction={(signer, inputObject1) => {
           const contract = new ethers.Contract(contractAddress, TrustAndTeachABI, signer);
-          const conversationId = ethers.BigNumber.from(inputObject1.value);
+          const conversationId = inputObject1.value;
           return contract.getPromptByConversationId(conversationId);
         }}
       />
