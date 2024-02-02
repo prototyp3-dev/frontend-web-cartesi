@@ -56,6 +56,16 @@ export const Interact: React.FC<IInteract> = ({ dappAddress, contractAddress }) 
       />
       <InteractionForm
         contractAddress={contractAddress}
+        description="Get Conversation by ID"
+        defaultInputs={[{ name: 'conversationId', value: "", description: 'Conversation ID' }]}
+        contractFunction={async (signer, inputObject) => {
+          const contract = new ethers.Contract(contractAddress, TrustAndTeachABI, signer);
+          return contract.getConversationById(ethers.BigNumber.from(inputObject.value));
+        }}
+        isReadCall={true}
+      />
+      <InteractionForm
+        contractAddress={contractAddress}
         description="Get Prompt by Conversation ID"
         defaultInputs={[{ name: 'conversationId', value: "", description: 'Conversation ID' }]}
         contractFunction={async (signer, inputObject) => {
