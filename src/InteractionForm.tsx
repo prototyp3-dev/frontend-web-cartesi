@@ -2,10 +2,16 @@ import React, { useState } from 'react';
 import { ethers } from 'ethers';
 import { useWallets } from "@web3-onboard/react";
 
+interface InputField {
+  name: string;
+  value: string;
+  description: string;
+}
+
 interface IInteractionForm {
   contractAddress: string;
   description: string;
-  defaultInputs: string[];
+  defaultInputs: InputField[];
   contractFunction: (signer: ethers.Signer, ...args: any[]) => Promise<ethers.providers.TransactionResponse>;
 }
 
@@ -14,7 +20,7 @@ export const InteractionForm: React.FC<IInteractionForm> = ({ contractAddress, d
   const [connectedWallet] = useWallets();
   const provider = new ethers.providers.Web3Provider(connectedWallet.provider);
 
-  const [inputs, setInputs] = useState<string[]>(defaultInputs);
+  const [inputs, setInputs] = useState<InputField[]>(defaultInputs);
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
@@ -33,18 +39,21 @@ export const InteractionForm: React.FC<IInteractionForm> = ({ contractAddress, d
   return (
     <div>
       <form onSubmit={handleSubmit}>
-        {defaultInputs.map((input, index) => (
-          <input
-            key={index}
-            type="text"
-            value={inputs[index]}
-            onChange={(e) => {
-              const newInputs = [...inputs];
-              newInputs[index] = e.target.value;
-              setInputs(newInputs);
-            }}
-            placeholder={`Enter input #${index + 1}`}
-          />
+        {inputs.map((inputField, index) => (
+          <div key={inputField.name}>
+            <label htmlFor={inputField.name}>{inputField.description}</label>
+            <input
+              id={inputField.name}
+              type="text"
+              value={inputField.value}
+              onChange={(e) => {
+                const newInputs = [...inputs];
+                newInputs[index] = { ...inputField, value: e.target.value };
+                setInputs(newInputs);
+              }}
+              placeholder={inputField.description}
+            />
+          </div>
         ))}
         <button type="submit" disabled={!provider}>{description}</button>
       </form>
