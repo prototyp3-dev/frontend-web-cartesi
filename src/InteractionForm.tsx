@@ -14,24 +14,16 @@ export const InteractionForm: React.FC<IInteractionForm> = ({ contractAddress, d
   const [connectedWallet] = useWallets();
   const provider = new ethers.providers.Web3Provider(connectedWallet.provider);
 
-  const [inputString, setInputString] = useState<string>(defaultInputs[0]);
-  const [inputUint256, setInputUint256] = useState<string>(defaultInputs.length > 1 ? defaultInputs[1] : '');
+  const [inputs, setInputs] = useState<string[]>(defaultInputs);
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
       if (provider) {
         const signer = provider.getSigner();
-        if (defaultInputs.length > 1) {
-          const tx = await contractFunction(signer, inputString, inputUint256);
-          const receipt = await tx.wait();
-          setTransactionHash(receipt.transactionHash);
-          console.log('Transaction successful with hash:', receipt.transactionHash);
-        } else {
-          const tx = await contractFunction(signer, inputString);
-          const receipt = await tx.wait();
-          setTransactionHash(receipt.transactionHash);
-          console.log('Transaction successful with hash:', receipt.transactionHash);
-        }
+        const tx = await contractFunction(signer, ...inputs);
+        const receipt = await tx.wait();
+        setTransactionHash(receipt.transactionHash);
+        console.log('Transaction successful with hash:', receipt.transactionHash);
       }
     } catch (error) {
       console.error('Transaction failed:', error);
@@ -41,20 +33,19 @@ export const InteractionForm: React.FC<IInteractionForm> = ({ contractAddress, d
   return (
     <div>
       <form onSubmit={handleSubmit}>
-        <input
-          type="text"
-          value={inputString}
-          onChange={(e) => setInputString(e.target.value)}
-          placeholder="Enter your input"
-        />
-        {defaultInputs.length > 1 && (
+        {defaultInputs.map((input, index) => (
           <input
-            type="number"
-            value={inputUint256}
-            onChange={(e) => setInputUint256(e.target.value)}
-            placeholder="Enter your uint256 input"
+            key={index}
+            type="text"
+            value={inputs[index]}
+            onChange={(e) => {
+              const newInputs = [...inputs];
+              newInputs[index] = e.target.value;
+              setInputs(newInputs);
+            }}
+            placeholder={`Enter input #${index + 1}`}
           />
-        )}
+        ))}
         <button type="submit" disabled={!provider}>{description}</button>
       </form>
       {transactionHash && (
