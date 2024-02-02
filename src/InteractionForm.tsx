@@ -38,9 +38,9 @@ export const InteractionForm: React.FC<IInteractionForm> = ({ contractAddress, d
 
   return (
     <div>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
         {inputs.map((inputField, index) => (
-          <div key={inputField.name}>
+          <div key={inputField.name} style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
             <label htmlFor={inputField.name}>{inputField.description}</label>
             <input
               id={inputField.name}
@@ -55,7 +55,7 @@ export const InteractionForm: React.FC<IInteractionForm> = ({ contractAddress, d
             />
           </div>
         ))}
-        <button type="submit" disabled={!provider}>{description}</button>
+        <button type="submit" disabled={!provider} style={{ alignSelf: 'stretch' }}>{description}</button>
       </form>
       {transactionHash && (
         <p>Transaction sent! Hash: {transactionHash}</p>
