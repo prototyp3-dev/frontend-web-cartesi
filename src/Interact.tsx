@@ -66,6 +66,16 @@ export const Interact: React.FC<IInteract> = ({ dappAddress, contractAddress }) 
           return contract.getPromptByConversationId(conversationId);
         }}
       />
+      <InteractionForm
+        contractAddress={contractAddress}
+        description="Get Prompt by Conversation ID"
+        defaultInputs={[{ name: 'conversationId', value: "", description: 'Conversation ID' }]}
+        contractFunction={async (signer, inputObject) => {
+          const contract = new ethers.Contract(contractAddress, TrustAndTeachABI, signer);
+          return contract.getPromptByConversationId(ethers.BigNumber.from(inputObject.value));
+        }}
+        isReadCall={true}
+      />
       <SendCurlRequestButton
         url="http://localhost:8545"
         data='{"id":1337,"jsonrpc":"2.0","method":"evm_increaseTime","params":[864010]}'
