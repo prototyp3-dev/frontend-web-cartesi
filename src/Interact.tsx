@@ -18,7 +18,7 @@ export const Interact: React.FC<IInteract> = ({ dappAddress, contractAddress }) 
       <InteractionForm
         contractAddress={contractAddress}
         description="set dapp address"
-        defaultInput01={dappAddress}
+        defaultInputs={[dappAddress]}
         contractFunction={(signer, inputString) => {
           const contract = new ethers.Contract(contractAddress, TrustAndTeachABI, signer);
           return contract.set_dapp_address(inputString);
@@ -27,8 +27,7 @@ export const Interact: React.FC<IInteract> = ({ dappAddress, contractAddress }) 
       <InteractionForm
         contractAddress={contractAddress}
         description="Send Instruction"
-        defaultInput01="When "
-        defaultInput02="3"
+        defaultInputs={["When ", "3"]}
         contractFunction={(signer, inputString, inputUint256) => {
           const contract = new ethers.Contract(contractAddress, TrustAndTeachABI, signer);
           const uint256Value = ethers.BigNumber.from(inputUint256);
