@@ -19,9 +19,9 @@ export const Interact: React.FC<IInteract> = ({ dappAddress, contractAddress }) 
         contractAddress={contractAddress}
         description="set dapp address"
         defaultInputs={[{ name: 'dappAddress', value: dappAddress, description: 'DApp Address' }]}
-        contractFunction={(signer, inputString) => {
+        contractFunction={(signer, inputObject) => {
           const contract = new ethers.Contract(contractAddress, TrustAndTeachABI, signer);
-          return contract.set_dapp_address(inputString);
+          return contract.set_dapp_address(inputObject.value);
         }}
       />
       <InteractionForm
@@ -31,10 +31,10 @@ export const Interact: React.FC<IInteract> = ({ dappAddress, contractAddress }) 
           { name: 'prompt', value: "In old times when ", description: 'Prompt' },
           { name: 'llmSteps', value: "3", description: 'LLM Steps' }
         ]}
-        contractFunction={(signer, inputString, inputUint256) => {
+        contractFunction={(signer, inputObject1, inputObject2) => {
           const contract = new ethers.Contract(contractAddress, TrustAndTeachABI, signer);
-          const uint256Value = ethers.BigNumber.from(inputUint256);
-          return contract.sendInstructionPrompt(inputString, uint256Value);
+          const uint256Value = ethers.BigNumber.from(inputObject2.value);
+          return contract.sendInstructionPrompt(inputObject1.value, uint256Value);
         }}
       />
       <SendCurlRequestButton
