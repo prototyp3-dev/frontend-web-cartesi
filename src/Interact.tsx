@@ -27,7 +27,7 @@ export const Interact: React.FC<IInteract> = ({ dappAddress, contractAddress }) 
       <InteractionForm
         contractAddress={contractAddress}
         description="Send Instruction"
-        defaultInputs={["When ", "3"]}
+        defaultInputs={["In old times when ", "3"]}
         contractFunction={(signer, inputString, inputUint256) => {
           const contract = new ethers.Contract(contractAddress, TrustAndTeachABI, signer);
           const uint256Value = ethers.BigNumber.from(inputUint256);
