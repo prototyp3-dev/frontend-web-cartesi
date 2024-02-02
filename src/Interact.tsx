@@ -93,6 +93,23 @@ export const Interact: React.FC<IInteract> = ({ dappAddress, contractAddress }) 
         }}
         isReadCall={true}
       />
+      <InteractionForm
+        contractAddress={contractAddress}
+        description="Get Conversation Response by Index"
+        defaultInputs={[
+          { name: 'conversationId', value: "", description: 'Conversation ID' },
+          { name: 'iResponse', value: "", description: 'Response Index' },
+          { name: 'iSplitResponse', value: "", description: 'Split Response Index' }
+        ]}
+        contractFunction={async (signer, inputObject1, inputObject2, inputObject3) => {
+          const contract = new ethers.Contract(contractAddress, TrustAndTeachABI, signer);
+          const conversationId = ethers.BigNumber.from(inputObject1.value);
+          const iResponse = ethers.BigNumber.from(inputObject2.value);
+          const iSplitResponse = ethers.BigNumber.from(inputObject3.value);
+          return contract.getConversationResponseByIndex(conversationId, iResponse, iSplitResponse);
+        }}
+        isReadCall={true}
+      />
       <SendCurlRequestButton
         url="http://localhost:8545"
         data='{"id":1337,"jsonrpc":"2.0","method":"evm_increaseTime","params":[864010]}'
