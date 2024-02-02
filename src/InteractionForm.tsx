@@ -12,7 +12,8 @@ interface IInteractionForm {
   contractAddress: string;
   description: string;
   defaultInputs: InputField[];
-  contractFunction: (signer: ethers.Signer, ...args: any[]) => Promise<ethers.providers.TransactionResponse>;
+  contractFunction: (signer: ethers.Signer, ...args: any[]) => Promise<any>;
+  isReadCall?: boolean;
 }
 
 export const InteractionForm: React.FC<IInteractionForm> = ({ contractAddress, description, defaultInputs, contractFunction }) => {
@@ -26,10 +27,15 @@ export const InteractionForm: React.FC<IInteractionForm> = ({ contractAddress, d
     try {
       if (provider) {
         const signer = provider.getSigner();
-        const tx = await contractFunction(signer, ...inputs);
-        const receipt = await tx.wait();
-        setTransactionHash(receipt.transactionHash);
-        console.log('Transaction successful with hash:', receipt.transactionHash);
+        if (isReadCall) {
+          const result = await contractFunction(signer, ...inputs);
+          console.log('Read call result:', result);
+        } else {
+          const tx = await contractFunction(signer, ...inputs);
+          const receipt = await tx.wait();
+          setTransactionHash(receipt.transactionHash);
+          console.log('Transaction successful with hash:', receipt.transactionHash);
+        }
       }
     } catch (error) {
       console.error('Transaction failed:', error);
@@ -57,7 +63,7 @@ export const InteractionForm: React.FC<IInteractionForm> = ({ contractAddress, d
         ))}
         <button type="submit" disabled={!provider} style={{ marginTop: 'auto' }}>{description}</button>
       </form>
-      {transactionHash && (
+      {transactionHash && !isReadCall && (
         <p>Transaction sent! Hash: {transactionHash}</p>
       )}
     </div>
