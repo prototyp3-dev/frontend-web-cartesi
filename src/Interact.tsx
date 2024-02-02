@@ -140,6 +140,23 @@ export const Interact: React.FC<IInteract> = ({ dappAddress, contractAddress }) 
         }}
         isReadCall={true}
       />
+      <InteractionForm
+        contractAddress={contractAddress}
+        description="Get Rank By User At Index"
+        defaultInputs={[
+          { name: 'conversationId', value: "0", description: 'Conversation ID' },
+          { name: 'userAddress', value: "", description: 'User Address' },
+          { name: 'index', value: "0", description: 'Rank Index' }
+        ]}
+        contractFunction={async (signer: ethers.Signer, inputObject1: IInputField, inputObject2: IInputField, inputObject3: IInputField) => {
+          const contract = new ethers.Contract(contractAddress, TrustAndTeachABI, signer);
+          const conversationId = ethers.BigNumber.from(inputObject1.value);
+          const userAddress = inputObject2.value;
+          const index = ethers.BigNumber.from(inputObject3.value);
+          return contract.getRankByUserAtIndex(conversationId, userAddress, index).then((result: ethers.BigNumber) => result.toNumber());
+        }}
+        isReadCall={true}
+      />
       <SendCurlRequestButton
         url="http://localhost:8545"
         data='{"id":1337,"jsonrpc":"2.0","method":"evm_increaseTime","params":[864010]}'
