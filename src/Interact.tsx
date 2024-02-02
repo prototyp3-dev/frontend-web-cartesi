@@ -142,6 +142,21 @@ export const Interact: React.FC<IInteract> = ({ dappAddress, contractAddress }) 
       />
       <InteractionForm
         contractAddress={contractAddress}
+        description="Get Conversation Response Length"
+        defaultInputs={[
+          { name: 'conversationId', value: "0", description: 'Conversation ID' },
+          { name: 'responseIndex', value: "0", description: 'Response Index' }
+        ]}
+        contractFunction={async (signer: ethers.Signer, inputObject1: IInputField, inputObject2: IInputField) => {
+          const contract = new ethers.Contract(contractAddress, TrustAndTeachABI, signer);
+          const conversationId = ethers.BigNumber.from(inputObject1.value);
+          const responseIndex = ethers.BigNumber.from(inputObject2.value);
+          return contract.getConversationResponseLength(conversationId, responseIndex).then((result: ethers.BigNumber) => result.toNumber());
+        }}
+        isReadCall={true}
+      />
+      <InteractionForm
+        contractAddress={contractAddress}
         description="Get Rank By User At Index"
         defaultInputs={[
           { name: 'conversationId', value: "0", description: 'Conversation ID' },
