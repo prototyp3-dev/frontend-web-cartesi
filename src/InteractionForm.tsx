@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { ethers } from 'ethers';
 import { useWallets } from "@web3-onboard/react";
 
-interface InputField {
+interface IInputField {
   name: string;
   value: string;
   description: string;
@@ -11,7 +11,7 @@ interface InputField {
 interface IInteractionForm {
   contractAddress: string;
   description: string;
-  defaultInputs: InputField[];
+  defaultInputs: IInputField[];
   contractFunction: (signer: ethers.Signer, ...args: any[]) => Promise<any>;
   isReadCall?: boolean;
 }
@@ -22,7 +22,7 @@ export const InteractionForm: React.FC<IInteractionForm> = ({ contractAddress, d
   const [connectedWallet] = useWallets();
   const provider = new ethers.providers.Web3Provider(connectedWallet.provider);
 
-  const [inputs, setInputs] = useState<InputField[]>(defaultInputs);
+  const [inputs, setInputs] = useState<IInputField[]>(defaultInputs);
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
@@ -46,19 +46,19 @@ export const InteractionForm: React.FC<IInteractionForm> = ({ contractAddress, d
   return (
     <div>
       <form onSubmit={handleSubmit} style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-        {inputs.map((inputField, index) => (
-          <div key={inputField.name} style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
-            <label htmlFor={inputField.name}>{inputField.description}</label>
+        {inputs.map((IinputField, index) => (
+          <div key={IinputField.name} style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
+            <label htmlFor={IinputField.name}>{IinputField.description}</label>
             <input
-              id={inputField.name}
+              id={IinputField.name}
               type="text"
-              value={inputField.value}
+              value={IinputField.value}
               onChange={(e) => {
                 const newInputs = [...inputs];
-                newInputs[index] = { ...inputField, value: e.target.value };
+                newInputs[index] = { ...IinputField, value: e.target.value };
                 setInputs(newInputs);
               }}
-              placeholder={inputField.description}
+              placeholder={IinputField.description}
             />
           </div>
         ))}

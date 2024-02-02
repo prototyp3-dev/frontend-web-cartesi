@@ -5,6 +5,12 @@ import TrustAndTeachABI from "./contract_abi/TrustAndTeach.json";
 import SendCurlRequestButton from './SendCurlRequestButton';
 
 
+interface IInputField {
+  name: string;
+  value: string;
+  description: string;
+}
+
 
 interface IInteract {
   dappAddress: string;
@@ -87,7 +93,7 @@ export const Interact: React.FC<IInteract> = ({ dappAddress, contractAddress }) 
         contractAddress={contractAddress}
         description="Get Users Who Submitted Ranks"
         defaultInputs={[{ name: 'conversationId', value: "0", description: 'Conversation ID' }]}
-        contractFunction={async (signer: ethers.Signer, inputObject: InputField) => {
+        contractFunction={async (signer: ethers.Signer, inputObject: IInputField) => {
           const contract = new ethers.Contract(contractAddress, TrustAndTeachABI, signer);
           return contract.getUsersWhoSubmittedRanks(ethers.BigNumber.from(inputObject.value));
         }}
