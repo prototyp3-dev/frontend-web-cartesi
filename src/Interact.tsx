@@ -21,6 +21,12 @@ interface IInteract {
 
 export const Interact: React.FC<IInteract> = ({ dappAddress, setDappAddress, contractAddress }) => {
   const [interactionInputsDappAddress, setInteractionInputsDappAddress] = useState<IInputField[]>([]); // State to store the interaction inputs
+  useEffect(() => {
+    const dappAddressInput = interactionInputsDappAddress.find(input => input.name === 'dappAddress');
+    if (dappAddressInput && setDappAddress) {
+      setDappAddress(dappAddressInput.value);
+    }
+  }, [interactionInputsDappAddress, setDappAddress]);
   const [connectedWallet] = useWallets();
   const userAddress = connectedWallet?.accounts[0]?.address || '';
 
