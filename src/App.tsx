@@ -72,6 +72,7 @@ const App: FC = () => {
         <h2>Interact</h2>
         <Interact
           dappAddress={dappAddress}
+          setDappAddress={setDappAddress}
           contractAddress={contractAddress}
         />
         {/* <h2>Input</h2> */}

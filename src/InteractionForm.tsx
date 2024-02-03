@@ -17,7 +17,7 @@ interface IInteractionForm {
   onInputsChange?: (inputs: IInputField[]) => void; // Callback for when inputs change
 }
 
-export const InteractionForm: React.FC<IInteractionForm> = ({ contractAddress, description, defaultInputs, contractFunction, isReadCall }) => {
+export const InteractionForm: React.FC<IInteractionForm> = ({ contractAddress, description, defaultInputs, contractFunction, isReadCall, onInputsChange }) => { 
   const [transactionHash, setTransactionHash] = useState<string>('');
   const [readResult, setReadResult] = useState<string>('');
   const [connectedWallet] = useWallets();
@@ -58,9 +58,11 @@ export const InteractionForm: React.FC<IInteractionForm> = ({ contractAddress, d
                 const newInputs = [...inputs];
                 newInputs[index] = { ...IinputField, value: e.target.value };
                 setInputs(newInputs);
-                if (props.onInputsChange) {
-                  props.onInputsChange(newInputs); // Call the callback function with the new inputs
-                }
+                if (onInputsChange) {
+       
+                  onInputsChange(newInputs); // Call the callback function with the new inputs
+                 
+               }
               }}
               placeholder={IinputField.description}
             />

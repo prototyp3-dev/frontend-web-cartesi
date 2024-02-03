@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { ethers } from 'ethers';
 import { useWallets } from "@web3-onboard/react";
 import { InteractionForm } from "./InteractionForm";
@@ -16,10 +16,11 @@ interface IInputField {
 interface IInteract {
   dappAddress: string;
   contractAddress: string;
+  setDappAddress?: (inputs: string) => void; // Callback for when inputs change
 }
 
-export const Interact: React.FC<IInteract> = ({ dappAddress, contractAddress }) => {
-  const [interactionInputs, setInteractionInputs] = useState<IInputField[]>([]); // State to store the interaction inputs
+export const Interact: React.FC<IInteract> = ({ dappAddress, setDappAddress, contractAddress }) => {
+  const [interactionInputsDappAddress, setInteractionInputsDappAddress] = useState<IInputField[]>([]); // State to store the interaction inputs
   const [connectedWallet] = useWallets();
   const userAddress = connectedWallet?.accounts[0]?.address || '';
 
@@ -35,9 +36,9 @@ export const Interact: React.FC<IInteract> = ({ dappAddress, contractAddress }) 
           const contract = new ethers.Contract(contractAddress, TrustAndTeachABI, signer);
           return contract.set_dapp_address(inputObject.value);
         }}
-        onInputsChange={setInteractionInputs} // Pass the callback to update the state when inputs change
+        onInputsChange={setInteractionInputsDappAddress} // Pass the callback to update the state when inputs change
       />
-      {interactionInputs.map((input, index) => (
+      {interactionInputsDappAddress.map((input, index) => (
         <div key={index}>
           <strong>{input.description}:</strong> {input.value}
         </div>
