@@ -1,5 +1,6 @@
 import React from 'react';
 import { ethers } from 'ethers';
+import { useWallets } from "@web3-onboard/react";
 import { InteractionForm } from "./InteractionForm";
 import TrustAndTeachABI from "./contract_abi/TrustAndTeach.json";
 import SendCurlRequestButton from './SendCurlRequestButton';
@@ -179,7 +180,7 @@ export const Interact: React.FC<IInteract> = ({ dappAddress, contractAddress }) 
         description="Get Rank By User At Index"
         defaultInputs={[
           { name: 'conversationId', value: "0", description: 'Conversation ID' },
-          { name: 'userAddress', value: "", description: 'User Address' },
+          { name: 'userAddress', value: userAddress, description: 'User Address' },
           { name: 'index', value: "0", description: 'Rank Index' }
         ]}
         contractFunction={async (signer: ethers.Signer, inputObject1: IInputField, inputObject2: IInputField, inputObject3: IInputField) => {
