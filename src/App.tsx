@@ -51,14 +51,14 @@ const App: FC = () => {
     <div>
       <Network />
       <GraphQLProvider>
-        <div>
-          Dapp Address: <input
-            type="text"
-            value={dappAddress}
-            onChange={(e) => setDappAddress(e.target.value)}
-          />
-          <br /><br />
-        </div>
+        {/* <div> */}
+        {/*   Dapp Address: <input */}
+        {/*     type="text" */}
+        {/*     value={dappAddress} */}
+        {/*     onChange={(e) => setDappAddress(e.target.value)} */}
+        {/*   /> */}
+        {/*   <br /><br /> */}
+        {/* </div> */}
         <div>
           Contract Address: <input
             type="text"

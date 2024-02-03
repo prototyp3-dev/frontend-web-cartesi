@@ -32,8 +32,6 @@ export const Interact: React.FC<IInteract> = ({ dappAddress, setDappAddress, con
 
   return (
     <div>
-      {/* ... other components ... */}
-      through interaction form:
       <InteractionForm
         contractAddress={contractAddress}
         description="set dapp address"
@@ -210,7 +208,7 @@ export const Interact: React.FC<IInteract> = ({ dappAddress, setDappAddress, con
         url="http://localhost:8545"
         data='{"id":1337,"jsonrpc":"2.0","method":"evm_increaseTime","params":[864010]}'
       />
-    </div>
+    </div >
   );
 };
 
