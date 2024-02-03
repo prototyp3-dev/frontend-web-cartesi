@@ -19,6 +19,7 @@ interface IInteract {
 }
 
 export const Interact: React.FC<IInteract> = ({ dappAddress, contractAddress }) => {
+  const [interactionInputs, setInteractionInputs] = useState<IInputField[]>([]); // State to store the interaction inputs
   const [connectedWallet] = useWallets();
   const userAddress = connectedWallet?.accounts[0]?.address || '';
 
@@ -34,7 +35,13 @@ export const Interact: React.FC<IInteract> = ({ dappAddress, contractAddress }) 
           const contract = new ethers.Contract(contractAddress, TrustAndTeachABI, signer);
           return contract.set_dapp_address(inputObject.value);
         }}
+        onInputsChange={setInteractionInputs} // Pass the callback to update the state when inputs change
       />
+      {interactionInputs.map((input, index) => (
+        <div key={index}>
+          <strong>{input.description}:</strong> {input.value}
+        </div>
+      ))}
       <InteractionForm
         contractAddress={contractAddress}
         description="Send Instruction"

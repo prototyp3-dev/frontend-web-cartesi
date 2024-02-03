@@ -14,6 +14,7 @@ interface IInteractionForm {
   defaultInputs: IInputField[];
   contractFunction: (signer: ethers.Signer, ...args: any[]) => Promise<any>;
   isReadCall?: boolean;
+  onInputsChange?: (inputs: IInputField[]) => void; // Callback for when inputs change
 }
 
 export const InteractionForm: React.FC<IInteractionForm> = ({ contractAddress, description, defaultInputs, contractFunction, isReadCall }) => {
@@ -57,6 +58,9 @@ export const InteractionForm: React.FC<IInteractionForm> = ({ contractAddress, d
                 const newInputs = [...inputs];
                 newInputs[index] = { ...IinputField, value: e.target.value };
                 setInputs(newInputs);
+                if (props.onInputsChange) {
+                  props.onInputsChange(newInputs); // Call the callback function with the new inputs
+                }
               }}
               placeholder={IinputField.description}
             />
