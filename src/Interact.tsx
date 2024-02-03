@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ethers } from 'ethers';
 import { useWallets } from "@web3-onboard/react";
 import { InteractionForm } from "./InteractionForm";
