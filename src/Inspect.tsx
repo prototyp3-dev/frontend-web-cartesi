@@ -16,7 +16,6 @@ import { ethers } from "ethers";
 // import { useRollups } from "./useRollups";
 
 import configFile from "./config.json";
-import { _fetchData } from "ethers/lib/utils";
 
 const config: any = configFile;
 
@@ -98,12 +97,12 @@ export const Inspect: React.FC = () => {
 
             <table>
                 <tbody>
-                    {reports.length === 0 && (
+                    {reports?.length === 0 && (
                         <tr>
                             <td colSpan={4}>no reports</td>
                         </tr>
                     )}
-                    {reports.map((n: any) => (
+                    {reports?.map((n: any) => (
                         <tr key={`${n.payload}`}>
                             <td>{ethers.utils.toUtf8String(n.payload)}</td>
                         </tr>
