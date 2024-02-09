@@ -189,6 +189,16 @@ export const Interact: React.FC<IInteract> = ({ dappAddress, setDappAddress, con
       />
       <InteractionForm
         contractAddress={contractAddress}
+        description="Get All Conversations"
+        defaultInputs={[]}
+        contractFunction={async (signer: ethers.Signer) => {
+          const contract = new ethers.Contract(contractAddress, TrustAndTeachABI, signer);
+          return contract.getAllConversations();
+        }}
+        isReadCall={true}
+      />
+      <InteractionForm
+        contractAddress={contractAddress}
         description="Get Rank By User At Index"
         defaultInputs={[
           { name: 'conversationId', value: "0", description: 'Conversation ID' },
