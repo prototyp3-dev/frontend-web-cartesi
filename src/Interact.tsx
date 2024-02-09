@@ -20,7 +20,7 @@ interface IInteract {
 }
 
 export const Interact: React.FC<IInteract> = ({ dappAddress, setDappAddress, contractAddress }) => {
-  const [interactionInputsDappAddress, setInteractionInputsDappAddress] = useState<IInputField[]>([]); // State to store the interaction inputs
+  const [interactionInputsDappAddress, setInteractionInputsDappAddress] = useState<IInputField[]>([{ name: 'dappAddress', value: dappAddress, description: 'DApp Address' }]); // State to store the interaction inputs
   useEffect(() => {
     const dappAddressInput = interactionInputsDappAddress.find(input => input.name === 'dappAddress');
     if (dappAddressInput && setDappAddress) {
@@ -35,18 +35,18 @@ export const Interact: React.FC<IInteract> = ({ dappAddress, setDappAddress, con
       <InteractionForm
         contractAddress={contractAddress}
         description="set dapp address"
-        defaultInputs={[{ name: 'dappAddress', value: dappAddress, description: 'DApp Address' }]}
+        defaultInputs={interactionInputsDappAddress}
         contractFunction={(signer: ethers.Signer, inputObject: IInputField) => {
           const contract = new ethers.Contract(contractAddress, TrustAndTeachABI, signer);
           return contract.set_dapp_address(inputObject.value);
         }}
         onInputsChange={setInteractionInputsDappAddress} // Pass the callback to update the state when inputs change
       />
-      {interactionInputsDappAddress.map((input, index) => (
-        <div key={index}>
-          <strong>{input.description}:</strong> {input.value}
-        </div>
-      ))}
+      {/* {interactionInputsDappAddress.map((input, index) => ( */}
+      {/*   <div key={index}> */}
+      {/*     <strong>{input.description}:</strong> {input.value} */}
+      {/*   </div> */}
+      {/* ))} */}
       <InteractionForm
         contractAddress={contractAddress}
         description="Send Instruction"

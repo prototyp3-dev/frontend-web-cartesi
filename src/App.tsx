@@ -51,14 +51,6 @@ const App: FC = () => {
     <div>
       <Network />
       <GraphQLProvider>
-        {/* <div> */}
-        {/*   Dapp Address: <input */}
-        {/*     type="text" */}
-        {/*     value={dappAddress} */}
-        {/*     onChange={(e) => setDappAddress(e.target.value)} */}
-        {/*   /> */}
-        {/*   <br /><br /> */}
-        {/* </div> */}
         <div>
           Contract Address: <input
             type="text"
@@ -67,6 +59,24 @@ const App: FC = () => {
           />
           <br /><br />
         </div>
+        <h1>submit a prompt</h1>
+        <input type="text" value="enter your prompt" />
+        <input type="text" value="10" />
+        <button>submit</button>
+        <h1>post the response</h1>
+        <button>reload</button>
+        <div>
+          <button>post response 1</button>
+          <button>post response 2</button>
+        </div>
+        <h1>rank the responses</h1>
+        <button>show responses</button>
+        You prefer:
+        <div>
+          <button>response 1</button>
+          <button>response 2</button>
+        </div>
+        <h1>dump the dataset</h1>
         {/* <h2>Inspect</h2> */}
         {/* <Inspect /> */}
         <h2>Interact</h2>
@@ -82,6 +92,7 @@ const App: FC = () => {
         <h2>Notices</h2>
         <Notices />
         <h2>Vouchers</h2>
+        <strong>Dapp Address</strong>: {dappAddress}
         <Vouchers dappAddress={dappAddress} />
       </GraphQLProvider>
     </div>
