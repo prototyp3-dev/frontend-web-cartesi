@@ -45,6 +45,7 @@ init({
 const App: FC = () => {
   const [dappAddress, setDappAddress] = useState<string>("0x70ac08179605AF2D9e75782b8DEcDD3c22aA4D0C");
   const [contractAddress, setContractAddress] = useState<string>("0x959922bE3CAee4b8Cd9a407cc3ac1C251C2007B1");
+  const [showInteract, setShowInteract] = useState<boolean>(false);
   // const rpcUrl = config.ethereum.rpcUrl; // Assuming Ethereum configuration exists in your config file
 
 
@@ -68,12 +69,19 @@ const App: FC = () => {
           setDappAddress={setDappAddress}
           contractAddress={contractAddress}
         />
-        <h2>Advanced interaction with the contract</h2>
-        <Interact
-          dappAddress={dappAddress}
-          setDappAddress={setDappAddress}
-          contractAddress={contractAddress}
-        />
+        <button onClick={() => setShowInteract(!showInteract)}>
+          {showInteract ? 'Hide' : 'Show'} Advanced Interaction
+        </button>
+        {showInteract && (
+          <>
+            <h2>Advanced interaction with the contract</h2>
+            <Interact
+              dappAddress={dappAddress}
+              setDappAddress={setDappAddress}
+              contractAddress={contractAddress}
+            />
+          </>
+        )}
         {/* <h2>Input</h2> */}
         {/* <Input dappAddress={dappAddress} /> */}
         {/* <h2>Reports</h2> */}
