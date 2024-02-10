@@ -17,11 +17,12 @@ import { init } from "@web3-onboard/react";
 import { GraphQLProvider } from "./GraphQL";
 import { Notices } from "./Notices";
 import { Interact } from "./Interact";
-import { Input } from "./Input";
-import { Inspect } from "./Inspect";
+import { SimpleInteract } from "./SimpleInteract";
+// import { Input } from "./Input";
+// import { Inspect } from "./Inspect";
 import { Network } from "./Network";
 import { Vouchers } from "./Vouchers";
-import { Reports } from "./Reports";
+// import { Reports } from "./Reports";
 import configFile from "./config.json";
 
 const config: any = configFile;
@@ -59,27 +60,15 @@ const App: FC = () => {
           />
           <br /><br />
         </div>
-        <h1>submit a prompt</h1>
-        <input type="text" value="enter your prompt" />
-        <input type="text" value="10" />
-        <button>submit</button>
-        <h1>post the response</h1>
-        <button>reload</button>
-        <div>
-          <button>post response 1</button>
-          <button>post response 2</button>
-        </div>
-        <h1>rank the responses</h1>
-        <button>show responses</button>
-        You prefer:
-        <div>
-          <button>response 1</button>
-          <button>response 2</button>
-        </div>
-        <h1>dump the dataset</h1>
         {/* <h2>Inspect</h2> */}
         {/* <Inspect /> */}
-        <h2>Interact</h2>
+        <h2>Interaction</h2>
+        <SimpleInteract
+          dappAddress={dappAddress}
+          setDappAddress={setDappAddress}
+          contractAddress={contractAddress}
+        />
+        <h2>Advanced interaction with the contract</h2>
         <Interact
           dappAddress={dappAddress}
           setDappAddress={setDappAddress}
