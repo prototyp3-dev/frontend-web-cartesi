@@ -80,7 +80,8 @@ contract TrustAndTeach {
         uint256 iResponse,
         uint256 iSplitResponse,
         string memory splitResponse
-    ) public {
+    ) public // cartesi runs this one
+    {
         // require(msg.sender == L2_DAPP);
         require(
             conversation_id <= current_conversation_id,
@@ -189,6 +190,41 @@ contract TrustAndTeach {
         return submission.ranks;
     }
 
+    struct ConversationSummary {
+        address author;
+        string prompt;
+        uint256 llmSteps;
+        string[][] responses;
+        uint256 rankSubmissionCount;
+        address[] usersWhoSubmittedRanks;
+        uint256 createInstructionTimestamp;
+        uint256 responseAnnouncedTimestamp;
+    }
+
+    // Returns all conversations with their data, excluding mappings
+    function getAllConversations() public view returns (ConversationSummary[] memory) {
+        ConversationSummary[] memory allConversations = new ConversationSummary[](current_conversation_id);
+        for (uint256 i = 0; i < current_conversation_id; i++) {
+            Conversation storage conversation = conversations[i];
+            allConversations[i] = ConversationSummary({
+                author: conversation.author,
+                prompt: conversation.prompt,
+                llmSteps: conversation.llmSteps,
+                responses: conversation.responses,
+                rankSubmissionCount: conversation.rankSubmissionCount,
+                usersWhoSubmittedRanks: conversation.usersWhoSubmittedRanks,
+                createInstructionTimestamp: conversation.createInstructionTimestamp,
+                responseAnnouncedTimestamp: conversation.responseAnnouncedTimestamp
+            });
+        }
+        return allConversations;
+    }
+
+    // Returns the count of conversations that have been created
+    function getConversationCount() public view returns (uint256) {
+        return current_conversation_id;
+    }
+
     // get a specific rank submitted by a user for a conversation at a given index
     function getRankByUserAtIndex(
         uint256 conversation_id,
@@ -208,8 +244,10 @@ contract TrustAndTeach {
         returns (
             address author,
             string memory prompt,
+            uint256 llmSteps,
             string[][] memory responses,
             uint256 rankSubmissionCount,
+            mapping(address => RankSubmission) rankSubmissions,
             address[] memory usersWhoSubmittedRanks,
             uint256 createInstructionTimestamp,
             uint256 responseAnnouncedTimestamp
@@ -219,8 +257,10 @@ contract TrustAndTeach {
         return (
             conversation.author,
             conversation.prompt,
+            conversation.llmSteps,
             conversation.responses,
             conversation.rankSubmissionCount,
+            conversation.rankSubmissions,
             conversation.usersWhoSubmittedRanks,
             conversation.createInstructionTimestamp,
             conversation.responseAnnouncedTimestamp

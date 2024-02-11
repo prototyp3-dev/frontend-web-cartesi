@@ -33,7 +33,6 @@ export const Interact: React.FC<IInteract> = ({ dappAddress, setDappAddress, con
   return (
     <div>
       <InteractionForm
-        contractAddress={contractAddress}
         description="set dapp address"
         defaultInputs={interactionInputsDappAddress}
         contractFunction={(signer: ethers.Signer, inputObject: IInputField) => {
@@ -48,7 +47,6 @@ export const Interact: React.FC<IInteract> = ({ dappAddress, setDappAddress, con
       {/*   </div> */}
       {/* ))} */}
       <InteractionForm
-        contractAddress={contractAddress}
         description="Send Instruction"
         defaultInputs={[
           { name: 'prompt', value: "In old times when ", description: 'Prompt' },
@@ -61,7 +59,6 @@ export const Interact: React.FC<IInteract> = ({ dappAddress, setDappAddress, con
         }}
       />
       <InteractionForm
-        contractAddress={contractAddress}
         description="Announce Prompt Response"
         defaultInputs={[
           { name: 'conversationId', value: "0", description: 'Conversation ID' },
@@ -78,7 +75,6 @@ export const Interact: React.FC<IInteract> = ({ dappAddress, setDappAddress, con
         }}
       />
       <InteractionForm
-        contractAddress={contractAddress}
         description="Get Conversation by ID"
         defaultInputs={[{ name: 'conversationId', value: "0", description: 'Conversation ID' }]}
         contractFunction={async (signer: ethers.Signer, inputObject: IInputField) => {
@@ -97,7 +93,6 @@ export const Interact: React.FC<IInteract> = ({ dappAddress, setDappAddress, con
         isReadCall={true}
       />
       <InteractionForm
-        contractAddress={contractAddress}
         description="Get Conversation Response Count"
         defaultInputs={[{ name: 'conversationId', value: "0", description: 'Conversation ID' }]}
         contractFunction={async (signer: ethers.Signer, inputObject: IInputField) => {
@@ -107,7 +102,6 @@ export const Interact: React.FC<IInteract> = ({ dappAddress, setDappAddress, con
         isReadCall={true}
       />
       <InteractionForm
-        contractAddress={contractAddress}
         description="Get Users Who Submitted Ranks"
         defaultInputs={[{ name: 'conversationId', value: "0", description: 'Conversation ID' }]}
         contractFunction={async (signer: ethers.Signer, inputObject: IInputField) => {
@@ -117,7 +111,6 @@ export const Interact: React.FC<IInteract> = ({ dappAddress, setDappAddress, con
         isReadCall={true}
       />
       <InteractionForm
-        contractAddress={contractAddress}
         description="Get Prompt by Conversation ID"
         defaultInputs={[{ name: 'conversationId', value: "0", description: 'Conversation ID' }]}
         contractFunction={async (signer: ethers.Signer, inputObject: IInputField) => {
@@ -127,7 +120,6 @@ export const Interact: React.FC<IInteract> = ({ dappAddress, setDappAddress, con
         isReadCall={true}
       />
       <InteractionForm
-        contractAddress={contractAddress}
         description="Submit Rank"
         defaultInputs={[
           { name: 'conversationId', value: "0", description: 'Conversation ID' },
@@ -141,7 +133,6 @@ export const Interact: React.FC<IInteract> = ({ dappAddress, setDappAddress, con
         }}
       />
       <InteractionForm
-        contractAddress={contractAddress}
         description="Get Conversation Response by Index"
         defaultInputs={[
           { name: 'conversationId', value: "0", description: 'Conversation ID' },
@@ -158,7 +149,6 @@ export const Interact: React.FC<IInteract> = ({ dappAddress, setDappAddress, con
         isReadCall={true}
       />
       <InteractionForm
-        contractAddress={contractAddress}
         description="Get Conversation Response Length"
         defaultInputs={[
           { name: 'conversationId', value: "0", description: 'Conversation ID' },
@@ -173,7 +163,6 @@ export const Interact: React.FC<IInteract> = ({ dappAddress, setDappAddress, con
         isReadCall={true}
       />
       <InteractionForm
-        contractAddress={contractAddress}
         description="Get Ranks By User"
         defaultInputs={[
           { name: 'conversationId', value: "0", description: 'Conversation ID' },
@@ -188,17 +177,6 @@ export const Interact: React.FC<IInteract> = ({ dappAddress, setDappAddress, con
         isReadCall={true}
       />
       <InteractionForm
-        contractAddress={contractAddress}
-        description="Get All Conversations"
-        defaultInputs={[]}
-        contractFunction={async (signer: ethers.Signer) => {
-          const contract = new ethers.Contract(contractAddress, TrustAndTeachABI, signer);
-          return contract.getAllConversations();
-        }}
-        isReadCall={true}
-      />
-      <InteractionForm
-        contractAddress={contractAddress}
         description="Get Conversation Count"
         defaultInputs={[]}
         contractFunction={async (signer: ethers.Signer) => {
@@ -208,7 +186,6 @@ export const Interact: React.FC<IInteract> = ({ dappAddress, setDappAddress, con
         isReadCall={true}
       />
       <InteractionForm
-        contractAddress={contractAddress}
         description="Get Rank By User At Index"
         defaultInputs={[
           { name: 'conversationId', value: "0", description: 'Conversation ID' },
