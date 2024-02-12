@@ -56,6 +56,23 @@ export const SimpleInteract: React.FC<IInteract> = ({ dappAddress, setDappAddres
     fetchConversations();
   }, [contractAddress]);
 
+  const downloadRLHFDataAsTSV = async () => {
+    let tsvData = 'Conversation ID\tPrompt\tFirst Ranked Response\tSecond Ranked Response\n';
+    conversations.forEach((conversation, index) => {
+      const firstResponse = conversation.responses[conversation.usersRanks[0]?.ranks[0]][0];
+      const secondResponse = conversation.responses[conversation.usersRanks[0]?.ranks[1]][0];
+      tsvData += `${index}\t${conversation.prompt}\t${firstResponse}\t${secondResponse}\n`;
+    });
+
+    const dataStr = "data:text/plain;charset=utf-8," + encodeURIComponent(tsvData);
+    const downloadAnchorNode = document.createElement('a');
+    downloadAnchorNode.setAttribute("href", dataStr);
+    downloadAnchorNode.setAttribute("download", "RLHF_Data_for_DPO.tsv");
+    document.body.appendChild(downloadAnchorNode);
+    downloadAnchorNode.click();
+    downloadAnchorNode.remove();
+  };
+
   const downloadConversationsData = async () => {
     const provider = new ethers.providers.Web3Provider(window.ethereum);
     const signer = provider.getSigner();
@@ -181,6 +198,7 @@ export const SimpleInteract: React.FC<IInteract> = ({ dappAddress, setDappAddres
         }}
         isReadCall={true}
       />
+      <button onClick={downloadRLHFDataAsTSV}>Download Table as TSV</button>
       <h3>RLHF Data for DPO</h3>
       <table>
         <thead>
