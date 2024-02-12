@@ -3,6 +3,14 @@ import { ethers } from 'ethers';
 import { useWallets } from "@web3-onboard/react";
 import { InteractionForm } from "./InteractionForm";
 import { Vouchers } from "./Vouchers";
+
+interface IConversationData {
+  conversationId: number;
+  prompt: string;
+  usersWhoSubmittedRanks: string;
+  firstRankedResponse: string;
+  secondRankedResponse: string;
+}
 import TrustAndTeachABI from "./contract_abi/TrustAndTeach.json";
 import SendCurlRequestButton from './SendCurlRequestButton';
 
@@ -63,10 +71,10 @@ export const SimpleInteract: React.FC<IInteract> = ({ dappAddress, setDappAddres
     return () => clearInterval(interval);
   }, [contractAddress]);
 
-  const generateConversationData = () => {
-    let data = [];
+  const generateConversationData = (): IConversationData[] => {
+    let data: IConversationData[] = [];
     conversations.forEach((conversation, index) => {
-      conversation.usersRanks.forEach(userRank => {
+      conversation.usersRanks.forEach((userRank: { user: string; ranks: number[] }) => {
         const firstRankIndex = userRank.ranks[0];
         const secondRankIndex = userRank.ranks[1];
         data.push({
