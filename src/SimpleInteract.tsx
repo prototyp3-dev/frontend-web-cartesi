@@ -74,9 +74,12 @@ export const SimpleInteract: React.FC<IInteract> = ({ dappAddress, setDappAddres
   const generateConversationData = (): IConversationData[] => {
     let data: IConversationData[] = [];
     conversations.forEach((conversation, index) => {
-      conversation.usersRanks.forEach((userRank: { user: string; ranks: number[] }) => {
-        const firstRankIndex = userRank.ranks[0];
-        const secondRankIndex = userRank.ranks[1];
+      // Ensure we include users even if they haven't submitted any ranks
+      const usersWithOrWithoutRanks = conversation.usersWhoSubmittedRanks.length > 0 ? conversation.usersRanks : [{ user: 'N/A', ranks: [] }];
+      usersWithOrWithoutRanks.forEach((userRank: { user: string; ranks: number[] }) => {
+        // Handle cases where no ranks are submitted by a user
+        const firstRankIndex = userRank.ranks.length > 0 ? userRank.ranks[0] : undefined;
+        const secondRankIndex = userRank.ranks.length > 1 ? userRank.ranks[1] : undefined;
         data.push({
           conversationId: index,
           prompt: conversation.prompt,
