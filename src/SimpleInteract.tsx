@@ -31,6 +31,32 @@ export const SimpleInteract: React.FC<IInteract> = ({ dappAddress, setDappAddres
   const [connectedWallet] = useWallets();
   const userAddress = connectedWallet?.accounts[0]?.address || '';
 
+  const downloadConversationsData = async () => {
+    const provider = new ethers.providers.Web3Provider(window.ethereum);
+    const signer = provider.getSigner();
+    const contract = new ethers.Contract(contractAddress, TrustAndTeachABI, signer);
+    const conversationCount = await contract.getConversationCount();
+    let conversationsData = [];
+
+    for (let i = 0; i < conversationCount; i++) {
+      const conversation = await contract.getConversationById(i);
+      const usersRanks = await Promise.all(conversation.usersWhoSubmittedRanks.map(async (user) => {
+        const ranks = await contract.getRanksByUser(i, user);
+        return { user, ranks };
+      }));
+
+      conversationsData.push({ ...conversation, usersRanks });
+    }
+
+    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(conversationsData));
+    const downloadAnchorNode = document.createElement('a');
+    downloadAnchorNode.setAttribute("href", dataStr);
+    downloadAnchorNode.setAttribute("download", "conversations_data.json");
+    document.body.appendChild(downloadAnchorNode);
+    downloadAnchorNode.click();
+    downloadAnchorNode.remove();
+  };
+
   return (
     <div>
       <h3>submit a prompt</h3>
@@ -130,8 +156,8 @@ export const SimpleInteract: React.FC<IInteract> = ({ dappAddress, setDappAddres
         }}
         isReadCall={true}
       />
-      <h3>dump the dataset</h3>
-      <button>dump the dataset</button>
+      <h3>Download Conversations Data</h3>
+      <button onClick={downloadConversationsData}>Download JSON</button>
       <h3>Other</h3>
     </div >
   );
