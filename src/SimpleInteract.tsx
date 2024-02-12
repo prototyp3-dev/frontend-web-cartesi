@@ -3,6 +3,7 @@ import { ethers } from 'ethers';
 import { useWallets } from "@web3-onboard/react";
 import { InteractionForm } from "./InteractionForm";
 import { Vouchers } from "./Vouchers";
+import AddressDisplay from './AddressDisplay';
 
 import TrustAndTeachABI from "./contract_abi/TrustAndTeach.json";
 import SendCurlRequestButton from './SendCurlRequestButton';
@@ -93,7 +94,6 @@ export const SimpleInteract: React.FC<IInteract> = ({ dappAddress, setDappAddres
         const firstRankIndex = userRank.ranks.length > 0 ? userRank.ranks[0] : undefined;
         const secondRankIndex = userRank.ranks.length > 1 ? userRank.ranks[1] : undefined;
         // Format the user address based on showFullAddresses state and whether ranks have been submitted
-        import AddressDisplay from './AddressDisplay';
         const hasResponses = conversation.responses.length > 0;
         const hasRanks = userRank.ranks.length > 0;
         const actions = hasResponses && !hasRanks ? (
