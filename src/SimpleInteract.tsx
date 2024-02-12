@@ -93,9 +93,7 @@ export const SimpleInteract: React.FC<IInteract> = ({ dappAddress, setDappAddres
         const firstRankIndex = userRank.ranks.length > 0 ? userRank.ranks[0] : undefined;
         const secondRankIndex = userRank.ranks.length > 1 ? userRank.ranks[1] : undefined;
         // Format the user address based on showFullAddresses state and whether ranks have been submitted
-        const formattedUser = userRank.ranks.length === 0 && conversation.responses.length > 0
-          ? `<b>${showFullAddresses ? userRank.user : `${userRank.user.slice(0, 5)}..${userRank.user.slice(-3)}`}</b>`
-          : showFullAddresses ? userRank.user : `${userRank.user.slice(0, 5)}..${userRank.user.slice(-3)}`;
+        import AddressDisplay from './AddressDisplay';
         const hasResponses = conversation.responses.length > 0;
         const hasRanks = userRank.ranks.length > 0;
         const actions = hasResponses && !hasRanks ? (
@@ -274,7 +272,7 @@ export const SimpleInteract: React.FC<IInteract> = ({ dappAddress, setDappAddres
           {generateConversationData().reverse().slice(0, showAllRows ? undefined : 3).map(data => (
             <tr key={data.conversationId}>
               <td>{data.conversationId}</td>
-              <td dangerouslySetInnerHTML={{ __html: data.usersWhoSubmittedRanks }}></td>
+              <td><AddressDisplay address={data.usersWhoSubmittedRanks} bold={data.usersWhoSubmittedRanks.includes('<b>')} showFullAddress={showFullAddresses} /></td>
               <td>{data.prompt}</td>
               <td>{data.firstRankedResponse}</td>
               <td>{data.secondRankedResponse}</td>
