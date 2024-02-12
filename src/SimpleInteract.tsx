@@ -73,6 +73,16 @@ export const SimpleInteract: React.FC<IInteract> = ({ dappAddress, setDappAddres
     return () => clearInterval(interval);
   }, [contractAddress]);
 
+
+  const submitRanks = async (conversationId: number, ranks: number[]) => {
+    if (!connectedWallet || !connectedWallet.accounts.length) return;
+    const provider = new ethers.providers.Web3Provider(window.ethereum);
+    const signer = provider.getSigner();
+    const contract = new ethers.Contract(contractAddress, TrustAndTeachABI, signer);
+    await contract.submitRank(conversationId, ranks.map(rank => ethers.BigNumber.from(rank)));
+    refreshConversations();
+  };
+
   const generateConversationData = (): IConversationData[] => {
     let data: IConversationData[] = [];
     conversations.forEach((conversation, index) => {
@@ -255,7 +265,7 @@ export const SimpleInteract: React.FC<IInteract> = ({ dappAddress, setDappAddres
             <th>Prompt</th>
             <th>Prefered</th>
             <th>Runner-up</th>
-            <th>Action</th> // New column header for actions
+            <th>Action</th>
           </tr>
         </thead>
         <tbody>
@@ -266,7 +276,7 @@ export const SimpleInteract: React.FC<IInteract> = ({ dappAddress, setDappAddres
               <td>{data.prompt}</td>
               <td>{data.firstRankedResponse}</td>
               <td>{data.secondRankedResponse}</td>
-              <td>{data.actions}</td> // Display action buttons or null
+              <td>{data.actions}</td>
             </tr>
           ))}
         </tbody>
@@ -278,13 +288,4 @@ export const SimpleInteract: React.FC<IInteract> = ({ dappAddress, setDappAddres
       <button onClick={downloadConversationsData}>Download JSON</button>
     </div >
   );
-};
-
-const submitRanks = async (conversationId: number, ranks: number[]) => {
-  if (!connectedWallet || !connectedWallet.accounts.length) return;
-  const provider = new ethers.providers.Web3Provider(window.ethereum);
-  const signer = provider.getSigner();
-  const contract = new ethers.Contract(contractAddress, TrustAndTeachABI, signer);
-  await contract.submitRank(conversationId, ranks.map(rank => ethers.BigNumber.from(rank)));
-  refreshConversations();
 };
