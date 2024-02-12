@@ -233,7 +233,6 @@ export const SimpleInteract: React.FC<IInteract> = ({ dappAddress, setDappAddres
             <th>Conversation ID</th>
             <th>Users Who Submitted Ranks</th>
             <th>Prompt</th>
-            <th>Users Who Submitted Ranks</th>
             <th>First Ranked Response</th>
             <th>Second Ranked Response</th>
           </tr>
