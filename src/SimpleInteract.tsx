@@ -181,7 +181,7 @@ export const SimpleInteract: React.FC<IInteract> = ({ dappAddress, setDappAddres
         }}
         isReadCall={true}
       />
-      <h3>Conversations</h3>
+      <h3>RLHF Data for DPO</h3>
       <table>
         <thead>
           <tr>
