@@ -23,6 +23,10 @@ export const InteractionForm: React.FC<IInteractionForm> = ({ description, defau
   const provider = new ethers.providers.Web3Provider(connectedWallet.provider);
 
   const [inputs, setInputs] = useState<IInputField[]>(defaultInputs);
+
+  useEffect(() => {
+    setInputs(defaultInputs);
+  }, [defaultInputs]);
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
