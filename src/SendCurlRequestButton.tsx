@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 interface ButtonProps {
   url: string;
   data: string;
+  buttonText: string;
 }
 
 const SendCurlRequestButton: React.FC<ButtonProps> = ({ url, data }) => {
@@ -32,7 +33,7 @@ const SendCurlRequestButton: React.FC<ButtonProps> = ({ url, data }) => {
 
   return (
     <button disabled={isSending} onClick={handleClick}>
-      {isSending ? 'Sending...' : 'Increase Time'}
+      {isSending ? 'Sending...' : props.buttonText}
     </button>
   );
 };
