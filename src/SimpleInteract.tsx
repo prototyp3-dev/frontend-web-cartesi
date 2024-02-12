@@ -81,12 +81,12 @@ export const SimpleInteract: React.FC<IInteract> = ({ dappAddress, setDappAddres
         // Handle cases where no ranks are submitted by a user
         const firstRankIndex = userRank.ranks.length > 0 ? userRank.ranks[0] : undefined;
         const secondRankIndex = userRank.ranks.length > 1 ? userRank.ranks[1] : undefined;
-        // Shorten the user address
-        const shortenedUser = `${userRank.user.slice(0, 5)}..${userRank.user.slice(-3)}`;
+        // Format the user address based on showFullAddresses state
+        const formattedUser = showFullAddresses ? userRank.user : `${userRank.user.slice(0, 5)}..${userRank.user.slice(-3)}`;
         data.push({
           conversationId: index,
           prompt: conversation.prompt,
-          usersWhoSubmittedRanks: shortenedUser,
+          usersWhoSubmittedRanks: formattedUser,
           firstRankedResponse: firstRankIndex !== undefined ? conversation.responses[firstRankIndex] : "N/A",
           secondRankedResponse: secondRankIndex !== undefined ? conversation.responses[secondRankIndex] : "N/A",
         });
