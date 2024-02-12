@@ -107,7 +107,9 @@ export const SimpleInteract: React.FC<IInteract> = ({ dappAddress, setDappAddres
         data.push({
           conversationId: index,
           prompt: conversation.prompt,
-          usersWhoSubmittedRanks: formattedUser,
+          usersWhoSubmittedRanks: usersWithOrWithoutRanks.map(userRank => 
+            <AddressDisplay address={userRank.user} bold={userRank.ranks.length > 0} showFullAddress={showFullAddresses} />
+          ),
           firstRankedResponse: hasResponses ? (firstRankIndex !== undefined ? conversation.responses[firstRankIndex] : conversation.responses[0]) : "N/A",
           secondRankedResponse: hasResponses ? (secondRankIndex !== undefined ? conversation.responses[secondRankIndex] : conversation.responses[1] || "N/A") : "N/A",
           actions,
