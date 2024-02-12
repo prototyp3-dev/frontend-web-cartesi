@@ -216,7 +216,7 @@ export const SimpleInteract: React.FC<IInteract> = ({ dappAddress, setDappAddres
           </tr>
         </thead>
         <tbody>
-          {generateConversationData().slice(0, showAllRows ? undefined : 3).map(data => (
+          {generateConversationData().slice(0, showAllRows ? undefined : 3).reverse().map(data => (
             <tr key={data.conversationId}>
               <td>{data.conversationId}</td>
               <td>{data.prompt}</td>
