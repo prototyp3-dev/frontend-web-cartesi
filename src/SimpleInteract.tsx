@@ -1,4 +1,4 @@
-import React, { useState, useEffect, FC } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ethers } from 'ethers';
 import { useWallets } from "@web3-onboard/react";
 import { InteractionForm } from "./InteractionForm";
@@ -93,9 +93,9 @@ export const SimpleInteract: React.FC<IInteract> = ({ dappAddress, setDappAddres
         const firstRankIndex = userRank.ranks.length > 0 ? userRank.ranks[0] : undefined;
         const secondRankIndex = userRank.ranks.length > 1 ? userRank.ranks[1] : undefined;
         // Format the user address based on showFullAddresses state and whether ranks have been submitted
-        const isBold = userRank.ranks.length === 0 && conversation.responses.length > 0;
-        const formattedUser = showFullAddresses ? userRank.user : `${userRank.user.slice(0, 5)}..${userRank.user.slice(-3)}`;
-        const UserDisplay = ({ user }: { user: string }) => isBold ? <b>{user}</b> : <span>{user}</span>;
+        const formattedUser = userRank.ranks.length === 0 && conversation.responses.length > 0
+          ? `<b>${showFullAddresses ? userRank.user : `${userRank.user.slice(0, 5)}..${userRank.user.slice(-3)}`}</b>`
+          : showFullAddresses ? userRank.user : `${userRank.user.slice(0, 5)}..${userRank.user.slice(-3)}`;
         const hasResponses = conversation.responses.length > 0;
         const hasRanks = userRank.ranks.length > 0;
         const actions = hasResponses && !hasRanks ? (
@@ -144,15 +144,6 @@ export const SimpleInteract: React.FC<IInteract> = ({ dappAddress, setDappAddres
     document.body.appendChild(downloadAnchorNode);
     downloadAnchorNode.click();
     downloadAnchorNode.remove();
-  };
-
-  interface UserDisplayProps {
-    user: string;
-    isBold?: boolean;
-  }
-
-  const UserDisplay: FC<UserDisplayProps> = ({ user, isBold = false }) => {
-    return isBold ? <b>{user}</b> : <span>{user}</span>;
   };
 
   const downloadConversationsData = async () => {
@@ -283,7 +274,7 @@ export const SimpleInteract: React.FC<IInteract> = ({ dappAddress, setDappAddres
           {generateConversationData().reverse().slice(0, showAllRows ? undefined : 3).map(data => (
             <tr key={data.conversationId}>
               <td>{data.conversationId}</td>
-              <td><UserDisplay user={data.usersWhoSubmittedRanks} /></td>
+              <td>{data.usersWhoSubmittedRanks}</td>
               <td>{data.prompt}</td>
               <td>{data.firstRankedResponse}</td>
               <td>{data.secondRankedResponse}</td>
