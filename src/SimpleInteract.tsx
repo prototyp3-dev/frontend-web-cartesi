@@ -32,6 +32,7 @@ export const SimpleInteract: React.FC<IInteract> = ({ dappAddress, setDappAddres
   const userAddress = connectedWallet?.accounts[0]?.address || '';
 
   const [conversations, setConversations] = useState<any[]>([]);
+  const [showAllRows, setShowAllRows] = useState(false);
 
   useEffect(() => {
     const fetchConversations = async () => {
@@ -222,6 +223,7 @@ export const SimpleInteract: React.FC<IInteract> = ({ dappAddress, setDappAddres
       <h3>RLHF Data for DPO</h3>
       <button onClick={downloadRLHFDataAsTSV}>Download Table as TSV</button>
       <button onClick={downloadTableDataAsJSON}>Download Table as JSON</button>
+      <button onClick={() => setShowAllRows(!showAllRows)}>{showAllRows ? 'Show Less' : 'Show More'}</button>
       <table>
         <thead>
           <tr>
@@ -232,7 +234,7 @@ export const SimpleInteract: React.FC<IInteract> = ({ dappAddress, setDappAddres
           </tr>
         </thead>
         <tbody>
-          {generateConversationData().map(data => (
+          {generateConversationData().slice(0, showAllRows ? undefined : 3).map(data => (
             <tr key={data.conversationId}>
               <td>{data.conversationId}</td>
               <td>{data.prompt}</td>
