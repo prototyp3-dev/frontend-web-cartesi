@@ -274,7 +274,7 @@ export const SimpleInteract: React.FC<IInteract> = ({ dappAddress, setDappAddres
           {generateConversationData().reverse().slice(0, showAllRows ? undefined : 3).map(data => (
             <tr key={data.conversationId}>
               <td>{data.conversationId}</td>
-              <td>{data.usersWhoSubmittedRanks}</td>
+              <td dangerouslySetInnerHTML={{ __html: data.usersWhoSubmittedRanks }}></td>
               <td>{data.prompt}</td>
               <td>{data.firstRankedResponse}</td>
               <td>{data.secondRankedResponse}</td>
