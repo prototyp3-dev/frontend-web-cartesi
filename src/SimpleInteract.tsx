@@ -34,30 +34,29 @@ export const SimpleInteract: React.FC<IInteract> = ({ dappAddress, setDappAddres
   const [conversations, setConversations] = useState<any[]>([]);
   const [showAllRows, setShowAllRows] = useState(false);
 
+  const refreshConversations = async () => {
+    const provider = new ethers.providers.Web3Provider(window.ethereum);
+    const signer = provider.getSigner();
+    const contract = new ethers.Contract(contractAddress, TrustAndTeachABI, signer);
+    const conversationCount = await contract.getConversationCount();
+    let conversationsData = [];
+
+    for (let i = 0; i < conversationCount; i++) {
+      const conversation = await contract.getConversationById(i);
+      const usersRanks = await Promise.all(conversation.usersWhoSubmittedRanks.map(async (user: string) => {
+        const ranks = await contract.getRanksByUser(i, user);
+        return { user, ranks };
+      }));
+
+      conversationsData.push({ ...conversation, usersRanks });
+    }
+    setConversations(conversationsData);
+  };
+
   useEffect(() => {
-    const fetchConversationsAsync = async () => {
-      const provider = new ethers.providers.Web3Provider(window.ethereum);
-      const signer = provider.getSigner();
-      const contract = new ethers.Contract(contractAddress, TrustAndTeachABI, signer);
-      const conversationCount = await contract.getConversationCount();
-      let conversationsData = [];
-
-      for (let i = 0; i < conversationCount; i++) {
-        const conversation = await contract.getConversationById(i);
-        const usersRanks = await Promise.all(conversation.usersWhoSubmittedRanks.map(async (user: string) => {
-          const ranks = await contract.getRanksByUser(i, user);
-          return { user, ranks };
-        }));
-
-        conversationsData.push({ ...conversation, usersRanks });
-      }
-      setConversations(conversationsData);
-    };
-
-    fetchConversationsAsync();
-
+    refreshConversations();
     const interval = setInterval(() => {
-      fetchConversationsAsync();
+      refreshConversations();
     }, 30000); // Refresh every 30 seconds
 
     return () => clearInterval(interval);
@@ -252,6 +251,7 @@ export const SimpleInteract: React.FC<IInteract> = ({ dappAddress, setDappAddres
       </table>
       <h3>Download Conversations Data</h3>
       <button onClick={downloadConversationsData}>Download JSON</button>
+      <button onClick={refreshConversations}>Refresh Conversations</button>
       <h3>Other</h3>
     </div >
   );
