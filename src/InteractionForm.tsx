@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { ethers } from 'ethers';
 import { useWallets } from "@web3-onboard/react";
 
@@ -24,9 +24,14 @@ export const InteractionForm: React.FC<IInteractionForm> = ({ description, defau
 
   const [inputs, setInputs] = useState<IInputField[]>(defaultInputs);
 
+  const initialRender = useRef(true);
+
   useEffect(() => {
-    setInputs(defaultInputs);
-  }, [defaultInputs]);
+    if (initialRender.current) {
+      setInputs(defaultInputs);
+      initialRender.current = false;
+    }
+  }, []); // Removed defaultInputs from dependency array
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
