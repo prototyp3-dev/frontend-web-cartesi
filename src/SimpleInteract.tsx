@@ -73,6 +73,22 @@ export const SimpleInteract: React.FC<IInteract> = ({ dappAddress, setDappAddres
     downloadAnchorNode.remove();
   };
 
+  const downloadTableDataAsJSON = () => {
+    const jsonData = conversations.map((conversation, index) => ({
+      conversationId: index,
+      prompt: conversation.prompt,
+      firstRankedResponse: conversation.responses[conversation.usersRanks[0]?.ranks[0]][0],
+      secondRankedResponse: conversation.responses[conversation.usersRanks[0]?.ranks[1]][0],
+    }));
+    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(jsonData));
+    const downloadAnchorNode = document.createElement('a');
+    downloadAnchorNode.setAttribute("href", dataStr);
+    downloadAnchorNode.setAttribute("download", "RLHF_Data_for_DPO.json");
+    document.body.appendChild(downloadAnchorNode);
+    downloadAnchorNode.click();
+    downloadAnchorNode.remove();
+  };
+
   const downloadConversationsData = async () => {
     const provider = new ethers.providers.Web3Provider(window.ethereum);
     const signer = provider.getSigner();
@@ -199,6 +215,7 @@ export const SimpleInteract: React.FC<IInteract> = ({ dappAddress, setDappAddres
         isReadCall={true}
       />
       <button onClick={downloadRLHFDataAsTSV}>Download Table as TSV</button>
+      <button onClick={downloadTableDataAsJSON}>Download Table as JSON</button>
       <h3>RLHF Data for DPO</h3>
       <table>
         <thead>
