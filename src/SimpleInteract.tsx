@@ -33,6 +33,7 @@ export const SimpleInteract: React.FC<IInteract> = ({ dappAddress, setDappAddres
 
   const [conversations, setConversations] = useState<any[]>([]);
   const [showAllRows, setShowAllRows] = useState(false);
+  const [hideInstructions, setHideInstructions] = useState(false);
 
   const refreshConversations = async () => {
     const provider = new ethers.providers.Web3Provider(window.ethereum);
@@ -128,7 +129,14 @@ export const SimpleInteract: React.FC<IInteract> = ({ dappAddress, setDappAddres
 
   return (
     <div>
+      <button onClick={() => setHideInstructions(!hideInstructions)}>{hideInstructions ? 'Hide Instructions' : 'Show Instructions'}</button>
       <h3>submit a prompt</h3>
+      {hideInstructions && <>
+        stories15m model will continure generate tokens after the prompt up to the specified number.
+        the number of tokens includes the prompt tokens and the generated ones.
+        80 tokens take a little less then 3 min on a 2022 i7 and more than 80 tokens currently fails.
+      </>
+      }
       <InteractionForm
         description="Send Instruction"
         defaultInputs={[
@@ -142,13 +150,20 @@ export const SimpleInteract: React.FC<IInteract> = ({ dappAddress, setDappAddres
         }}
       />
       <h3>post the response</h3>
+      {hideInstructions && <>
+        If running locally, advance the time of the dispute period to be able to execute the voucher.
+      </>
+      }
       <div>
         <SendCurlRequestButton
           url="http://localhost:8545"
           data='{"id":1337,"jsonrpc":"2.0","method":"evm_increaseTime","params":[864010]}'
         />
       </div>
-      <strong>Dapp Address</strong>: {dappAddress}
+      {hideInstructions && <>
+        <strong>Dapp Address</strong>: {dappAddress}
+      </>
+      }
       <Vouchers dappAddress={dappAddress} />
       <h3>rank the responses</h3>
       <InteractionForm
@@ -183,49 +198,10 @@ export const SimpleInteract: React.FC<IInteract> = ({ dappAddress, setDappAddres
           return contract.submitRank(conversationId, ranksArray);
         }}
       />
-      <h3>List conversations (on-chain)</h3>
-      <InteractionForm
-        description="Get Conversation Count"
-        defaultInputs={[]}
-        contractFunction={async (signer: ethers.Signer) => {
-          const contract = new ethers.Contract(contractAddress, TrustAndTeachABI, signer);
-          return contract.getConversationCount().then((result: ethers.BigNumber) => result.toNumber());
-        }}
-        isReadCall={true}
-      />
-      <InteractionForm
-        description="Get Conversation by ID"
-        defaultInputs={[{ name: 'conversationId', value: "0", description: 'Conversation ID' }]}
-        contractFunction={async (signer: ethers.Signer, inputObject: IInputField) => {
-          const contract = new ethers.Contract(contractAddress, TrustAndTeachABI, signer);
-          const result = await contract.getConversationById(ethers.BigNumber.from(inputObject.value));
-          return {
-            author: result.author,
-            prompt: result.prompt,
-            responses: result.responses,
-            rankSubmissionCount: result.rankSubmissionCount.toNumber(),
-            usersWhoSubmittedRanks: result.usersWhoSubmittedRanks.map(ethers.utils.getAddress),
-            createInstructionTimestamp: new Date(result.createInstructionTimestamp.toNumber() * 1000).toISOString(),
-            responseAnnouncedTimestamp: new Date(result.responseAnnouncedTimestamp.toNumber() * 1000).toISOString()
-          };
-        }}
-        isReadCall={true}
-      />
-      <InteractionForm
-        description="Get Ranks By User"
-        defaultInputs={[
-          { name: 'conversationId', value: "0", description: 'Conversation ID' },
-          { name: 'userAddress', value: userAddress, description: 'User Address' }
-        ]}
-        contractFunction={async (signer: ethers.Signer, inputObject1: IInputField, inputObject2: IInputField) => {
-          const contract = new ethers.Contract(contractAddress, TrustAndTeachABI, signer);
-          const conversationId = ethers.BigNumber.from(inputObject1.value);
-          const userAddress = inputObject2.value;
-          return contract.getRanksByUser(conversationId, userAddress).then((result: ethers.BigNumber[]) => result.map(rank => rank.toNumber()));
-        }}
-        isReadCall={true}
-      />
       <h3>RLHF Data for DPO</h3>
+      {hideInstructions && <>
+        rankd
+      </>}
       <button onClick={downloadRLHFDataAsTSV}>Download Table as TSV</button>
       <button onClick={downloadTableDataAsJSON}>Download Table as JSON</button>
       <button onClick={() => setShowAllRows(!showAllRows)}>{showAllRows ? 'Show Less' : 'Show More'}</button>
@@ -251,8 +227,10 @@ export const SimpleInteract: React.FC<IInteract> = ({ dappAddress, setDappAddres
         </tbody>
       </table>
       <h3>Download Conversations Data</h3>
+      {hideInstructions && <div>
+        Download all of the conversation data; not just the table.
+      </div>}
       <button onClick={downloadConversationsData}>Download JSON</button>
-      <h3>Other</h3>
     </div >
   );
 };
