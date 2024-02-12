@@ -200,9 +200,9 @@ export const SimpleInteract: React.FC<IInteract> = ({ dappAddress, setDappAddres
         }}
       />
       <h3>RLHF Data for DPO</h3>
-      {hideInstructions && <>
-        rankd
-      </>}
+      {hideInstructions && <div>
+        If you see N/A in the table, it means that the user did not submit a rank for that conversation.
+      </div>}
       <button onClick={downloadRLHFDataAsTSV}>Download Table as TSV</button>
       <button onClick={downloadTableDataAsJSON}>Download Table as JSON</button>
       <button onClick={() => setShowAllRows(!showAllRows)}>{showAllRows ? 'Show Less' : 'Show More'}</button>
