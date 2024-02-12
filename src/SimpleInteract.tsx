@@ -41,6 +41,7 @@ export const SimpleInteract: React.FC<IInteract> = ({ dappAddress, setDappAddres
 
   const [conversations, setConversations] = useState<any[]>([]);
   const [showAllRows, setShowAllRows] = useState(false);
+  const [showFullAddresses, setShowFullAddresses] = useState(false); // State to toggle between full and shortened addresses
   const [hideInstructions, setHideInstructions] = useState(false);
 
   const refreshConversations = async () => {
@@ -80,10 +81,12 @@ export const SimpleInteract: React.FC<IInteract> = ({ dappAddress, setDappAddres
         // Handle cases where no ranks are submitted by a user
         const firstRankIndex = userRank.ranks.length > 0 ? userRank.ranks[0] : undefined;
         const secondRankIndex = userRank.ranks.length > 1 ? userRank.ranks[1] : undefined;
+        // Shorten the user address
+        const shortenedUser = `${userRank.user.slice(0, 5)}..${userRank.user.slice(-3)}`;
         data.push({
           conversationId: index,
           prompt: conversation.prompt,
-          usersWhoSubmittedRanks: userRank.user,
+          usersWhoSubmittedRanks: shortenedUser,
           firstRankedResponse: firstRankIndex !== undefined ? conversation.responses[firstRankIndex] : "N/A",
           secondRankedResponse: secondRankIndex !== undefined ? conversation.responses[secondRankIndex] : "N/A",
         });
@@ -231,7 +234,12 @@ export const SimpleInteract: React.FC<IInteract> = ({ dappAddress, setDappAddres
         <thead>
           <tr>
             <th>Conversation ID</th>
-            <th>Users Who Submitted Ranks</th>
+            <th>
+              Users Who Submitted Ranks
+              <button onClick={() => setShowFullAddresses(!showFullAddresses)}>
+                {showFullAddresses ? 'Show Shortened' : 'Show Full'}
+              </button>
+            </th>
             <th>Prompt</th>
             <th>First Ranked Response</th>
             <th>Second Ranked Response</th>
