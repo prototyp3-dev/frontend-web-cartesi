@@ -4,13 +4,6 @@ import { useWallets } from "@web3-onboard/react";
 import { InteractionForm } from "./InteractionForm";
 import { Vouchers } from "./Vouchers";
 
-interface IConversationData {
-  conversationId: number;
-  prompt: string;
-  usersWhoSubmittedRanks: string;
-  firstRankedResponse: string;
-  secondRankedResponse: string;
-}
 import TrustAndTeachABI from "./contract_abi/TrustAndTeach.json";
 import SendCurlRequestButton from './SendCurlRequestButton';
 
@@ -21,6 +14,13 @@ interface IInputField {
   description: string;
 }
 
+interface IConversationData {
+  conversationId: number;
+  prompt: string;
+  usersWhoSubmittedRanks: string;
+  firstRankedResponse: string;
+  secondRankedResponse: string;
+}
 
 interface IInteract {
   dappAddress: string;
