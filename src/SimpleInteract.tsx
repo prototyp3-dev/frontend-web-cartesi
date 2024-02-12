@@ -56,12 +56,18 @@ export const SimpleInteract: React.FC<IInteract> = ({ dappAddress, setDappAddres
     fetchConversations();
   }, [contractAddress]);
 
+  const generateConversationData = () => conversations.map((conversation, index) => ({
+    conversationId: index,
+    prompt: conversation.prompt,
+    firstRankedResponse: conversation.responses[conversation.usersRanks[0]?.ranks[0]][0],
+    secondRankedResponse: conversation.responses[conversation.usersRanks[0]?.ranks[1]][0],
+  }));
+
   const downloadRLHFDataAsTSV = async () => {
+    const conversationData = generateConversationData();
     let tsvData = 'Conversation ID\tPrompt\tFirst Ranked Response\tSecond Ranked Response\n';
-    conversations.forEach((conversation, index) => {
-      const firstResponse = conversation.responses[conversation.usersRanks[0]?.ranks[0]][0];
-      const secondResponse = conversation.responses[conversation.usersRanks[0]?.ranks[1]][0];
-      tsvData += `${index}\t${conversation.prompt}\t${firstResponse}\t${secondResponse}\n`;
+    conversationData.forEach(data => {
+      tsvData += `${data.conversationId}\t${data.prompt}\t${data.firstRankedResponse}\t${data.secondRankedResponse}\n`;
     });
 
     const dataStr = "data:text/plain;charset=utf-8," + encodeURIComponent(tsvData);
@@ -74,12 +80,7 @@ export const SimpleInteract: React.FC<IInteract> = ({ dappAddress, setDappAddres
   };
 
   const downloadTableDataAsJSON = () => {
-    const jsonData = conversations.map((conversation, index) => ({
-      conversationId: index,
-      prompt: conversation.prompt,
-      firstRankedResponse: conversation.responses[conversation.usersRanks[0]?.ranks[0]][0],
-      secondRankedResponse: conversation.responses[conversation.usersRanks[0]?.ranks[1]][0],
-    }));
+    const jsonData = generateConversationData();
     const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(jsonData));
     const downloadAnchorNode = document.createElement('a');
     downloadAnchorNode.setAttribute("href", dataStr);
@@ -227,12 +228,12 @@ export const SimpleInteract: React.FC<IInteract> = ({ dappAddress, setDappAddres
           </tr>
         </thead>
         <tbody>
-          {conversations.map((conversation, index) => (
-            <tr key={index}>
-              <td>{index}</td>
-              <td>{conversation.prompt}</td>
-              <td>{conversation.responses[conversation.usersRanks[0]?.ranks[0]][0]}</td>
-              <td>{conversation.responses[conversation.usersRanks[0]?.ranks[1]][0]}</td>
+          {generateConversationData().map(data => (
+            <tr key={data.conversationId}>
+              <td>{data.conversationId}</td>
+              <td>{data.prompt}</td>
+              <td>{data.firstRankedResponse}</td>
+              <td>{data.secondRankedResponse}</td>
             </tr>
           ))}
         </tbody>
