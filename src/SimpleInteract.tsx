@@ -3,7 +3,6 @@ import { ethers } from 'ethers';
 import { useWallets } from "@web3-onboard/react";
 import { InteractionForm } from "./InteractionForm";
 import { Vouchers } from "./Vouchers";
-import AddressDisplay from './AddressDisplay';
 
 import TrustAndTeachABI from "./contract_abi/TrustAndTeach.json";
 import SendCurlRequestButton from './SendCurlRequestButton';
@@ -94,6 +93,9 @@ export const SimpleInteract: React.FC<IInteract> = ({ dappAddress, setDappAddres
         const firstRankIndex = userRank.ranks.length > 0 ? userRank.ranks[0] : undefined;
         const secondRankIndex = userRank.ranks.length > 1 ? userRank.ranks[1] : undefined;
         // Format the user address based on showFullAddresses state and whether ranks have been submitted
+        const formattedUser = userRank.ranks.length === 0 && conversation.responses.length > 0
+          ? `<b>${showFullAddresses ? userRank.user : `${userRank.user.slice(0, 5)}..${userRank.user.slice(-3)}`}</b>`
+          : showFullAddresses ? userRank.user : `${userRank.user.slice(0, 5)}..${userRank.user.slice(-3)}`;
         const hasResponses = conversation.responses.length > 0;
         const hasRanks = userRank.ranks.length > 0;
         const actions = hasResponses && !hasRanks ? (
@@ -107,9 +109,7 @@ export const SimpleInteract: React.FC<IInteract> = ({ dappAddress, setDappAddres
         data.push({
           conversationId: index,
           prompt: conversation.prompt,
-          usersWhoSubmittedRanks: usersWithOrWithoutRanks.map((userRank: { user: string; ranks: number[] }) =>
-            <AddressDisplay address={userRank.user} bold={userRank.ranks.length > 0} showFullAddress={showFullAddresses} />
-          ),
+          usersWhoSubmittedRanks: formattedUser,
           firstRankedResponse: hasResponses ? (firstRankIndex !== undefined ? conversation.responses[firstRankIndex] : conversation.responses[0]) : "N/A",
           secondRankedResponse: hasResponses ? (secondRankIndex !== undefined ? conversation.responses[secondRankIndex] : conversation.responses[1] || "N/A") : "N/A",
           actions,
@@ -274,7 +274,7 @@ export const SimpleInteract: React.FC<IInteract> = ({ dappAddress, setDappAddres
           {generateConversationData().reverse().slice(0, showAllRows ? undefined : 3).map(data => (
             <tr key={data.conversationId}>
               <td>{data.conversationId}</td>
-              <td><AddressDisplay address={data.usersWhoSubmittedRanks} bold={data.usersWhoSubmittedRanks.includes('<b>')} showFullAddress={showFullAddresses} /></td>
+              <td>{data.usersWhoSubmittedRanks}</td>
               <td>{data.prompt}</td>
               <td>{data.firstRankedResponse}</td>
               <td>{data.secondRankedResponse}</td>
