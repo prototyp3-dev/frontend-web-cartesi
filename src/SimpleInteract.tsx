@@ -40,7 +40,7 @@ export const SimpleInteract: React.FC<IInteract> = ({ dappAddress, setDappAddres
 
     for (let i = 0; i < conversationCount; i++) {
       const conversation = await contract.getConversationById(i);
-      const usersRanks = await Promise.all(conversation.usersWhoSubmittedRanks.map(async (user) => {
+      const usersRanks = await Promise.all(conversation.usersWhoSubmittedRanks.map(async (user: string) => {
         const ranks = await contract.getRanksByUser(i, user);
         return { user, ranks };
       }));
