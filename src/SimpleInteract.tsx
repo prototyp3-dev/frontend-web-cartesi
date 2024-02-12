@@ -233,16 +233,16 @@ export const SimpleInteract: React.FC<IInteract> = ({ dappAddress, setDappAddres
       <table>
         <thead>
           <tr>
-            <th>Conversation ID</th>
+            <th>ID</th>
             <th>
-              Users Who Submitted Ranks
+              Rankers
               <button onClick={() => setShowFullAddresses(!showFullAddresses)}>
                 {showFullAddresses ? 'Show Shortened' : 'Show Full'}
               </button>
             </th>
             <th>Prompt</th>
-            <th>First Ranked Response</th>
-            <th>Second Ranked Response</th>
+            <th>Prefered</th>
+            <th>Runner-up</th>
           </tr>
         </thead>
         <tbody>
