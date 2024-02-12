@@ -20,6 +20,7 @@ interface IConversationData {
   usersWhoSubmittedRanks: string;
   firstRankedResponse: string;
   secondRankedResponse: string;
+  actions: JSX.Element | null; // New property for action buttons
 }
 
 interface IInteract {
@@ -83,12 +84,23 @@ export const SimpleInteract: React.FC<IInteract> = ({ dappAddress, setDappAddres
         const secondRankIndex = userRank.ranks.length > 1 ? userRank.ranks[1] : undefined;
         // Format the user address based on showFullAddresses state
         const formattedUser = showFullAddresses ? userRank.user : `${userRank.user.slice(0, 5)}..${userRank.user.slice(-3)}`;
+        const hasResponses = conversation.responses.length > 0;
+        const hasRanks = userRank.ranks.length > 0;
+        const actions = hasResponses && !hasRanks ? (
+          <>
+            <button onClick={() => submitRanks(index, [0, 1])}>Confirm</button>
+            <button onClick={() => submitRanks(index, [1, 0])}>Switch</button>
+          </>
+        ) : hasResponses ? null : (
+          <button>Post responses on-chain</button>
+        );
         data.push({
           conversationId: index,
           prompt: conversation.prompt,
           usersWhoSubmittedRanks: formattedUser,
-          firstRankedResponse: firstRankIndex !== undefined ? conversation.responses[firstRankIndex] : "N/A",
-          secondRankedResponse: secondRankIndex !== undefined ? conversation.responses[secondRankIndex] : "N/A",
+          firstRankedResponse: hasResponses ? (firstRankIndex !== undefined ? conversation.responses[firstRankIndex] : conversation.responses[0]) : "N/A",
+          secondRankedResponse: hasResponses ? (secondRankIndex !== undefined ? conversation.responses[secondRankIndex] : conversation.responses[1] || "N/A") : "N/A",
+          actions,
         });
       });
     });
@@ -243,6 +255,7 @@ export const SimpleInteract: React.FC<IInteract> = ({ dappAddress, setDappAddres
             <th>Prompt</th>
             <th>Prefered</th>
             <th>Runner-up</th>
+            <th>Action</th> // New column header for actions
           </tr>
         </thead>
         <tbody>
@@ -253,6 +266,7 @@ export const SimpleInteract: React.FC<IInteract> = ({ dappAddress, setDappAddres
               <td>{data.prompt}</td>
               <td>{data.firstRankedResponse}</td>
               <td>{data.secondRankedResponse}</td>
+              <td>{data.actions}</td> // Display action buttons or null
             </tr>
           ))}
         </tbody>
@@ -266,3 +280,11 @@ export const SimpleInteract: React.FC<IInteract> = ({ dappAddress, setDappAddres
   );
 };
 
+const submitRanks = async (conversationId: number, ranks: number[]) => {
+  if (!connectedWallet || !connectedWallet.accounts.length) return;
+  const provider = new ethers.providers.Web3Provider(window.ethereum);
+  const signer = provider.getSigner();
+  const contract = new ethers.Contract(contractAddress, TrustAndTeachABI, signer);
+  await contract.submitRank(conversationId, ranks.map(rank => ethers.BigNumber.from(rank)));
+  refreshConversations();
+};
