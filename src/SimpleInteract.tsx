@@ -67,7 +67,7 @@ export const SimpleInteract: React.FC<IInteract> = ({ dappAddress, setDappAddres
     const dataStr = "data:text/plain;charset=utf-8," + encodeURIComponent(tsvData);
     const downloadAnchorNode = document.createElement('a');
     downloadAnchorNode.setAttribute("href", dataStr);
-    downloadAnchorNode.setAttribute("download", "RLHF_Data_for_DPO.tsv");
+    downloadAnchorNode.setAttribute("download", "RLHF_Data_for_DPO.csv");
     document.body.appendChild(downloadAnchorNode);
     downloadAnchorNode.click();
     downloadAnchorNode.remove();
