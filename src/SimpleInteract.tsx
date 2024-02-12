@@ -219,9 +219,9 @@ export const SimpleInteract: React.FC<IInteract> = ({ dappAddress, setDappAddres
         }}
         isReadCall={true}
       />
+      <h3>RLHF Data for DPO</h3>
       <button onClick={downloadRLHFDataAsTSV}>Download Table as TSV</button>
       <button onClick={downloadTableDataAsJSON}>Download Table as JSON</button>
-      <h3>RLHF Data for DPO</h3>
       <table>
         <thead>
           <tr>
