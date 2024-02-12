@@ -63,17 +63,23 @@ export const SimpleInteract: React.FC<IInteract> = ({ dappAddress, setDappAddres
     return () => clearInterval(interval);
   }, [contractAddress]);
 
-  const generateConversationData = () => conversations.map((conversation, index) => {
-    const firstRankIndex = conversation.usersRanks[0]?.ranks[0];
-    const secondRankIndex = conversation.usersRanks[0]?.ranks[1];
-    return {
-      conversationId: index,
-      prompt: conversation.prompt,
-      usersWhoSubmittedRanks: conversation.usersWhoSubmittedRanks.join(', '),
-      firstRankedResponse: firstRankIndex !== undefined ? conversation.responses[firstRankIndex][0] : "N/A",
-      secondRankedResponse: secondRankIndex !== undefined ? conversation.responses[secondRankIndex][0] : "N/A",
-    };
-  });
+  const generateConversationData = () => {
+    let data = [];
+    conversations.forEach((conversation, index) => {
+      conversation.usersRanks.forEach(userRank => {
+        const firstRankIndex = userRank.ranks[0];
+        const secondRankIndex = userRank.ranks[1];
+        data.push({
+          conversationId: index,
+          prompt: conversation.prompt,
+          usersWhoSubmittedRanks: userRank.user,
+          firstRankedResponse: firstRankIndex !== undefined ? conversation.responses[firstRankIndex] : "N/A",
+          secondRankedResponse: secondRankIndex !== undefined ? conversation.responses[secondRankIndex] : "N/A",
+        });
+      });
+    });
+    return data;
+  };
 
   const downloadRLHFDataAsTSV = async () => {
     const conversationData = generateConversationData();
