@@ -204,6 +204,7 @@ export const Interact: React.FC<IInteract> = ({ dappAddress, setDappAddress, con
       <SendCurlRequestButton
         url="http://localhost:8545"
         data='{"id":1337,"jsonrpc":"2.0","method":"evm_increaseTime","params":[864010]}'
+        buttonText="Advance Time"
       />
     </div >
   );
