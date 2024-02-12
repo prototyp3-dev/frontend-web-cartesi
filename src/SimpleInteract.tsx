@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, FC } from 'react';
 import { ethers } from 'ethers';
 import { useWallets } from "@web3-onboard/react";
 import { InteractionForm } from "./InteractionForm";
@@ -144,6 +144,15 @@ export const SimpleInteract: React.FC<IInteract> = ({ dappAddress, setDappAddres
     document.body.appendChild(downloadAnchorNode);
     downloadAnchorNode.click();
     downloadAnchorNode.remove();
+  };
+
+  interface UserDisplayProps {
+    user: string;
+    isBold?: boolean;
+  }
+
+  const UserDisplay: FC<UserDisplayProps> = ({ user, isBold = false }) => {
+    return isBold ? <b>{user}</b> : <span>{user}</span>;
   };
 
   const downloadConversationsData = async () => {
