@@ -229,6 +229,7 @@ export const SimpleInteract: React.FC<IInteract> = ({ dappAddress, setDappAddres
       <button onClick={downloadRLHFDataAsTSV}>Download Table as TSV</button>
       <button onClick={downloadTableDataAsJSON}>Download Table as JSON</button>
       <button onClick={() => setShowAllRows(!showAllRows)}>{showAllRows ? 'Show Less' : 'Show More'}</button>
+      <button onClick={refreshConversations}>Refresh Data</button>
       <table>
         <thead>
           <tr>
@@ -251,7 +252,6 @@ export const SimpleInteract: React.FC<IInteract> = ({ dappAddress, setDappAddres
       </table>
       <h3>Download Conversations Data</h3>
       <button onClick={downloadConversationsData}>Download JSON</button>
-      <button onClick={refreshConversations}>Refresh Conversations</button>
       <h3>Other</h3>
     </div >
   );
