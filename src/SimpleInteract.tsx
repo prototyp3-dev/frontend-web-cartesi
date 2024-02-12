@@ -69,6 +69,7 @@ export const SimpleInteract: React.FC<IInteract> = ({ dappAddress, setDappAddres
     return {
       conversationId: index,
       prompt: conversation.prompt,
+      usersWhoSubmittedRanks: conversation.usersWhoSubmittedRanks.join(', '),
       firstRankedResponse: firstRankIndex !== undefined ? conversation.responses[firstRankIndex][0] : "N/A",
       secondRankedResponse: secondRankIndex !== undefined ? conversation.responses[secondRankIndex][0] : "N/A",
     };
@@ -213,7 +214,9 @@ export const SimpleInteract: React.FC<IInteract> = ({ dappAddress, setDappAddres
         <thead>
           <tr>
             <th>Conversation ID</th>
+            <th>Users Who Submitted Ranks</th>
             <th>Prompt</th>
+            <th>Users Who Submitted Ranks</th>
             <th>First Ranked Response</th>
             <th>Second Ranked Response</th>
           </tr>
@@ -222,6 +225,7 @@ export const SimpleInteract: React.FC<IInteract> = ({ dappAddress, setDappAddres
           {generateConversationData().reverse().slice(0, showAllRows ? undefined : 3).map(data => (
             <tr key={data.conversationId}>
               <td>{data.conversationId}</td>
+              <td>{data.usersWhoSubmittedRanks}</td>
               <td>{data.prompt}</td>
               <td>{data.firstRankedResponse}</td>
               <td>{data.secondRankedResponse}</td>
