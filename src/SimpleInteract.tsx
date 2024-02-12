@@ -35,7 +35,12 @@ export const SimpleInteract: React.FC<IInteract> = ({ dappAddress, setDappAddres
   const [showAllRows, setShowAllRows] = useState(false);
 
   useEffect(() => {
-    const fetchConversations = async () => {
+    const interval = setInterval(() => {
+      fetchConversations();
+    }, 30000); // Refresh every 30 seconds
+
+    return () => clearInterval(interval);
+  }, [fetchConversations]);
       const provider = new ethers.providers.Web3Provider(window.ethereum);
       const signer = provider.getSigner();
       const contract = new ethers.Contract(contractAddress, TrustAndTeachABI, signer);
