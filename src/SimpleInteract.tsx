@@ -31,6 +31,31 @@ export const SimpleInteract: React.FC<IInteract> = ({ dappAddress, setDappAddres
   const [connectedWallet] = useWallets();
   const userAddress = connectedWallet?.accounts[0]?.address || '';
 
+  const [conversations, setConversations] = useState<any[]>([]);
+
+  useEffect(() => {
+    const fetchConversations = async () => {
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      const signer = provider.getSigner();
+      const contract = new ethers.Contract(contractAddress, TrustAndTeachABI, signer);
+      const conversationCount = await contract.getConversationCount();
+      let conversationsData = [];
+
+      for (let i = 0; i < conversationCount; i++) {
+        const conversation = await contract.getConversationById(i);
+        const usersRanks = await Promise.all(conversation.usersWhoSubmittedRanks.map(async (user: string) => {
+          const ranks = await contract.getRanksByUser(i, user);
+          return { user, ranks };
+        }));
+
+        conversationsData.push({ ...conversation, usersRanks });
+      }
+      setConversations(conversationsData);
+    };
+
+    fetchConversations();
+  }, [contractAddress]);
+
   const downloadConversationsData = async () => {
     const provider = new ethers.providers.Web3Provider(window.ethereum);
     const signer = provider.getSigner();
@@ -156,6 +181,27 @@ export const SimpleInteract: React.FC<IInteract> = ({ dappAddress, setDappAddres
         }}
         isReadCall={true}
       />
+      <h3>Conversations</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Conversation ID</th>
+            <th>Prompt</th>
+            <th>First Ranked Response</th>
+            <th>Second Ranked Response</th>
+          </tr>
+        </thead>
+        <tbody>
+          {conversations.map((conversation, index) => (
+            <tr key={index}>
+              <td>{index}</td>
+              <td>{conversation.prompt}</td>
+              <td>{conversation.responses[conversation.usersRanks[0]?.ranks[0]][0]}</td>
+              <td>{conversation.responses[conversation.usersRanks[0]?.ranks[1]][0]}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
       <h3>Download Conversations Data</h3>
       <button onClick={downloadConversationsData}>Download JSON</button>
       <h3>Other</h3>
