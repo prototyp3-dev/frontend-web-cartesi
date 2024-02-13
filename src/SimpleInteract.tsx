@@ -212,40 +212,6 @@ export const SimpleInteract: React.FC<IInteract> = ({ dappAddress, setDappAddres
       </>
       }
       <Vouchers dappAddress={dappAddress} />
-      <h3>rank the responses</h3>
-      <InteractionForm
-        description="Get Conversation by ID"
-        defaultInputs={[{ name: 'conversationId', value: `${conversations.length > 0 ? conversations.length - 1 : 0}`, description: 'Conversation ID' }]}
-        // defaultInputs={[{ name: 'conversationId', value: "3", description: 'Conversation ID' }]}
-        contractFunction={async (signer: ethers.Signer, inputObject: IInputField) => {
-          const contract = new ethers.Contract(contractAddress, TrustAndTeachABI, signer);
-          const result = await contract.getConversationById(ethers.BigNumber.from(inputObject.value));
-          return {
-            author: result.author,
-            prompt: result.prompt,
-            responses: result.responses,
-            rankSubmissionCount: result.rankSubmissionCount.toNumber(),
-            usersWhoSubmittedRanks: result.usersWhoSubmittedRanks.map(ethers.utils.getAddress),
-            createInstructionTimestamp: new Date(result.createInstructionTimestamp.toNumber() * 1000).toISOString(),
-            responseAnnouncedTimestamp: new Date(result.responseAnnouncedTimestamp.toNumber() * 1000).toISOString()
-          };
-        }}
-        isReadCall={true}
-      />
-      You prefer:
-      <InteractionForm
-        description="Submit Rank"
-        defaultInputs={[
-          { name: 'conversationId', value: `${conversations.length > 0 ? conversations.length - 1 : 0}`, description: 'Conversation ID' },
-          { name: 'ranks', value: "", description: 'Ranks (comma-separated) -- list the prefered responses first' }
-        ]}
-        contractFunction={(signer: ethers.Signer, inputObject1: IInputField, inputObject2: IInputField) => {
-          const contract = new ethers.Contract(contractAddress, TrustAndTeachABI, signer);
-          const conversationId = ethers.BigNumber.from(inputObject1.value);
-          const ranksArray = inputObject2.value.split(',').map((rank: string) => ethers.BigNumber.from(rank.trim()));
-          return contract.submitRank(conversationId, ranksArray);
-        }}
-      />
       <h3>RLHF Data for DPO</h3>
       {hideInstructions && <div>
         If you see N/A in the table, it means that the user did not submit a rank for that conversation.
