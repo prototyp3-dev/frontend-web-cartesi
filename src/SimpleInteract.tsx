@@ -3,6 +3,7 @@ import { ethers } from 'ethers';
 import { useWallets } from "@web3-onboard/react";
 import { InteractionForm } from "./InteractionForm";
 import { Vouchers } from "./Vouchers";
+import { VoucherButtons } from "./VoucherButtons";
 
 import TrustAndTeachABI from "./contract_abi/TrustAndTeach.json";
 import SendCurlRequestButton from './SendCurlRequestButton';
@@ -104,7 +105,7 @@ export const SimpleInteract: React.FC<IInteract> = ({ dappAddress, setDappAddres
             <button onClick={() => submitRanks(index, [1, 0])}>Switch</button>
           </>
         ) : hasResponses ? null : (
-          <button>Post responses on-chain</button>
+          <VoucherButtons dappAddress={dappAddress} />
         );
         data.push({
           conversationId: index,
