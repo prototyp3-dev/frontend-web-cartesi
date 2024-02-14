@@ -97,15 +97,18 @@ export const SimpleInteract: React.FC<IInteract> = ({ dappAddress, setDappAddres
         const formattedUser = userRank.ranks.length === 0
           ? (<b>${showFullAddresses ? userRank.user : `${userRank.user.slice(0, 5)}..${userRank.user.slice(-3)}`}</b>)
           : (<>${showFullAddresses ? userRank.user : `${userRank.user.slice(0, 5)}..${userRank.user.slice(-3)}`}</>)
-        const hasResponses = conversation.responses.length > 0;
+        const hasAllResponses = conversation.responses.length === 2; //TODO this number should come from the contract
         const hasRanks = userRank.ranks.length > 0;
-        const actions = hasResponses && !hasRanks ? (
+        const actions = hasAllResponses && !hasRanks ? (
           <>
+            Preference:
             <button onClick={() => submitRanks(index, [0, 1])}>Confirm</button>
             <button onClick={() => submitRanks(index, [1, 0])}>Switch</button>
           </>
-        ) : hasResponses ? null : (
+        ) : hasAllResponses ? null : (
+          // ) : (
           <>
+            Post responses on-chain
             <VoucherButtons dappAddress={dappAddress} conversationId={index} responseId={0} />
             <VoucherButtons dappAddress={dappAddress} conversationId={index} responseId={1} />
           </>
@@ -114,8 +117,8 @@ export const SimpleInteract: React.FC<IInteract> = ({ dappAddress, setDappAddres
           conversationId: index,
           prompt: conversation.prompt,
           usersWhoSubmittedRanks: formattedUser,
-          firstRankedResponse: hasResponses ? (firstRankIndex !== undefined ? conversation.responses[firstRankIndex] : conversation.responses[0]) : "N/A",
-          secondRankedResponse: hasResponses ? (secondRankIndex !== undefined ? conversation.responses[secondRankIndex] : conversation.responses[1] || "N/A") : "N/A",
+          firstRankedResponse: conversation.responses[0] ? (firstRankIndex !== undefined ? conversation.responses[firstRankIndex] : conversation.responses[0]) : "N/A",
+          secondRankedResponse: conversation.responses[1] ? (secondRankIndex !== undefined ? conversation.responses[secondRankIndex] : conversation.responses[1] || "N/A") : "N/A",
           actions,
         });
       });

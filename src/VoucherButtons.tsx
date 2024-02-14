@@ -11,19 +11,12 @@ interface IVoucherButtons {
 
 export const VoucherButtons: React.FC<IVoucherButtons> = ({ dappAddress, conversationId, responseId }) => {
   const [result, reexecuteQuery] = useVouchersQuery();
-  const [voucherToFetch, setVoucherToFetch] = React.useState([responseId, conversationId]);
   const [voucherResult, reexecuteVoucherQuery] = useVoucherQuery({
-    variables: { voucherIndex: voucherToFetch[0], inputIndex: voucherToFetch[1] }//, pause: !!voucherIdToFetch
+    variables: { voucherIndex: responseId, inputIndex: conversationId }//, pause: !!voucherIdToFetch
   });
   const [voucherToExecute, setVoucherToExecute] = React.useState<any>();
   const { data, fetching, error } = result;
   const rollups = useRollups(dappAddress);
-
-  const getProofInputIndex = async (input: number, index: number) => {
-    setVoucherToFetch([index, input]);
-    reexecuteVoucherQuery({ requestPolicy: 'network-only' });
-    console.log("getProofInputIndex", input, index, voucherToFetch);
-  };
 
   const executeVoucher = async (voucher: any) => {
     if (rollups && !!voucher.proof) {
@@ -45,6 +38,12 @@ export const VoucherButtons: React.FC<IVoucherButtons> = ({ dappAddress, convers
     }
   }
 
+  const reload = () => {
+    reexecuteQuery({ requestPolicy: 'network-only' });
+    reexecuteVoucherQuery({ requestPolicy: 'network-only' });
+  }
+
+
   useEffect(() => {
     const setVoucher = async (voucher: any) => {
       if (rollups) {
@@ -63,19 +62,18 @@ export const VoucherButtons: React.FC<IVoucherButtons> = ({ dappAddress, convers
 
   if (!data || !data.vouchers) return <p>No vouchers</p>;
 
-  console.log("voucher", voucherToFetch, voucherResult.data?.voucher);
   console.log("voucherToExecute", voucherToExecute);
+  console.log("conversationId", conversationId, " responseId", responseId);
 
   // const forceUpdate = useForceUpdate();
   return (
     <div>
-      {/* <button onClick={() => getProofInputIndex(conversationId, responseId)}>Get proof for conversation {conversationId}-{responseId}</button> */}
       {voucherToExecute ? <>
         {voucherToExecute.input.index}-{voucherToExecute.index}
-        < button disabled={!voucherToExecute.proof || voucherToExecute.executed} onClick={() => executeVoucher(voucherToExecute)}>{voucherToExecute.proof ? (voucherToExecute.executed ? "Voucher executed" : "Execute voucher") : "No proof yet"}</button>
+        < button disabled={!voucherToExecute.proof || voucherToExecute.executed} onClick={() => executeVoucher(voucherToExecute)}>{voucherToExecute.proof ? (voucherToExecute.executed ? <>{voucherToExecute.index} executed</> : <>Execute {voucherToExecute.index}</>) : <>{voucherToExecute.index} no proof yet</>}</button>
       </> : <p>Nothing yet</p>
       }
-      <button onClick={() => reexecuteQuery({ requestPolicy: 'network-only' })}>
+      <button onClick={() => reload()}>
         Reload
       </button>
 
