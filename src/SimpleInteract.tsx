@@ -111,8 +111,8 @@ export const SimpleInteract: React.FC<IInteract> = ({ dappAddress, setDappAddres
           // ) : (
           <>
             Post responses on-chain
-            <VoucherButtons dappAddress={dappAddress} conversationId={index} responseId={0} />
-            <VoucherButtons dappAddress={dappAddress} conversationId={index} responseId={1} />
+            <VoucherButtons dappAddress={dappAddress} conversationId={index} responseId={0} reloadVouchers={reloadVouchers} />
+            <VoucherButtons dappAddress={dappAddress} conversationId={index} responseId={1} reloadVouchers={reloadVouchers} />
           </>
         );
         data.push({
