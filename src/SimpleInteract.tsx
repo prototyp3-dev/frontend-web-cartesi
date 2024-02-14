@@ -46,7 +46,9 @@ export const SimpleInteract: React.FC<IInteract> = ({ dappAddress, setDappAddres
   const [showFullAddresses, setShowFullAddresses] = useState(false); // State to toggle between full and shortened addresses
   const [hideInstructions, setHideInstructions] = useState(false);
 
+  const reloadVouchers = React.useRef<() => void>(() => {});
   const refreshConversations = async () => {
+    reloadVouchers.current();
     const provider = new ethers.providers.Web3Provider(window.ethereum);
     const signer = provider.getSigner();
     const contract = new ethers.Contract(contractAddress, TrustAndTeachABI, signer);
@@ -218,7 +220,7 @@ export const SimpleInteract: React.FC<IInteract> = ({ dappAddress, setDappAddres
         <strong>Dapp Address</strong>: {dappAddress}
       </>
       }
-      <Vouchers dappAddress={dappAddress} />
+      <Vouchers dappAddress={dappAddress} reloadVouchers={reloadVouchers} />
       <h3>RLHF Data for DPO</h3>
       {hideInstructions && <div>
         If you see N/A in the table, it means that the user did not submit a rank for that conversation.

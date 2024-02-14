@@ -7,6 +7,7 @@ interface IVoucherButtons {
   dappAddress: string;
   conversationId: number;
   responseId: number;
+  reloadVouchers?: React.MutableRefObject<() => void>;
 }
 
 export const VoucherButtons: React.FC<IVoucherButtons> = ({ dappAddress, conversationId, responseId }) => {
@@ -37,6 +38,12 @@ export const VoucherButtons: React.FC<IVoucherButtons> = ({ dappAddress, convers
       setVoucherToExecute(newVoucherToExecute);
     }
   }
+
+  useEffect(() => {
+    if (props.reloadVouchers) {
+      props.reloadVouchers.current = reload;
+    }
+  }, [props.reloadVouchers]);
 
   const reload = () => {
     reexecuteQuery({ requestPolicy: 'network-only' });
