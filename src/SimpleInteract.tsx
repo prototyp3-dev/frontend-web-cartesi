@@ -184,7 +184,6 @@ export const SimpleInteract: React.FC<IInteract> = ({ dappAddress, setDappAddres
     downloadAnchorNode.click();
     downloadAnchorNode.remove();
   };
-  // console.log(conversations.length, conversations)
 
   return (
     <div>
