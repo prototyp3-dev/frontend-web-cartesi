@@ -105,7 +105,10 @@ export const SimpleInteract: React.FC<IInteract> = ({ dappAddress, setDappAddres
             <button onClick={() => submitRanks(index, [1, 0])}>Switch</button>
           </>
         ) : hasResponses ? null : (
-          <VoucherButtons dappAddress={dappAddress} />
+          <>
+            <VoucherButtons dappAddress={dappAddress} conversationId={index} responseId={0} />
+            <VoucherButtons dappAddress={dappAddress} conversationId={index} responseId={1} />
+          </>
         );
         data.push({
           conversationId: index,
@@ -172,7 +175,7 @@ export const SimpleInteract: React.FC<IInteract> = ({ dappAddress, setDappAddres
     downloadAnchorNode.click();
     downloadAnchorNode.remove();
   };
-  console.log(conversations.length, conversations)
+  // console.log(conversations.length, conversations)
 
   return (
     <div>
