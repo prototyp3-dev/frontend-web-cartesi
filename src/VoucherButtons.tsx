@@ -8,9 +8,10 @@ interface IVoucherButtons {
   conversationId: number;
   responseId: number;
   reloadVouchers?: React.MutableRefObject<() => void>;
+  reloadVouchers?: React.MutableRefObject<() => void>;
 }
 
-export const VoucherButtons: React.FC<IVoucherButtons> = ({ dappAddress, conversationId, responseId }) => {
+export const VoucherButtons: React.FC<IVoucherButtons> = ({ dappAddress, conversationId, responseId, reloadVouchers }) => {
   const [result, reexecuteQuery] = useVouchersQuery();
   const [voucherResult, reexecuteVoucherQuery] = useVoucherQuery({
     variables: { voucherIndex: responseId, inputIndex: conversationId }//, pause: !!voucherIdToFetch
@@ -40,10 +41,10 @@ export const VoucherButtons: React.FC<IVoucherButtons> = ({ dappAddress, convers
   }
 
   useEffect(() => {
-    if (props.reloadVouchers) {
-      props.reloadVouchers.current = reload;
+    if (reloadVouchers) {
+      reloadVouchers.current = reload;
     }
-  }, [props.reloadVouchers]);
+  }, [reloadVouchers]);
 
   const reload = () => {
     reexecuteQuery({ requestPolicy: 'network-only' });
