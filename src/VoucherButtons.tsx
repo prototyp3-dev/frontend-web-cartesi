@@ -8,7 +8,6 @@ interface IVoucherButtons {
   conversationId: number;
   responseId: number;
   reloadVouchers?: React.MutableRefObject<() => void>;
-  reloadVouchers?: React.MutableRefObject<() => void>;
 }
 
 export const VoucherButtons: React.FC<IVoucherButtons> = ({ dappAddress, conversationId, responseId, reloadVouchers }) => {
