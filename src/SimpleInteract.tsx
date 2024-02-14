@@ -46,7 +46,7 @@ export const SimpleInteract: React.FC<IInteract> = ({ dappAddress, setDappAddres
   const [showFullAddresses, setShowFullAddresses] = useState(false); // State to toggle between full and shortened addresses
   const [hideInstructions, setHideInstructions] = useState(false);
 
-  const reloadVouchers = React.useRef<() => void>(() => {});
+  const reloadVouchers = React.useRef<() => void>(() => { });
   const refreshConversations = async () => {
     reloadVouchers.current();
     const provider = new ethers.providers.Web3Provider(window.ethereum);
@@ -103,14 +103,18 @@ export const SimpleInteract: React.FC<IInteract> = ({ dappAddress, setDappAddres
         const hasRanks = userRank.ranks.length > 0;
         const actions = hasAllResponses && !hasRanks ? (
           <>
-            Preference:
-            <button onClick={() => submitRanks(index, [0, 1])}>Confirm</button>
+            <div>
+              Response Preference Order:
+            </div>
             <button onClick={() => submitRanks(index, [1, 0])}>Switch</button>
+            <button onClick={() => submitRanks(index, [0, 1])}>Confirm</button>
           </>
         ) : hasAllResponses ? null : (
           // ) : (
           <>
-            Post responses on-chain
+            <div>
+              Post responses on-chain
+            </div>
             <VoucherButtons dappAddress={dappAddress} conversationId={index} responseId={0} reloadVouchers={reloadVouchers} />
             <VoucherButtons dappAddress={dappAddress} conversationId={index} responseId={1} reloadVouchers={reloadVouchers} />
           </>

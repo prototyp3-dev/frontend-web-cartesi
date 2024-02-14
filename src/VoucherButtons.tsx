@@ -48,6 +48,7 @@ export const VoucherButtons: React.FC<IVoucherButtons> = ({ dappAddress, convers
   const reload = () => {
     reexecuteQuery({ requestPolicy: 'network-only' });
     reexecuteVoucherQuery({ requestPolicy: 'network-only' });
+    // console.log("reloadVouchers")
   }
 
 
@@ -69,21 +70,18 @@ export const VoucherButtons: React.FC<IVoucherButtons> = ({ dappAddress, convers
 
   if (!data || !data.vouchers) return <p>No vouchers</p>;
 
-  console.log("voucherToExecute", voucherToExecute);
-  console.log("conversationId", conversationId, " responseId", responseId);
+  // console.log("voucherToExecute", voucherToExecute);
+  // console.log("conversationId", conversationId, " responseId", responseId);
 
   // const forceUpdate = useForceUpdate();
   return (
-    <div>
+    <>
       {voucherToExecute ? <>
-        {voucherToExecute.input.index}-{voucherToExecute.index}
-        < button disabled={!voucherToExecute.proof || voucherToExecute.executed} onClick={() => executeVoucher(voucherToExecute)}>{voucherToExecute.proof ? (voucherToExecute.executed ? <>{voucherToExecute.index} executed</> : <>Execute {voucherToExecute.index}</>) : <>{voucherToExecute.index} no proof yet</>}</button>
+        {/* {voucherToExecute.input.index}-{voucherToExecute.index} */}
+        < button disabled={!voucherToExecute.proof || voucherToExecute.executed} onClick={() => executeVoucher(voucherToExecute)}>{voucherToExecute.proof ? (voucherToExecute.executed ? <>{voucherToExecute.index} Posted</> : <>Post {voucherToExecute.index}</>) : <>{voucherToExecute.index} no proof yet</>}</button>
       </> : <p>Nothing yet</p>
       }
-      <button onClick={() => reload()}>
-        Reload
-      </button>
-
-    </div >
+      {/* <button onClick={() => reload()}> Reload </button> */}
+    </>
   );
 };
