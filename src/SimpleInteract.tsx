@@ -124,8 +124,8 @@ export const SimpleInteract: React.FC<IInteract> = ({ dappAddress, setDappAddres
           conversationId: index,
           prompt: conversation.prompt,
           usersWhoSubmittedRanks: formattedUser,
-          firstRankedResponse: conversation.responses[0] ? (firstRankIndex !== undefined ? <NoticeResponse conversationId={index} responseId={firstRankIndex} /> : <NoticeResponse conversationId={index} responseId={0} />) : "N/A",
-          secondRankedResponse: conversation.responses[1] ? (secondRankIndex !== undefined ? <NoticeResponse conversationId={index} responseId={secondRankIndex} /> : <NoticeResponse conversationId={index} responseId={1} /> || "N/A") : "N/A",
+          firstRankedResponse: conversation.responses[0] ? (firstRankIndex !== undefined ? conversation.responses[firstRankIndex] : conversation.responses[0]) : <NoticeResponse conversationId={index} responseId={0} />,
+          secondRankedResponse: conversation.responses[1] ? (secondRankIndex !== undefined ? conversation.responses[secondRankIndex] : conversation.responses[1] || <NoticeResponse conversationId={index} responseId={1} />) : <NoticeResponse conversationId={index} responseId={1} />,
           actions,
         });
       });
