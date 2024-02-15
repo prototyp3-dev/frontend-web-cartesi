@@ -13,6 +13,7 @@
 import { FC, useState } from "react";
 import injectedModule from "@web3-onboard/injected-wallets";
 import { init } from "@web3-onboard/react";
+import { useConnectWallet, useSetChain } from "@web3-onboard/react";
 import { ethers } from 'ethers';
 
 import { GraphQLProvider } from "./GraphQL";
@@ -22,14 +23,13 @@ import { SimpleInteract } from "./SimpleInteract";
 import { InteractionForm } from "./InteractionForm";
 // import { Input } from "./Input";
 // import { Inspect } from "./Inspect";
-import { Network } from "./Network";
+// import { Network } from "./Network";
 import { Vouchers } from "./Vouchers";
 // import { Reports } from "./Reports";
-import configFile from "./config.json";
 import TrustAndTeachABI from "./contract_abi/TrustAndTeach.json";
+import configFile from "./config.json";
 
 const config: any = configFile;
-
 const injected: any = injectedModule();
 
 interface IInputField {
@@ -53,6 +53,8 @@ init({
 });
 
 const App: FC = () => {
+  const [{ wallet, connecting }, connect, disconnect] = useConnectWallet();
+  const [{ chains, connectedChain, settingChain }, setChain] = useSetChain();
   const [dappAddress, setDappAddress] = useState<string>("0x70ac08179605AF2D9e75782b8DEcDD3c22aA4D0C");
   const [interactionInputsDappAddress, setInteractionInputsDappAddress] = useState<IInputField[]>([{ name: 'dappAddress', value: dappAddress, description: 'DApp Address' }]); // State to store the interaction inputs
   const [contractAddress, setContractAddress] = useState<string>("0x959922bE3CAee4b8Cd9a407cc3ac1C251C2007B1");
@@ -64,22 +66,15 @@ const App: FC = () => {
     <div>
       <h1>Trust and Teach AI</h1>
       <h3>on-chain LLM inference and response ranking for RLHF</h3>
-      <Network />
+      {/* <Network /> */}
+      {!wallet && <button
+        onClick={() =>
+          connect()
+        }
+      >
+        {connecting ? "connecting" : "connect"}
+      </button>}
       <GraphQLProvider>
-        <h2>Setup</h2>
-        Set up the Cartesi Rollup Contract DApp Address to allow the communication between Cartesi and the EVM chain.
-        <InteractionForm
-          description="set dapp address"
-          defaultInputs={interactionInputsDappAddress}
-          contractFunction={(signer: ethers.Signer, inputObject: IInputField) => {
-            const contract = new ethers.Contract(contractAddress, TrustAndTeachABI, signer);
-            return contract.set_dapp_address(inputObject.value);
-          }}
-          onInputsChange={setInteractionInputsDappAddress} // Pass the callback to update the state when inputs change
-        />
-        {/* <h2>Inspect</h2> */}
-        {/* <Inspect /> */}
-        <h2>Interaction</h2>
         <SimpleInteract
           dappAddress={dappAddress}
           setDappAddress={setDappAddress}
@@ -91,6 +86,50 @@ const App: FC = () => {
         {showInteract && (
           <>
             <h2>Advanced interaction with the contract</h2>
+            {wallet && (
+              <div>
+                <label>Switch Chain</label>
+                {settingChain ? (
+                  <span>Switching chain...</span>
+                ) : (
+                  <select
+                    onChange={({ target: { value } }) => {
+                      if (config[value] !== undefined) {
+                        setChain({ chainId: value })
+                      } else {
+                        alert("No deploy on this chain")
+                      }
+                    }
+                    }
+                    value={connectedChain?.id}
+                  >
+                    {chains.map(({ id, label }) => {
+                      return (
+                        <option key={id} value={id}>
+                          {label}
+                        </option>
+                      );
+                    })}
+                  </select>
+                )}
+                <button onClick={() => disconnect(wallet)}>
+                  Disconnect Wallet
+                </button>
+              </div>
+            )}
+            <h3>Setup</h3>
+            Set up the Cartesi Rollup Contract DApp Address to allow the communication between Cartesi and the EVM chain.
+            <InteractionForm
+              description="set dapp address"
+              defaultInputs={interactionInputsDappAddress}
+              contractFunction={(signer: ethers.Signer, inputObject: IInputField) => {
+                const contract = new ethers.Contract(contractAddress, TrustAndTeachABI, signer);
+                return contract.set_dapp_address(inputObject.value);
+              }}
+              onInputsChange={setInteractionInputsDappAddress} // Pass the callback to update the state when inputs change
+            />
+            {/* <h2>Inspect</h2> */}
+            {/* <Inspect /> */}
             <Interact
               dappAddress={dappAddress}
               setDappAddress={setDappAddress}

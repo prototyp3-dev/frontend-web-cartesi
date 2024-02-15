@@ -104,8 +104,8 @@ export const SimpleInteract: React.FC<IInteract> = ({ dappAddress, setDappAddres
         const secondRankIndex = userRank.ranks.length > 1 ? userRank.ranks[1] : undefined;
         // Format the user address based on showFullAddresses state and whether ranks have been submitted
         const formattedUser = userRank.ranks.length === 0
-          ? (<b>${showFullAddresses ? userRank.user : `${userRank.user.slice(0, 5)}..${userRank.user.slice(-3)}`}</b>)
-          : (<>${showFullAddresses ? userRank.user : `${userRank.user.slice(0, 5)}..${userRank.user.slice(-3)}`}</>)
+          ? (<b>{showFullAddresses ? userRank.user : `${userRank.user.slice(0, 5)}..${userRank.user.slice(-3)}`}</b>)
+          : (<>{showFullAddresses ? userRank.user : `${userRank.user.slice(0, 5)}..${userRank.user.slice(-3)}`}</>)
         const hasAllResponses = conversation.responses.length === 2; //TODO this number should come from the contract
         const hasRanks = userRank.ranks.length > 0;
         const actions = hasAllResponses && !hasRanks ? (
