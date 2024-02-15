@@ -127,7 +127,7 @@ export const SimpleInteract: React.FC<IInteract> = ({ dappAddress, setDappAddres
           prompt: conversation.prompt,
           usersWhoSubmittedRanks: formattedUser,
           firstRankedResponse: conversation.responses[0] ? (firstRankIndex !== undefined ? conversation.responses[firstRankIndex] : conversation.responses[0]) : <NoticeResponse conversationId={index} responseId={0} reloadNotice={reloadNotice} />,
-          secondRankedResponse: conversation.responses[1] ? (secondRankIndex !== undefined ? conversation.responses[secondRankIndex] : conversation.responses[1] || <NoticeResponse conversationId={index} responseId={1} reloadNotice={reloadNotice} />) : <NoticeResponse conversationId={index} responseId={1} reloadNotice={reloadNotice} />,
+          secondRankedResponse: conversation.responses[1] ? (secondRankIndex !== undefined ? conversation.responses[secondRankIndex] : conversation.responses[1]) : <NoticeResponse conversationId={index} responseId={1} reloadNotice={reloadNotice} />,
           actions,
         });
       });
@@ -210,23 +210,16 @@ export const SimpleInteract: React.FC<IInteract> = ({ dappAddress, setDappAddres
           return contract.sendInstructionPrompt(inputObject1.value, uint256Value);
         }}
       />
-      <h3>post the response</h3>
+      <h3>RLHF Data for DPO</h3>
       {hideInstructions && <>
-        If running locally, advance the time of the dispute period to be able to execute the voucher.
-      </>
-      }
-      <div>
+        If running locally, click{' '}
         <SendCurlRequestButton
           url="http://localhost:8545"
           data='{"id":1337,"jsonrpc":"2.0","method":"evm_increaseTime","params":[864010]}'
           buttonText="Advance Time"
-        />
-      </div>
-      {hideInstructions && <>
-        <strong>Dapp Address</strong>: {dappAddress}
-      </>
-      }
-      <h3>RLHF Data for DPO</h3>
+        />{' '}
+        to advance the time of the dispute period to be able to execute the voucher.
+      </>}
       {hideInstructions && <div>
         If you see N/A in the table, it means that the user did not submit a rank for that conversation.
       </div>}

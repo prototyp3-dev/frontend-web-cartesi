@@ -47,6 +47,6 @@ export const NoticeResponse: React.FC<NoticeResponseProps> = ({ conversationId, 
 
   return <span>
     Off-Chain:
-    <span style={{ fontStyle: 'italic' }}> {promptLLMResponse}</span>
+    <span style={{ fontStyle: 'italic' }}> {promptLLMResponse ? promptLLMResponse : "waiting for the notice"}</span>
   </span>;
 };
