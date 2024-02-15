@@ -33,7 +33,12 @@ export const NoticeResponse: React.FC<NoticeResponseProps> = ({ conversationId, 
     }
   }, [noticeResult]);
 
-  console.log("payloadHuman", payloadHuman);
+  try {
+    const parsedPayload = JSON.parse(payloadHuman);
+    console.log("promptLLMResponse", parsedPayload.promptLLMResponse);
+  } catch (e) {
+    console.log("Error parsing payloadHuman or accessing promptLLMResponse", e);
+  }
 
   return <span style={{ fontStyle: 'italic' }}>{payloadHuman}</span>;
 };
