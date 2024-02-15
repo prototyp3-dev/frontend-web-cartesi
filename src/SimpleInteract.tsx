@@ -48,8 +48,10 @@ export const SimpleInteract: React.FC<IInteract> = ({ dappAddress, setDappAddres
   const [hideInstructions, setHideInstructions] = useState(false);
 
   const reloadVouchers = React.useRef<() => void>(() => { });
+  const reloadNotice = React.useRef<() => void>(() => { });
   const refreshConversations = async () => {
     reloadVouchers.current();
+    reloadNotice.current();
     const provider = new ethers.providers.Web3Provider(window.ethereum);
     const signer = provider.getSigner();
     const contract = new ethers.Contract(contractAddress, TrustAndTeachABI, signer);
@@ -124,8 +126,8 @@ export const SimpleInteract: React.FC<IInteract> = ({ dappAddress, setDappAddres
           conversationId: index,
           prompt: conversation.prompt,
           usersWhoSubmittedRanks: formattedUser,
-          firstRankedResponse: conversation.responses[0] ? (firstRankIndex !== undefined ? conversation.responses[firstRankIndex] : conversation.responses[0]) : <NoticeResponse conversationId={index} responseId={0} />,
-          secondRankedResponse: conversation.responses[1] ? (secondRankIndex !== undefined ? conversation.responses[secondRankIndex] : conversation.responses[1] || <NoticeResponse conversationId={index} responseId={1} />) : <NoticeResponse conversationId={index} responseId={1} />,
+          firstRankedResponse: conversation.responses[0] ? (firstRankIndex !== undefined ? conversation.responses[firstRankIndex] : conversation.responses[0]) : <NoticeResponse conversationId={index} responseId={0} reloadNotice={reloadNotice} />,
+          secondRankedResponse: conversation.responses[1] ? (secondRankIndex !== undefined ? conversation.responses[secondRankIndex] : conversation.responses[1] || <NoticeResponse conversationId={index} responseId={1} reloadNotice={reloadNotice} />) : <NoticeResponse conversationId={index} responseId={1} reloadNotice={reloadNotice} />,
           actions,
         });
       });

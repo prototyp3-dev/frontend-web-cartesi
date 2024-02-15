@@ -7,38 +7,46 @@ import { ethers } from "ethers";
 interface NoticeResponseProps {
   conversationId: number;
   responseId: number;
+  reloadNotice?: React.MutableRefObject<() => void>;
 }
 
-export const NoticeResponse: React.FC<NoticeResponseProps> = ({ conversationId, responseId }) => {
+export const NoticeResponse: React.FC<NoticeResponseProps> = ({ conversationId, responseId, reloadNotice }) => {
   const [noticeResult, reexecuteNoticeQuery] = useNoticeQuery({
     variables: { noticeIndex: responseId, inputIndex: conversationId }
   });
-  const [payloadHuman, setPayloadHuman] = React.useState<any>();
+  const [promptLLMResponse, setPromptLLMResponse] = React.useState<any>();
 
 
   useEffect(() => {
     if (!noticeResult.fetching && noticeResult.data) {
       const n = noticeResult.data.notice;
-      let payload = n?.payload;
-      if (payload) {
+      let payloadHuman = n?.payload;
+      if (payloadHuman) {
         try {
-          payload = ethers.utils.toUtf8String(payload);
+          payloadHuman = ethers.utils.toUtf8String(payloadHuman);
         } catch (e) {
-          payload = payload + " (hex)";
+          payloadHuman = payloadHuman + " (hex)";
         }
       } else {
-        payload = "(empty)";
+        payloadHuman = "(empty)";
       }
-      setPayloadHuman(payload);
+      setPromptLLMResponse(JSON.parse(payloadHuman).promptLLMResponse);
     }
   }, [noticeResult]);
 
-  try {
-    const parsedPayload = JSON.parse(payloadHuman);
-    console.log("promptLLMResponse", parsedPayload.promptLLMResponse);
-  } catch (e) {
-    console.log("Error parsing payloadHuman or accessing promptLLMResponse", e);
+  useEffect(() => {
+    if (reloadNotice) {
+      reloadNotice.current = reload;
+    }
+  }, [reloadNotice]);
+  const reload = () => {
+    reexecuteNoticeQuery({ requestPolicy: 'network-only' });
   }
 
-  return <span style={{ fontStyle: 'italic' }}>{payloadHuman}</span>;
+  // console.log("promptLLMResponse", promptLLMResponse);
+
+  return <span>
+    Off-Chain:
+    <span style={{ fontStyle: 'italic' }}> {promptLLMResponse}</span>
+  </span>;
 };
