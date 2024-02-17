@@ -31,6 +31,9 @@ export const Interact: React.FC<IInteract> = ({ dappAddress, setDappAddress, con
   const userAddress = connectedWallet?.accounts[0]?.address || '';
 
   return (
+    {hideInstructions && <div style={{ color: 'blue' }}>
+      This component breaks down the control of the trust and teach contract.
+    </div>}
     <div>
       <InteractionForm
         description="set dapp address"

@@ -84,6 +84,9 @@ const App: FC = () => {
         <button onClick={() => setShowInteract(!showInteract)}>
           {showInteract ? 'Hide' : 'Show'} Advanced Interaction
         </button>
+        <div>
+          <button onClick={() => setHideInstructions(!hideInstructions)}>{hideInstructions ? 'Hide Instructions' : 'Show Instructions'}</button>
+        </div>
         {showInteract && (
           <>
             <h2>Advanced interaction with the contract</h2>

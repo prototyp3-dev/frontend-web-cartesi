@@ -274,9 +274,6 @@ export const SimpleInteract: React.FC<IInteract> = ({ dappAddress, setDappAddres
         Download all of the conversation data as a JSON file.
       </div>}
       <button onClick={downloadConversationsData}>⇩ conversations</button>
-      <div>
-        <button onClick={() => setHideInstructions(!hideInstructions)}>{hideInstructions ? 'Hide Instructions' : 'Show Instructions'}</button>
-      </div>
     </div >
   );
 };
