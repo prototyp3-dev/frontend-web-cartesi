@@ -209,7 +209,7 @@ export const SimpleInteract: React.FC<IInteract> = ({ dappAddress, setDappAddres
         description="Generate"
         defaultInputs={[
           { name: 'prompt', value: "In old times when ", description: 'Prompt' },
-          { name: 'llmSteps', value: "10", description: 'LLM Steps' }
+          { name: 'llmSteps', value: "10", description: 'Total tokens' }
         ]}
         contractFunction={(signer: ethers.Signer, inputObject1: IInputField, inputObject2: IInputField) => {
           const contract = new ethers.Contract(contractAddress, TrustAndTeachABI, signer);
@@ -271,7 +271,7 @@ export const SimpleInteract: React.FC<IInteract> = ({ dappAddress, setDappAddres
         </tbody>
       </table>
       {hideInstructions && <div style={{ color: 'blue' }}>
-        Download all of the conversation data; not just the table.
+        Download all of the conversation data as a JSON file.
       </div>}
       <button onClick={downloadConversationsData}>⇩ conversations</button>
       <div>
