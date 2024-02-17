@@ -197,11 +197,11 @@ export const SimpleInteract: React.FC<IInteract> = ({ dappAddress, setDappAddres
 
   return (
     <div>
-      {hideInstructions && <>
+      {hideInstructions && <div style={{ color: 'blue' }}>
         `stories15m` model will generate tokens after the prompt up to the specified number.
         the number of tokens includes the prompt tokens and the generated ones.
         80 tokens take a little less then 3 min on a 2022 i7 and more than 80 tokens currently fails.
-      </>
+      </div>
       }
       <InteractionForm
         description="Generate"
@@ -216,7 +216,7 @@ export const SimpleInteract: React.FC<IInteract> = ({ dappAddress, setDappAddres
         }}
       />
       <br />
-      {hideInstructions && <>
+      {hideInstructions && <div style={{ color: 'blue' }}>
         If running locally, click{' '}
         <SendCurlRequestButton
           url="http://localhost:8545"
@@ -224,8 +224,8 @@ export const SimpleInteract: React.FC<IInteract> = ({ dappAddress, setDappAddres
           buttonText="Advance Time"
         />{' '}
         to advance the time of the dispute period to be able to execute the voucher.
-      </>}
-      {hideInstructions && <div>
+      </div>}
+      {hideInstructions && <div style={{ color: 'blue' }}>
         If you see N/A in the table, it means that the user did not submit a rank for that conversation.
       </div>}
       <button onClick={downloadRLHFDataAsTSV}>⇩ TSV</button>
@@ -261,7 +261,7 @@ export const SimpleInteract: React.FC<IInteract> = ({ dappAddress, setDappAddres
           ))}
         </tbody>
       </table>
-      {hideInstructions && <div>
+      {hideInstructions && <div style={{ color: 'blue' }}>
         Download all of the conversation data; not just the table.
       </div>}
       <button onClick={downloadConversationsData}>⇩ conversations</button>
