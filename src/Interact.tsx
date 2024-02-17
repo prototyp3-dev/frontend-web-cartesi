@@ -14,42 +14,21 @@ interface IInputField {
 
 
 interface IInteract {
-  dappAddress: string;
   contractAddress: string;
-  setDappAddress?: (inputs: string) => void; // Callback for when inputs change
   hideInstructions: boolean;
 }
 
-export const Interact: React.FC<IInteract> = ({ dappAddress, setDappAddress, contractAddress }) => {
-  const [interactionInputsDappAddress, setInteractionInputsDappAddress] = useState<IInputField[]>([{ name: 'dappAddress', value: dappAddress, description: 'DApp Address' }]); // State to store the interaction inputs
-  useEffect(() => {
-    const dappAddressInput = interactionInputsDappAddress.find(input => input.name === 'dappAddress');
-    if (dappAddressInput && setDappAddress) {
-      setDappAddress(dappAddressInput.value);
-    }
-  }, [interactionInputsDappAddress, setDappAddress]);
+export const Interact: React.FC<IInteract> = ({ contractAddress, hideInstructions }) => {
   const [connectedWallet] = useWallets();
   const userAddress = connectedWallet?.accounts[0]?.address || '';
 
   return (
-    {hideInstructions && <div style={{ color: 'blue' }}>
-      This component breaks down the control of the trust and teach contract.
-    </div>}
     <div>
-      <InteractionForm
-        description="set dapp address"
-        defaultInputs={interactionInputsDappAddress}
-        contractFunction={(signer: ethers.Signer, inputObject: IInputField) => {
-          const contract = new ethers.Contract(contractAddress, TrustAndTeachABI, signer);
-          return contract.set_dapp_address(inputObject.value);
-        }}
-        onInputsChange={setInteractionInputsDappAddress} // Pass the callback to update the state when inputs change
-      />
-      {/* {interactionInputsDappAddress.map((input, index) => ( */}
-      {/*   <div key={index}> */}
-      {/*     <strong>{input.description}:</strong> {input.value} */}
-      {/*   </div> */}
-      {/* ))} */}
+      <h3> Interact with Trust and Teach AI Contract</h3>
+      {hideInstructions && <div style={{ color: 'blue' }}>
+        This component breaks down the control of the trust and teach contract.
+        When the response of the conversation is too long, the conversation is broken down into stings of length 512. These strings need to be posted one by one. Split Response Index indicates which part of the response we are working with. The simple interface does not support this spliting.
+      </div>}
       <InteractionForm
         description="Send Instruction"
         defaultInputs={[

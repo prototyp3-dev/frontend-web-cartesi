@@ -21,11 +21,11 @@ import { Notices } from "./Notices";
 import { Interact } from "./Interact";
 import { SimpleInteract } from "./SimpleInteract";
 import { InteractionForm } from "./InteractionForm";
-// import { Input } from "./Input";
+import { Input } from "./Input";
 // import { Inspect } from "./Inspect";
 // import { Network } from "./Network";
 import { Vouchers } from "./Vouchers";
-// import { Reports } from "./Reports";
+import { Reports } from "./Reports";
 import TrustAndTeachABI from "./contract_abi/TrustAndTeach.json";
 import configFile from "./config.json";
 
@@ -83,11 +83,13 @@ const App: FC = () => {
           contractAddress={contractAddress}
           hideInstructions={hideInstructions}
         />
+        <div>
+          <button onClick={() => setHideInstructions(!hideInstructions)}>{hideInstructions ? 'Hide Instructions' : 'Show Instructions'}</button>
+        </div>
         <button onClick={() => setShowInteract(!showInteract)}>
           {showInteract ? 'Hide' : 'Show'} Advanced Interaction
         </button>
         <div>
-          <button onClick={() => setHideInstructions(!hideInstructions)}>{hideInstructions ? 'Hide Instructions' : 'Show Instructions'}</button>
         </div>
         {showInteract && (
           <>
@@ -137,15 +139,13 @@ const App: FC = () => {
             {/* <h2>Inspect</h2> */}
             {/* <Inspect /> */}
             <Interact
-              dappAddress={dappAddress}
-              setDappAddress={setDappAddress}
               contractAddress={contractAddress}
               hideInstructions={hideInstructions}
             />
-            {/* <h2>Input</h2> */}
-            {/* <Input dappAddress={dappAddress} /> */}
-            {/* <h2>Reports</h2> */}
-            {/* <Reports /> */}
+            <h2>Input</h2>
+            <Input dappAddress={dappAddress} />
+            <h2>Reports</h2>
+            <Reports />
             <h2>Notices</h2>
             <Notices />
             <h2>Vouchers</h2>

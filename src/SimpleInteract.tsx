@@ -32,7 +32,7 @@ interface IInteract {
   hideInstructions: boolean;
 }
 
-export const SimpleInteract: React.FC<IInteract> = ({ dappAddress, setDappAddress, contractAddress }) => {
+export const SimpleInteract: React.FC<IInteract> = ({ dappAddress, setDappAddress, contractAddress, hideInstructions }) => {
   const [interactionInputsDappAddress, setInteractionInputsDappAddress] = useState<IInputField[]>([{ name: 'dappAddress', value: dappAddress, description: 'DApp Address' }]); // State to store the interaction inputs
   useEffect(() => {
     const dappAddressInput = interactionInputsDappAddress.find(input => input.name === 'dappAddress');
@@ -203,6 +203,8 @@ export const SimpleInteract: React.FC<IInteract> = ({ dappAddress, setDappAddres
         80 tokens take a little less then 3 min on a 2022 i7 and more than 80 tokens currently fails.
         <br />
         To see if the LLM finished generating the sequence, you can click ↻. The table will show notices. When the proofs are ready, the table will offer to post the generated sequences on chain.
+        <br />
+        If you just deployed this contract, you need to post the cartesi dapp address on-chain, you can do that in the Advance Interaction {'>'} Setup section.
       </div>
       }
       <InteractionForm
@@ -228,6 +230,7 @@ export const SimpleInteract: React.FC<IInteract> = ({ dappAddress, setDappAddres
         to advance the time of the dispute period to be able to execute the voucher.
       </div>}
       {hideInstructions && <div style={{ color: 'blue' }}>
+        The LLM generates 2 responses. The functionality of RLHF is to indicate which of these responses is preferred so that the LLM can be fine-tuned on these preferences.
         This table will show the generated responses as off-chain notice. To post the generated responses on-chain, we need to wait for cartesi to create vouchers.
         <br />
         After you post the vouchers, the responses are on chain. The next step is to rank the responses. If you like the preference of the responses, you can click "Confirm". If you would like to change the order, you can click "switch". "switch" will switch the order of the responses and post these ranks on-chain.
