@@ -197,7 +197,7 @@ export const SimpleInteract: React.FC<IInteract> = ({ dappAddress, setDappAddres
 
   return (
     <div>
-      {hideInstructions && <div style={{ color: 'blue' }}>
+      {hideInstructions && <div style={{ color: 'blue' }} >
         `stories15m` model will generate tokens after the prompt up to the specified number.
         the number of tokens includes the prompt tokens and the generated ones.
         80 tokens take a little less then 3 min on a 2022 i7 and more than 80 tokens currently fails.
