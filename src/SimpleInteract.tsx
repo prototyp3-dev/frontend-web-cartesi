@@ -29,6 +29,7 @@ interface IInteract {
   dappAddress: string;
   contractAddress: string;
   setDappAddress?: (inputs: string) => void; // Callback for when inputs change
+  hideInstructions: boolean;
 }
 
 export const SimpleInteract: React.FC<IInteract> = ({ dappAddress, setDappAddress, contractAddress }) => {
@@ -45,7 +46,6 @@ export const SimpleInteract: React.FC<IInteract> = ({ dappAddress, setDappAddres
   const [conversations, setConversations] = useState<any[]>([]);
   const [showAllRows, setShowAllRows] = useState(false);
   const [showFullAddresses, setShowFullAddresses] = useState(false); // State to toggle between full and shortened addresses
-  const [hideInstructions, setHideInstructions] = useState(false);
 
   const reloadVoucher0 = React.useRef<() => void>(() => { });
   const reloadVoucher1 = React.useRef<() => void>(() => { });

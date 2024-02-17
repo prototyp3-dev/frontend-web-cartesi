@@ -17,6 +17,7 @@ interface IInteract {
   dappAddress: string;
   contractAddress: string;
   setDappAddress?: (inputs: string) => void; // Callback for when inputs change
+  hideInstructions: boolean;
 }
 
 export const Interact: React.FC<IInteract> = ({ dappAddress, setDappAddress, contractAddress }) => {

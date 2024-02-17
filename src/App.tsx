@@ -59,6 +59,7 @@ const App: FC = () => {
   const [interactionInputsDappAddress, setInteractionInputsDappAddress] = useState<IInputField[]>([{ name: 'dappAddress', value: dappAddress, description: 'DApp Address' }]); // State to store the interaction inputs
   const [contractAddress, setContractAddress] = useState<string>("0x959922bE3CAee4b8Cd9a407cc3ac1C251C2007B1");
   const [showInteract, setShowInteract] = useState<boolean>(false);
+  const [hideInstructions, setHideInstructions] = useState(false);
   // const rpcUrl = config.ethereum.rpcUrl; // Assuming Ethereum configuration exists in your config file
 
 
@@ -80,6 +81,7 @@ const App: FC = () => {
           dappAddress={dappAddress}
           setDappAddress={setDappAddress}
           contractAddress={contractAddress}
+          hideInstructions={hideInstructions}
         />
         <button onClick={() => setShowInteract(!showInteract)}>
           {showInteract ? 'Hide' : 'Show'} Advanced Interaction
@@ -138,6 +140,7 @@ const App: FC = () => {
               dappAddress={dappAddress}
               setDappAddress={setDappAddress}
               contractAddress={contractAddress}
+              hideInstructions={hideInstructions}
             />
             {/* <h2>Input</h2> */}
             {/* <Input dappAddress={dappAddress} /> */}
