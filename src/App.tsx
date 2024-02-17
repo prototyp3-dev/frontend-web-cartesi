@@ -66,6 +66,7 @@ const App: FC = () => {
     <div>
       <h1>Trust and Teach AI</h1>
       <h3>On-chain large language model (LLM) inference and response ranking for reinforcement learning with human feedback (RLHF)</h3>
+      <p>This is a protocol to create a trusted and transparent RLHF dataset for DPO -- LLM runs deterministically in an optimistic roll-up Cartesi VM, the rankings are posted on-chain, and the rankers' addresses are also on-chain to leverege their reputation.</p>
       {/* <Network /> */}
       {!wallet && <button
         onClick={() =>

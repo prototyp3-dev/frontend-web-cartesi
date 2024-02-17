@@ -201,6 +201,8 @@ export const SimpleInteract: React.FC<IInteract> = ({ dappAddress, setDappAddres
         `stories15m` model will generate tokens after the prompt up to the specified number.
         the number of tokens includes the prompt tokens and the generated ones.
         80 tokens take a little less then 3 min on a 2022 i7 and more than 80 tokens currently fails.
+        <br />
+        To see if the LLM finished generating the sequence, you can click ↻. The table will show notices. When the proofs are ready, the table will offer to post the generated sequences on chain.
       </div>
       }
       <InteractionForm
@@ -226,7 +228,14 @@ export const SimpleInteract: React.FC<IInteract> = ({ dappAddress, setDappAddres
         to advance the time of the dispute period to be able to execute the voucher.
       </div>}
       {hideInstructions && <div style={{ color: 'blue' }}>
-        If you see N/A in the table, it means that the user did not submit a rank for that conversation.
+        This table will show the generated responses as off-chain notice. To post the generated responses on-chain, we need to wait for cartesi to create vouchers.
+        <br />
+        After you post the vouchers, the responses are on chain. The next step is to rank the responses. If you like the preference of the responses, you can click "Confirm". If you would like to change the order, you can click "switch". "switch" will switch the order of the responses and post these ranks on-chain.
+        <br />
+        Multiple accounts can rank the responses.
+        <br />
+        The table will show the responses in the order of the ranks. If no ranks are submitted, the table will show the responses in the order they were generated. If the responses are not generated, the table will show a notice.
+        Users can download this table as a CSV or JSON file and use it for DPO RLHF fine-tuning of an LLM.
       </div>}
       <button onClick={downloadRLHFDataAsTSV}>⇩ TSV</button>
       <button onClick={downloadTableDataAsJSON}>⇩ JSON</button>
