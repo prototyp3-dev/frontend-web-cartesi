@@ -140,6 +140,7 @@ export const SimpleInteract: React.FC<IInteract> = ({ dappAddress, setDappAddres
   };
 
   const downloadRLHFDataAsTSV = async () => {
+    setShowFullAddresses(true);
     const conversationData = generateConversationData();
     let tsvData = 'Conversation ID\tPrompt\tFirst Ranked Response\tSecond Ranked Response\n';
     conversationData.forEach(data => {
@@ -156,6 +157,7 @@ export const SimpleInteract: React.FC<IInteract> = ({ dappAddress, setDappAddres
   };
 
   const downloadTableDataAsJSON = () => {
+    setShowFullAddresses(true);
     const jsonData = generateConversationData();
     const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(jsonData));
     const downloadAnchorNode = document.createElement('a');
@@ -167,6 +169,7 @@ export const SimpleInteract: React.FC<IInteract> = ({ dappAddress, setDappAddres
   };
 
   const downloadConversationsData = async () => {
+    setShowFullAddresses(true);
     const provider = new ethers.providers.Web3Provider(window.ethereum);
     const signer = provider.getSigner();
     const contract = new ethers.Contract(contractAddress, TrustAndTeachABI, signer);
@@ -194,8 +197,6 @@ export const SimpleInteract: React.FC<IInteract> = ({ dappAddress, setDappAddres
 
   return (
     <div>
-      <button onClick={() => setHideInstructions(!hideInstructions)}>{hideInstructions ? 'Hide Instructions' : 'Show Instructions'}</button>
-      <h3>submit a prompt</h3>
       {hideInstructions && <>
         stories15m model will continure generate tokens after the prompt up to the specified number.
         the number of tokens includes the prompt tokens and the generated ones.
@@ -203,7 +204,7 @@ export const SimpleInteract: React.FC<IInteract> = ({ dappAddress, setDappAddres
       </>
       }
       <InteractionForm
-        description="Send Instruction"
+        description="Generate"
         defaultInputs={[
           { name: 'prompt', value: "In old times when ", description: 'Prompt' },
           { name: 'llmSteps', value: "10", description: 'LLM Steps' }
@@ -214,7 +215,7 @@ export const SimpleInteract: React.FC<IInteract> = ({ dappAddress, setDappAddres
           return contract.sendInstructionPrompt(inputObject1.value, uint256Value);
         }}
       />
-      <h3>RLHF Data for DPO</h3>
+      <br />
       {hideInstructions && <>
         If running locally, click{' '}
         <SendCurlRequestButton
@@ -227,18 +228,18 @@ export const SimpleInteract: React.FC<IInteract> = ({ dappAddress, setDappAddres
       {hideInstructions && <div>
         If you see N/A in the table, it means that the user did not submit a rank for that conversation.
       </div>}
-      <button onClick={downloadRLHFDataAsTSV}>Download Table as TSV</button>
-      <button onClick={downloadTableDataAsJSON}>Download Table as JSON</button>
-      <button onClick={() => setShowAllRows(!showAllRows)}>{showAllRows ? 'Show Less' : 'Show More'}</button>
-      <button onClick={refreshConversations}>Refresh Data</button>
+      <button onClick={downloadRLHFDataAsTSV}>⇩ TSV</button>
+      <button onClick={downloadTableDataAsJSON}>⇩ JSON</button>
+      <button onClick={() => setShowAllRows(!showAllRows)}>{showAllRows ? 'Shrink Table' : 'Expand Table'}</button>
+      <button onClick={refreshConversations}>↻</button>
       <table>
         <thead>
           <tr>
             <th>ID</th>
             <th>
-              Rankers
+              Rankers{' '}
               <button onClick={() => setShowFullAddresses(!showFullAddresses)}>
-                {showFullAddresses ? 'Show Shortened' : 'Show Full'}
+                {showFullAddresses ? 'Shorten' : '..'}
               </button>
             </th>
             <th>Prompt</th>
@@ -260,11 +261,13 @@ export const SimpleInteract: React.FC<IInteract> = ({ dappAddress, setDappAddres
           ))}
         </tbody>
       </table>
-      <h3>Download Conversations Data</h3>
       {hideInstructions && <div>
         Download all of the conversation data; not just the table.
       </div>}
-      <button onClick={downloadConversationsData}>Download JSON</button>
+      <button onClick={downloadConversationsData}>⇩ conversations</button>
+      <div>
+        <button onClick={() => setHideInstructions(!hideInstructions)}>{hideInstructions ? 'Hide Instructions' : 'Show Instructions'}</button>
+      </div>
     </div >
   );
 };

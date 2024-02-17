@@ -65,7 +65,7 @@ const App: FC = () => {
   return (
     <div>
       <h1>Trust and Teach AI</h1>
-      <h3>on-chain LLM inference and response ranking for RLHF</h3>
+      <h3>On-chain large language model (LLM) inference and response ranking for reinforcement learning with human feedback (RLHF)</h3>
       {/* <Network /> */}
       {!wallet && <button
         onClick={() =>
