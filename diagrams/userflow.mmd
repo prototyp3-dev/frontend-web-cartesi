@@ -1,0 +1,7 @@
+graph LR
+p[prompt] --> c[LLM]
+c --> v1[voucher 1]
+c --> v2[voucher 2]
+v1 --> rank[human preference]
+v2 --> rank
+rank --> d[dataset]

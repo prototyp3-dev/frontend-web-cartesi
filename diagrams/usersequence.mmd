@@ -1,0 +1,17 @@
+sequenceDiagram
+actor u as Users
+box lightYellow On-Chain
+participant b as base layer (L1)
+participant l as LLM rollup (L2)
+end
+participant d as LLM fine-tunners
+u->>b: prompt
+b->>l: prompt
+activate l
+l->>l: LLM inference
+l->>u: generated responses
+l->>l: response proofs
+l->>b: generated responses
+deactivate l
+u->>b: rank responses
+b->>d: dataset
