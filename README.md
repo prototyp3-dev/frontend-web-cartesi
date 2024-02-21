@@ -1,26 +1,15 @@
-# Cartesi frontend web
-
-```
-Cartesi Rollups version: 1.0.x
-```
+# Trust-and-Teach AI DApp web front-end
 
 ## Features
 
-With this project you can test some interactions with the Cartesi Rollups project:
-
-1. Metamask integration
-2. Send Inspect state Requests and Listing Reports response
-3. Sending Dapp Address with the DApp Relay
-4. Sending inputs
-5. Depositing Ether
-6. Depositing ERC20
-7. Depositing ERC721
-8. Depositing ERC1155 Single
-9. Depositing ERC1155 Batch
-10. Listing Notices
-11. Listing Reports
-12. Listing Vouchers
-13. Executing Vouchers
+- web3-onboard wallet integration
+- simple and advanced interfaces with optional instructions
+- sending a prompt to on-chain llm
+- securly posting the responses of the llm on-chain
+- submitting preferences for respnses on chain to create RLHF dataset
+- downloading RLHF dataset as a csv or json table
+- the advaned UI has inputs for all contract's functions and setting up the contract's and dApp's addresses
+- interact's with cartesi graphql server
 
 ## Configurtion
 
@@ -43,6 +32,7 @@ yarn start
 
 Runs the app in the development mode.\
 Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+Click on "Show Instructions" button to see the instructions for the front-end.
 
 ## Voucher Notes
 
