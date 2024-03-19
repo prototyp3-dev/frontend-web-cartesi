@@ -58,6 +58,16 @@ const App: FC = () => {
   const [dappAddress, setDappAddress] = useState<string>("0x70ac08179605AF2D9e75782b8DEcDD3c22aA4D0C");
   const [interactionInputsDappAddress, setInteractionInputsDappAddress] = useState<IInputField[]>([{ name: 'dappAddress', value: dappAddress, description: 'DApp Address' }]); // State to store the interaction inputs
   const [contractAddress, setContractAddress] = useState<string>("0x959922bE3CAee4b8Cd9a407cc3ac1C251C2007B1");
+  const [tempContractAddress, setTempContractAddress] = useState<string>(contractAddress);
+
+  const handleContractAddressChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setTempContractAddress(event.target.value);
+  };
+
+  const handleSubmitContractAddress = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setContractAddress(tempContractAddress);
+  };
   const [showInteract, setShowInteract] = useState<boolean>(false);
   const [hideInstructions, setHideInstructions] = useState(false);
   // const rpcUrl = config.ethereum.rpcUrl; // Assuming Ethereum configuration exists in your config file
@@ -136,6 +146,14 @@ const App: FC = () => {
               }}
               onInputsChange={setInteractionInputsDappAddress} // Pass the callback to update the state when inputs change
             />
+            <form onSubmit={handleSubmitContractAddress}>
+              <label>
+                Contract Address:
+                <input type="text" value={tempContractAddress} onChange={handleContractAddressChange} />
+              </label>
+              <button type="submit">Change Contract Address</button>
+            </form>
+
             {/* <h2>Inspect</h2> */}
             {/* <Inspect /> */}
             <Interact

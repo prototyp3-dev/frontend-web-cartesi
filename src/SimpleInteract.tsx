@@ -52,26 +52,30 @@ export const SimpleInteract: React.FC<IInteract> = ({ dappAddress, setDappAddres
   const reloadNotice0 = React.useRef<() => void>(() => { });
   const reloadNotice1 = React.useRef<() => void>(() => { });
   const refreshConversations = async () => {
-    reloadVoucher0.current();
-    reloadVoucher1.current();
-    reloadNotice0.current();
-    reloadNotice1.current();
-    const provider = new ethers.providers.Web3Provider(window.ethereum);
-    const signer = provider.getSigner();
-    const contract = new ethers.Contract(contractAddress, TrustAndTeachABI, signer);
-    const conversationCount = await contract.getConversationCount();
-    let conversationsData = [];
+    try {
+      reloadVoucher0.current();
+      reloadVoucher1.current();
+      reloadNotice0.current();
+      reloadNotice1.current();
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      const signer = provider.getSigner();
+      const contract = new ethers.Contract(contractAddress, TrustAndTeachABI, signer);
+      const conversationCount = await contract.getConversationCount();
+      let conversationsData = [];
 
-    for (let i = 0; i < conversationCount; i++) {
-      const conversation = await contract.getConversationById(i);
-      const usersRanks = await Promise.all(conversation.usersWhoSubmittedRanks.map(async (user: string) => {
-        const ranks = await contract.getRanksByUser(i, user);
-        return { user, ranks };
-      }));
+      for (let i = 0; i < conversationCount; i++) {
+        const conversation = await contract.getConversationById(i);
+        const usersRanks = await Promise.all(conversation.usersWhoSubmittedRanks.map(async (user: string) => {
+          const ranks = await contract.getRanksByUser(i, user);
+          return { user, ranks };
+        }));
 
-      conversationsData.push({ ...conversation, usersRanks });
+        conversationsData.push({ ...conversation, usersRanks });
+      }
+      setConversations(conversationsData);
+    } catch (e) {
+      console.error(e);
     }
-    setConversations(conversationsData);
   };
 
   useEffect(() => {
@@ -205,6 +209,7 @@ export const SimpleInteract: React.FC<IInteract> = ({ dappAddress, setDappAddres
         To see if the LLM finished generating the sequence, you can click ↻. The table will show notices. When the proofs are ready, the table will offer to post the generated sequences on chain.
         <br />
         If you just deployed this contract, you need to post the cartesi dapp address on-chain, you can do that in the Advance Interaction {'>'} Setup section.
+        You also need to set the TrustAndTeach contract's address in the Advance Interaction {'>'} Setup section.
       </div>
       }
       <InteractionForm
