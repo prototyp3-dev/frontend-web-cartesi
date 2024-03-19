@@ -1,0 +1,20 @@
+sequenceDiagram
+autonumber
+actor u as Users
+box lightYellow On-Chain
+participant b as base layer (L1)<br/>(Ethereum)
+participant l as LLM rollup (L2)<br/>(Cartesi)
+end
+participant d as LLM fine-tunners
+loop repeat for other prompts and users
+u->>b: prompt
+b->>l: prompt
+activate l
+l->>l: LLM<br/>generates<br/>responses
+l-->>u: generated responses
+l->>l: create<br/>proofs
+l->>b: generated responses
+deactivate l
+u->>b: rank responses
+end
+b->>d: dataset
